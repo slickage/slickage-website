@@ -1,67 +1,85 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Menu, X } from 'lucide-react'
+import Link from 'next/link'
 
 export default function Header() {
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="relative h-10 w-10">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex flex-col items-end">
-                <span className="block h-[2px] w-4 bg-red-600"></span>
-                <span className="mt-[2px] block h-[2px] w-3 bg-red-600"></span>
-                <span className="mt-[2px] block h-[2px] w-2 bg-red-600"></span>
-              </div>
-            </div>
+    <header 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
+        isScrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-md border-b border-gray-800' : 'bg-transparent'
+      }`}
+    >
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center">
+            <Link href="/" className="text-2xl font-bold tracking-tight gradient-text">
+              Slickage
+            </Link>
           </div>
-          <span className="text-xl font-bold tracking-tight text-red-600">SLICKAGE</span>
-        </div>
-        <nav className="hidden md:flex md:gap-6 lg:gap-10">
-          <Link href="/" className="text-sm font-medium transition-colors hover:text-red-600">
-            Home
-          </Link>
-          <Link href="/services" className="text-sm font-medium transition-colors hover:text-red-600">
-            Services
-          </Link>
-          <Link href="/projects" className="text-sm font-medium transition-colors hover:text-red-600">
-            Projects
-          </Link>
-          <Link href="/about" className="text-sm font-medium transition-colors hover:text-red-600">
-            About
-          </Link>
-          <Link href="/#contact" className="text-sm font-medium transition-colors hover:text-red-600">
-            Contact
-          </Link>
-        </nav>
-        <div className="flex items-center gap-4">
-          <Link href="/contact">
-            <Button variant="outline" size="sm" className="hidden md:flex">
-              Let&apos;s Talk
-            </Button>
-          </Link>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-6 w-6"
+
+          <nav className="hidden md:flex items-center space-x-8">
+            {['Services', 'Projects', 'Features', 'Contact'].map((item) => (
+              <Link 
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              >
+                {item}
+              </Link>
+            ))}
+            <button 
+              className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
             >
-              <line x1="4" x2="20" y1="12" y2="12" />
-              <line x1="4" x2="20" y1="6" y2="6" />
-              <line x1="4" x2="20" y1="18" y2="18" />
-            </svg>
-            <span className="sr-only">Toggle menu</span>
-          </Button>
+              Get in Touch
+            </button>
+          </nav>
+
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden text-gray-300 hover:text-white"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </div>
+
+      {isMobileMenuOpen && (
+        <div className="md:hidden absolute top-full left-0 right-0 bg-[#0A0A0A] border-b border-gray-800">
+          <nav className="container mx-auto px-4 py-4">
+            <div className="flex flex-col space-y-4">
+              {['Services', 'Projects', 'Features', 'Contact'].map((item) => (
+                <Link 
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="text-gray-300 hover:text-white text-sm font-medium transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item}
+                </Link>
+              ))}
+              <button className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors w-full">
+                Get in Touch
+              </button>
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   )
 }
-

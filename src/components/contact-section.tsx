@@ -1,154 +1,119 @@
-import type React from "react"
-import { Button } from "@/components/ui/button"
+'use client';
+
+import React from 'react';
+import { Mail, Phone, MapPin, Send } from 'lucide-react';
 
 export default function ContactSection() {
   return (
-    <section id="contact" className="py-16 md:py-24">
-      <div className="container">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <div className="inline-block rounded-lg bg-red-600/10 px-3 py-1 text-sm text-red-600">Get In Touch</div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Let's build something amazing together</h2>
-            <p className="text-gray-500">
-              Have a project in mind? We'd love to hear about it. Fill out the form and we'll get back to you as soon as
-              possible.
-            </p>
-            <div className="space-y-4">
-              <ContactInfo
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5 text-red-600"
-                  >
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </svg>
-                }
-                title="Phone"
-                info="+1 (808) 123-4567"
-              />
-              <ContactInfo
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5 text-red-600"
-                  >
-                    <rect width="20" height="16" x="2" y="4" rx="2" />
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                  </svg>
-                }
-                title="Email"
-                info="info@slickage.com"
-              />
-              <ContactInfo
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5 text-red-600"
-                  >
-                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                }
-                title="Location"
-                info="Honolulu, Hawaii"
-              />
+    <section id="contact" className="py-24 bg-[#0A0A0A]">
+      <div className="container mx-auto px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div>
+              <div className="inline-block rounded-full bg-blue-500/10 px-3 py-1 text-sm text-blue-400 font-medium mb-4">
+                Get in Touch
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold gradient-text mb-6">
+                Let's discuss your project
+              </h2>
+              <p className="text-lg text-gray-400 mb-8">
+                We'd love to hear from you. Fill out the form and our team will get back to you as soon as possible.
+              </p>
+
+              <div className="space-y-6">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500/10 text-blue-400">
+                      <Mail className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-semibold text-white">Email</h3>
+                    <p className="text-gray-400">hello@archipelago.dev</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500/10 text-blue-400">
+                      <Phone className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-semibold text-white">Phone</h3>
+                    <p className="text-gray-400">+1 (808) 555-0123</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500/10 text-blue-400">
+                      <MapPin className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-semibold text-white">Location</h3>
+                    <p className="text-gray-400">Honolulu, Hawaii</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-medium">
-                    Name
-                  </label>
+
+            <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300">
+              <form>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">Name</label>
+                    <input
+                      type="text"
+                      id="name"
+                      className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <input
+                      type="email"
+                      id="email"
+                      className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                      placeholder="Your email"
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-1">Subject</label>
                   <input
-                    id="name"
                     type="text"
-                    className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
-                    placeholder="Your name"
+                    id="subject"
+                    className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    placeholder="Subject"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium">
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
-                    placeholder="Your email"
-                  />
+
+                <div className="mb-6">
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">Message</label>
+                  <textarea
+                    id="message"
+                    rows={5}
+                    className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    placeholder="Your message"
+                  ></textarea>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="subject" className="text-sm font-medium">
-                  Subject
-                </label>
-                <input
-                  id="subject"
-                  type="text"
-                  className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
-                  placeholder="Project inquiry"
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="message" className="text-sm font-medium">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm min-h-[120px]"
-                  placeholder="Tell us about your project"
-                ></textarea>
-              </div>
-              <Button className="w-full bg-red-600 hover:bg-red-700 text-white">Send Message</Button>
-            </form>
+
+                <button
+                  type="submit"
+                  className="w-full px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center group"
+                >
+                  Send Message
+                  <Send className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
     </section>
-  )
-}
-
-interface ContactInfoProps {
-  icon: React.ReactNode
-  title: string
-  info: string
-}
-
-function ContactInfo({ icon, title, info }: ContactInfoProps) {
-  return (
-    <div className="flex items-start space-x-3">
-      <div className="rounded-full bg-red-600/10 w-10 h-10 flex items-center justify-center flex-shrink-0">{icon}</div>
-      <div>
-        <h3 className="font-medium">{title}</h3>
-        <p className="text-sm text-gray-500">{info}</p>
-      </div>
-    </div>
-  )
-}
-
+  );
+};
