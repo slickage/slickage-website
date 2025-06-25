@@ -1,11 +1,11 @@
 import React from 'react';
-import { Facebook, Twitter, Instagram, Linkedin, Github as GitHub } from 'lucide-react';
+import { Linkedin, Github as GitHub } from 'lucide-react';
 
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-12">
           <div className="col-span-1 md:col-span-1">
             <h3 className="text-2xl font-bold mb-6">Slickage</h3>
             <p className="text-gray-400 mb-6">
@@ -13,9 +13,6 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               {[
-                { icon: <Facebook className="h-5 w-5" />, href: '#' },
-                { icon: <Twitter className="h-5 w-5" />, href: '#' },
-                { icon: <Instagram className="h-5 w-5" />, href: '#' },
                 { icon: <Linkedin className="h-5 w-5" />, href: '#' },
                 { icon: <GitHub className="h-5 w-5" />, href: '#' }
               ].map((social, index) => (
@@ -30,7 +27,11 @@ export default function Footer() {
             </div>
           </div>
 
-          <div>
+          <div></div>
+          <div></div>
+          <div></div>
+
+          <div className='md:text-right'>
             <h4 className="text-lg font-semibold mb-6">Services</h4>
             <ul className="space-y-4">
               {['Web Development', 'Mobile Development', 'Backend Solutions', 'Frontend Development', 'Data Analytics', 'Security Solutions'].map((service, index) => (
@@ -43,10 +44,10 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
+          <div className='md:text-right'>
             <h4 className="text-lg font-semibold mb-6">Company</h4>
             <ul className="space-y-4">
-              {['About Us', 'Our Team', 'Careers', 'Blog', 'Contact Us', 'Privacy Policy'].map((item, index) => (
+              {['About Us', 'Insights', 'Contact Us'].map((item, index) => (
                 <li key={index}>
                   <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
                     {item}
@@ -56,7 +57,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
+          {/* <div>
             <h4 className="text-lg font-semibold mb-6">Newsletter</h4>
             <p className="text-gray-400 mb-4">
               Subscribe to our newsletter for the latest updates.
@@ -68,7 +69,7 @@ export default function Footer() {
                   placeholder="Your email"
                   className="px-4 py-2 rounded-l-lg w-full bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
-                <button 
+                <button
                   type="submit"
                   className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-r-lg transition-colors"
                 >
@@ -79,7 +80,7 @@ export default function Footer() {
             <p className="text-sm text-gray-500">
               We respect your privacy. Unsubscribe at any time.
             </p>
-          </div>
+          </div> */}
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8">
