@@ -20,7 +20,7 @@ export default function Header() {
   }, [])
 
   return (
-    <header 
+    <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
         isScrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-md border-b border-gray-800' : 'bg-transparent'
       }`}
@@ -34,8 +34,8 @@ export default function Header() {
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">
-            {['Services', 'Projects', 'Features', 'Contact'].map((item) => (
-              <Link 
+            {['Services', 'Projects', 'Features'].map((item) => (
+              <Link
                 key={item}
                 href={`#${item.toLowerCase()}`}
                 className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
@@ -43,14 +43,14 @@ export default function Header() {
                 {item}
               </Link>
             ))}
-            <button 
+            <button
               className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
             >
               Get in Touch
             </button>
           </nav>
 
-          <button 
+          <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden text-gray-300 hover:text-white"
           >
@@ -64,7 +64,7 @@ export default function Header() {
           <nav className="container mx-auto px-4 py-4">
             <div className="flex flex-col space-y-4">
               {['Services', 'Projects', 'Features', 'Contact'].map((item) => (
-                <Link 
+                <Link
                   key={item}
                   href={`#${item.toLowerCase()}`}
                   className="text-gray-300 hover:text-white text-sm font-medium transition-colors"
