@@ -19,19 +19,19 @@ export default function HeroSection() {
     <section id="hero" className="relative min-h-screen flex items-center">
       <div className="absolute inset-0 bg-[#0A0A0A]">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10" />
-        <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7130555/pexels-photo-7130555.jpeg')] opacity-5 bg-cover bg-center bg-no-repeat mix-blend-overlay" 
+        <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7130555/pexels-photo-7130555.jpeg')] opacity-5 bg-cover bg-center bg-no-repeat mix-blend-overlay"
           style={{
             transform: `translateY(${scrollY * 0.2}px)`,
           }}
         />
       </div>
-      
+
       <div className="container mx-auto px-4 pt-32 pb-16 relative z-10">
         <div className="max-w-4xl">
-          <div className="inline-block rounded-full bg-blue-500/10 px-4 py-1.5 text-sm text-blue-400 font-medium mb-6">
+          {/* <div className="inline-block rounded-full bg-blue-500/10 px-4 py-1.5 text-sm text-blue-400 font-medium mb-6">
             Software Engineering Team
-          </div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight mb-6 gradient-text">
+          </div> */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight mb-6 gradient-text">
             Building the future of software engineering
           </h1>
           <p className="text-xl text-gray-400 max-w-2xl mb-10">
@@ -42,9 +42,9 @@ export default function HeroSection() {
               View Our Work
               <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
-            <button className="px-6 py-3 rounded-lg bg-gray-800 text-white font-medium hover:bg-gray-700 transition-all duration-300">
+            {/* <button className="px-6 py-3 rounded-lg bg-gray-800 text-white font-medium hover:bg-gray-700 transition-all duration-300">
               Read Documentation
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -93,4 +93,3 @@ export default function HeroSection() {
   //   </section>
   // )
 // }
-
