@@ -34,7 +34,7 @@ export default function Header() {
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">
-            {['Services', 'Projects', 'Features'].map((item) => (
+            {['Services', 'Work', 'Insights'].map((item) => (
               <Link
                 key={item}
                 href={`#${item.toLowerCase()}`}
