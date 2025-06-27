@@ -1,0 +1,19 @@
+# Node modules & logs
+node_modules
+bun.lockb.backup
+*.log
+
+# Build output
+.next
+out
+
+# System files
+.DS_Store
+.env
+.env.local
+.env.development
+.env.production
+
+# Git
+.git
+.gitignore
