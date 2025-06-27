@@ -76,7 +76,7 @@ export default function HeroSection() {
   //             We build amazing experiences
   //           </h1>
   //           <p className="mx-auto max-w-[700px] text-lg text-gray-300 md:text-xl">
-  //             A small software development company based in Honolulu, Hawaii building big things.
+  //             A boutique software company based in Honolulu, Hawaii building big things.
   //           </p>
   //         </div>
   //         <div className="flex flex-col sm:flex-row gap-3 min-[400px]:flex-row">

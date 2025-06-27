@@ -18,7 +18,7 @@ export default function AboutHero() {
           <div className="space-y-2">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-white">About Slickage</h1>
             <p className="mx-auto max-w-[700px] text-lg text-gray-300 md:text-xl">
-              A small software development company based in Honolulu, Hawaii building big things.
+              A boutique software company based in Honolulu, Hawaii building big things.
             </p>
           </div>
         </div>
@@ -26,4 +26,3 @@ export default function AboutHero() {
     </section>
   )
 }
-
