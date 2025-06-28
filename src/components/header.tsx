@@ -34,20 +34,22 @@ export default function Header() {
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">
-            {['Services', 'Projects', 'Features', 'Contact'].map((item) => (
+            {['About', 'Projects', 'Services'].map((item) => (
               <Link 
                 key={item}
-                href={`#${item.toLowerCase()}`}
+                href={`/${item.toLowerCase()}`}
                 className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
               >
                 {item}
               </Link>
             ))}
-            <button 
-              className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
-            >
-              Get in Touch
-            </button>
+            <Link href="/contact">
+              <button
+                className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
+              >
+                Get in Touch
+              </button>
+            </Link>
           </nav>
 
           <button 
