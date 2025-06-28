@@ -54,11 +54,11 @@ export default function ContactForm() {
   }
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 shadow-xl bg-white/5 rounded-xl">
       <CardContent className="p-6 md:p-8">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-2">Contact Us</h2>
-          <p className="text-gray-500">Fill out the form below and we'll get back to you as soon as possible.</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-2 text-white">Contact Us</h2>
+          <p className="text-gray-400">Fill out the form below and we'll get back to you as soon as possible.</p>
         </div>
 
         {isSubmitted ? (
@@ -96,7 +96,7 @@ export default function ContactForm() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name" className="text-white">Full Name</Label>
                 <Input
                   id="name"
                   name="name"
@@ -107,7 +107,7 @@ export default function ContactForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email" className="text-white">Email Address</Label>
                 <Input
                   id="email"
                   name="email"
@@ -119,7 +119,7 @@ export default function ContactForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone" className="text-white">Phone Number</Label>
                 <Input
                   id="phone"
                   name="phone"
@@ -129,7 +129,7 @@ export default function ContactForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="company">Company</Label>
+                <Label htmlFor="company" className="text-white">Company</Label>
                 <Input
                   id="company"
                   name="company"
@@ -139,7 +139,7 @@ export default function ContactForm() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="projectType">Project Type</Label>
+                <Label htmlFor="projectType" className="text-white">Project Type</Label>
                 <Select
                   value={formData.projectType}
                   onValueChange={(value) => handleSelectChange("projectType", value)}
@@ -157,7 +157,7 @@ export default function ContactForm() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="budget">Budget Range</Label>
+                <Label htmlFor="budget" className="text-white">Budget Range</Label>
                 <Select value={formData.budget} onValueChange={(value) => handleSelectChange("budget", value)}>
                   <SelectTrigger id="budget">
                     <SelectValue placeholder="Select budget range" />
@@ -174,7 +174,7 @@ export default function ContactForm() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="message">Project Details</Label>
+              <Label htmlFor="message" className="text-white">Project Details</Label>
               <Textarea
                 id="message"
                 name="message"
@@ -185,7 +185,7 @@ export default function ContactForm() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white" disabled={isSubmitting}>
+            <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition-all duration-300" disabled={isSubmitting}>
               {isSubmitting ? "Sending..." : "Send Message"}
             </Button>
           </form>
