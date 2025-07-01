@@ -13,20 +13,21 @@ export default function TeamGrid() {
   ]
 
   return (
-    <section className="py-16 md:py-24">
-      <div className="container">
+    <section className="relative py-24 md:py-32">
+      <div className="absolute inset-0 bg-[#0A0A0A]" />
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10" />
+      <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col items-center text-center space-y-4 mb-12">
-          <div className="inline-block rounded-lg bg-red-600/10 px-3 py-1 text-sm text-red-600">Our Team</div>
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+          <div className="inline-block rounded-full bg-blue-500/10 px-4 py-1.5 text-sm text-blue-400 font-medium mb-2">Our Team</div>
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight gradient-text mb-4">
             Meet the people behind Slickage
           </h2>
-          <p className="mx-auto max-w-[700px] text-gray-500 md:text-lg">
+          <p className="mx-auto max-w-2xl text-gray-400 md:text-lg">
             Our talented team of developers, designers, and strategists are passionate about creating exceptional
             software.
           </p>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {teamMembers.map((member, index) => (
             <TeamMember key={index} name={member.name} role={member.role} image={member.image} />
           ))}
