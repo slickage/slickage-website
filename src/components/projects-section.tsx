@@ -51,19 +51,19 @@ export default function Projects() {
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const categories = ['All', 'WebRTC', 'Data Engineering', 'DevOps', 'Security'];
 
-  const filteredProjects = activeCategory === 'All' 
-    ? projects 
+  const filteredProjects = activeCategory === 'All'
+    ? projects
     : projects.filter(project => project.category === activeCategory);
 
   return (
     <section id="projects" className="py-24 relative">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <div className="inline-block rounded-full bg-blue-500/10 px-3 py-1 text-sm text-blue-400 font-medium mb-4">
+          {/* <div className="inline-block rounded-full bg-blue-500/10 px-3 py-1 text-sm text-blue-400 font-medium mb-4">
             Our Work
-          </div>
+          </div> */}
           <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text">
-            Technical Projects
+	          Our work
           </h2>
           <p className="text-xl text-gray-400">
             Explore our latest work in distributed systems and scalable applications.
@@ -90,13 +90,13 @@ export default function Projects() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {filteredProjects.map((project) => (
-            <div 
-              key={project.id} 
+            <div
+              key={project.id}
               className="group rounded-xl overflow-hidden border border-gray-800 bg-gray-900/50 backdrop-blur-sm hover:border-blue-500/50 transition-all duration-300"
             >
               <div className="relative h-64 overflow-hidden">
-                <img 
-                  src={project.imageUrl} 
+                <img
+                  src={project.imageUrl}
                   alt={project.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />

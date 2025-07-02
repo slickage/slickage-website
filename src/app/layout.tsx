@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Slickage - Software Development Company",
-  description: "A small software development company based in Honolulu, Hawaii building big things.",
+  description: "A boutique software company based in Honolulu, Hawaii building big things.",
 }
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
@@ -23,4 +23,3 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
     </html>
   )
 }
-

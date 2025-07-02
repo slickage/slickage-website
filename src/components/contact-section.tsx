@@ -8,11 +8,11 @@ export default function ContactSection() {
     <section id="contact" className="py-24 bg-[#0A0A0A]">
       <div className="container mx-auto px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-block rounded-full bg-blue-500/10 px-3 py-1 text-sm text-blue-400 font-medium mb-4">
+              {/* <div className="inline-block rounded-full bg-blue-500/10 px-3 py-1 text-sm text-blue-400 font-medium mb-4">
                 Get in Touch
-              </div>
+              </div> */}
               <h2 className="text-3xl md:text-4xl font-bold gradient-text mb-6">
                 Let's discuss your project
               </h2>
@@ -20,7 +20,7 @@ export default function ContactSection() {
                 We'd love to hear from you. Fill out the form and our team will get back to you as soon as possible.
               </p>
 
-              <div className="space-y-6">
+              {/* <div className="space-y-6">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
                     <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500/10 text-blue-400">
@@ -56,7 +56,7 @@ export default function ContactSection() {
                     <p className="text-gray-400">Honolulu, Hawaii</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300">

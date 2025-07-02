@@ -31,4 +31,3 @@ export default function AboutHero() {
     </section>
   )
 }
-
