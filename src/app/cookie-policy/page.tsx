@@ -117,7 +117,7 @@ export default function CookiePolicyPage() {
       </section>
 
       <div className="text-sm text-gray-500 mt-8">
-        <p>Last updated: October 26, 2023</p>
+        <p>Last updated: July 1, 2025</p>
       </div>
     </main>
   )
