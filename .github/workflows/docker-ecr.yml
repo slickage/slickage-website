@@ -3,6 +3,8 @@ name: Build and Push Docker image to ECR
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build-and-push:
@@ -33,6 +35,7 @@ jobs:
 
       - name: Build project
         run: bun run build
+        if: github.event_name == 'push'
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -40,23 +43,29 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+        if: github.event_name == 'push'
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+        if: github.event_name == 'push'
 
       - name: Build Docker image
         run: |
           docker build -t ${{ secrets.ECR_REPOSITORY }}:${{ github.sha }} .
+        if: github.event_name == 'push'
 
       - name: Tag Docker image to latest
         run: |
           docker tag ${{ secrets.ECR_REPOSITORY }}:${{ github.sha }} ${{ secrets.ECR_REPOSITORY }}:latest
+        if: github.event_name == 'push'
 
       - name: Push Docker image to ECR
         run: |
           docker push ${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+        if: github.event_name == 'push'
 
       - name: Push latest Docker image to ECR
         run: |
           docker push ${{ secrets.ECR_REPOSITORY }}:latest
+        if: github.event_name == 'push'
