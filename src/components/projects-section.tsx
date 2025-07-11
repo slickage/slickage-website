@@ -1,4 +1,4 @@
-'use client';
+ 'use client';
 
 import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
@@ -65,12 +65,9 @@ export default function Projects() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text">
 	          Our work
           </h2>
-          <p className="text-xl text-gray-400">
-            Explore our latest work in distributed systems and scalable applications.
-          </p>
         </div>
 
-        <div className="flex justify-center mb-12">
+        {/* <div className="flex justify-center mb-12">
           <div className="inline-flex flex-wrap justify-center gap-2">
             {categories.map((category) => (
               <button
@@ -86,37 +83,39 @@ export default function Projects() {
               </button>
             ))}
           </div>
-        </div>
+        </div> */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="group rounded-xl overflow-hidden border border-gray-800 bg-gray-900/50 backdrop-blur-sm hover:border-blue-500/50 transition-all duration-300"
+              className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm hover:border-gray-950 transition-all duration-300"
             >
-              <div className="relative h-64 overflow-hidden">
+              <div className="relative h-128 overflow-hidden">
+                <div className="p-6 absolute z-1000 flex flex-col justify-end h-full">
+                  {/* <div className="text-sm text-blue-400 font-medium mb-2">{project.category}</div> */}
+                  <h3 className="text-3xl font-semibold text-white mb-2">{project.title}</h3>
+                  <p className="text-gray-400 mb-4">{project.description}</p>
+                  {/* <div className="flex flex-wrap gap-2 mb-4">
+                    {project.techStack.map((tech, index) => (
+                      <span key={index} className="px-2 py-1 text-xs font-medium rounded-md bg-gray-800 text-gray-300">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                  <button className="flex items-center text-blue-400 font-medium text-sm group">
+                    View Project
+                    <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </button> */}
+                </div>
+
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-300 z-900"></div>
+
                 <img
                   src={project.imageUrl}
                   alt={project.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
-              <div className="p-6">
-                <div className="text-sm text-blue-400 font-medium mb-2">{project.category}</div>
-                <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
-                <p className="text-gray-400 mb-4">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.techStack.map((tech, index) => (
-                    <span key={index} className="px-2 py-1 text-xs font-medium rounded-md bg-gray-800 text-gray-300">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-                <button className="flex items-center text-blue-400 font-medium text-sm group">
-                  View Project
-                  <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
               </div>
             </div>
           ))}
