@@ -1,7 +1,5 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import ProjectsHero from '@/components/projects/projects-hero';
-import ProjectCarousel from '@/components/projects/project-carousel';
-import ProjectCTA from '@/components/projects/project-cta';
+import { ProjectsHero, ProjectCarousel, ProjectCta } from '@/components/projects';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui';
 import {
   featuredProjects,
   recentProjects,
@@ -47,7 +45,7 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <ProjectCTA />
+      <ProjectCta />
     </main>
   );
 }

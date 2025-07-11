@@ -1,7 +1,4 @@
-import ServicesHero from '@/components/services/services-hero';
-import ServiceFeature from '@/components/services/service-feature';
-import ServiceGrid from '@/components/services/service-grid';
-import ServiceCTA from '@/components/services/service-cta';
+import { ServicesHero, ServiceFeature, ServiceGrid, ServiceCta } from '@/components/services';
 
 export default function ServicesPage() {
   return (
@@ -36,7 +33,7 @@ export default function ServicesPage() {
       />
 
       <ServiceGrid />
-      <ServiceCTA />
+      <ServiceCta />
     </main>
   );
 }
