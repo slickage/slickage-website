@@ -1,8 +1,8 @@
-import ContactHero from "@/components/contact/contact-hero"
-import ContactForm from "@/components/contact/contact-form"
-import ContactInfo from "@/components/contact/contact-info"
-import BusinessHours from "@/components/contact/business-hours"
-import FaqSection from "@/components/contact/faq-section"
+import ContactHero from '@/components/contact/contact-hero';
+import ContactForm from '@/components/contact/contact-form';
+import ContactInfo from '@/components/contact/contact-info';
+import BusinessHours from '@/components/contact/business-hours';
+import FaqSection from '@/components/contact/faq-section';
 
 export default function ContactPage() {
   return (
@@ -26,6 +26,5 @@ export default function ContactPage() {
 
       <FaqSection />
     </main>
-  )
+  );
 }
-

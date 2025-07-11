@@ -1,5 +1,5 @@
-import { Award, Clock, Code, Heart, MapPin, Users } from "lucide-react"
-import ValueCard from "./value-card"
+import { Award, Clock, Code, Heart, MapPin, Users } from 'lucide-react';
+import ValueCard from './value-card';
 
 export default function ValueGrid() {
   return (
@@ -8,10 +8,15 @@ export default function ValueGrid() {
       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col items-center text-center space-y-4 mb-12">
-          <div className="inline-block rounded-full bg-blue-500/10 px-4 py-1.5 text-sm text-blue-400 font-medium mb-2">Our Values</div>
-          <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight gradient-text mb-4">What drives us</h2>
+          <div className="inline-block rounded-full bg-blue-500/10 px-4 py-1.5 text-sm text-blue-400 font-medium mb-2">
+            Our Values
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight gradient-text mb-4">
+            What drives us
+          </h2>
           <p className="mx-auto max-w-2xl text-gray-400 md:text-lg">
-            Our core values guide everything we do, from how we build software to how we interact with our clients.
+            Our core values guide everything we do, from how we build software to how we interact
+            with our clients.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -48,6 +53,5 @@ export default function ValueGrid() {
         </div>
       </div>
     </section>
-  )
+  );
 }
-

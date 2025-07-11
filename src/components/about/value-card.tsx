@@ -1,10 +1,10 @@
-import type React from "react"
-import { Card, CardContent } from "@/components/ui/card"
+import type React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface ValueCardProps {
-  icon: React.ReactNode
-  title: string
-  description: string
+  icon: React.ReactNode;
+  title: string;
+  description: string;
 }
 
 export default function ValueCard({ icon, title, description }: ValueCardProps) {
@@ -18,6 +18,5 @@ export default function ValueCard({ icon, title, description }: ValueCardProps) 
         <p className="text-gray-400">{description}</p>
       </CardContent>
     </Card>
-  )
+  );
 }
-

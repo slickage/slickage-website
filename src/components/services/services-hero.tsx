@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from 'next/image';
 
 export default function ServicesHero() {
   return (
@@ -24,11 +24,11 @@ export default function ServicesHero() {
             Our Services
           </h1>
           <p className="mx-auto max-w-2xl text-xl text-gray-400 mb-4">
-            We provide end-to-end software development services to help businesses thrive in the digital world.
+            We provide end-to-end software development services to help businesses thrive in the
+            digital world.
           </p>
         </div>
       </div>
     </section>
-  )
+  );
 }
-
