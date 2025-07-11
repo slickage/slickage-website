@@ -1,6 +1,6 @@
 interface FaqItemProps {
-  question: string
-  answer: string
+  question: string;
+  answer: string;
 }
 
 export default function FaqItem({ question, answer }: FaqItemProps) {
@@ -9,6 +9,5 @@ export default function FaqItem({ question, answer }: FaqItemProps) {
       <h3 className="text-lg font-bold text-white">{question}</h3>
       <p className="text-gray-400">{answer}</p>
     </div>
-  )
+  );
 }
-

@@ -1,23 +1,31 @@
-import Image from "next/image"
-import Link from "next/link"
-import { Card, CardContent } from "@/components/ui/card"
-import { ExternalLink } from "lucide-react"
+import Image from 'next/image';
+import Link from 'next/link';
+import { Card, CardContent } from '@/components/ui/card';
+import { ExternalLink } from 'lucide-react';
 
 interface ProjectCardProps {
   project: {
-    id: number
-    title: string
-    category: string
-    image: string
-    description: string
-  }
+    id: number;
+    title: string;
+    category: string;
+    image: string;
+    description: string;
+  };
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <Card key={project.id} className="w-[300px] border-0 shadow-xl bg-white/5 rounded-xl overflow-hidden">
+    <Card
+      key={project.id}
+      className="w-[300px] border-0 shadow-xl bg-white/5 rounded-xl overflow-hidden"
+    >
       <div className="relative h-[180px]">
-        <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
+        <Image
+          src={project.image || '/placeholder.svg'}
+          alt={project.title}
+          fill
+          className="object-cover"
+        />
       </div>
       <CardContent className="p-4">
         <div className="mb-2">
@@ -35,6 +43,5 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </Link>
       </CardContent>
     </Card>
-  )
+  );
 }
-

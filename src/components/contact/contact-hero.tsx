@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from 'next/image';
 
 export default function ContactHero() {
   return (
@@ -24,11 +24,11 @@ export default function ContactHero() {
             Get In Touch
           </h1>
           <p className="mx-auto max-w-2xl text-xl text-gray-400 mb-4">
-            Have a project in mind? We'd love to hear from you. Let's create something amazing together.
+            Have a project in mind? We'd love to hear from you. Let's create something amazing
+            together.
           </p>
         </div>
       </div>
     </section>
-  )
+  );
 }
-

@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function BusinessHours() {
   return (
@@ -24,6 +24,5 @@ export default function BusinessHours() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
-

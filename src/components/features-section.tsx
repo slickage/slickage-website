@@ -6,33 +6,38 @@ export default function Features() {
     {
       icon: <Clock className="h-5 w-5" />,
       title: 'Rapid Development',
-      description: 'We leverage modern development practices and tools to deliver high-quality solutions quickly.'
+      description:
+        'We leverage modern development practices and tools to deliver high-quality solutions quickly.',
     },
     {
       icon: <CheckCircle className="h-5 w-5" />,
       title: 'Code Quality',
-      description: 'Rigorous testing, code reviews, and automated CI/CD ensure exceptional code quality.'
+      description:
+        'Rigorous testing, code reviews, and automated CI/CD ensure exceptional code quality.',
     },
     {
       icon: <Users className="h-5 w-5" />,
       title: 'Collaborative Development',
-      description: 'Our engineers work closely with your team to ensure seamless integration and knowledge transfer.'
+      description:
+        'Our engineers work closely with your team to ensure seamless integration and knowledge transfer.',
     },
     {
       icon: <Zap className="h-5 w-5" />,
       title: 'Performance Optimization',
-      description: 'We build systems that scale, with a focus on latency, throughput, and resource efficiency.'
+      description:
+        'We build systems that scale, with a focus on latency, throughput, and resource efficiency.',
     },
     {
       icon: <Layers className="h-5 w-5" />,
       title: 'Modern Architecture',
-      description: 'Cloud-native, containerized solutions designed for reliability and scalability.'
+      description:
+        'Cloud-native, containerized solutions designed for reliability and scalability.',
     },
     {
       icon: <Shield className="h-5 w-5" />,
       title: 'Security First',
-      description: 'Built-in security at every layer, from infrastructure to application code.'
-    }
+      description: 'Built-in security at every layer, from infrastructure to application code.',
+    },
   ];
 
   return (
@@ -68,4 +73,4 @@ export default function Features() {
       </div>
     </section>
   );
-};
+}
