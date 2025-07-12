@@ -6,7 +6,7 @@ export default function Features() {
     {
       icon: <Clock className="h-5 w-5" />,
       title: 'Web Applications',
-      description: 'We leverage modeThe backbone of modern business. We craft custom web applications using the right technology for your needs-whether JavaScript frameworks (Node.js, Vue.js, React, Angular), Ruby on Rails, Elixir/Phoenix, or Go. Every application is handcrafted to solve your specific challenges and scale with your growth.'
+      description: 'The backbone of modern business. We craft custom web applications using the right technology for your needs-whether JavaScript frameworks (Node.js, Vue.js, React, Angular), Ruby on Rails, Elixir/Phoenix, or Go. Every application is handcrafted to solve your specific challenges and scale with your growth.'
     },
     {
       icon: <CheckCircle className="h-5 w-5" />,
