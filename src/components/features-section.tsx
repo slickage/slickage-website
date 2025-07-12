@@ -38,13 +38,13 @@ export default function Features() {
   return (
     <section id="features" className="py-24 relative">
       <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text">
+        <div className="mb-16">
+          <h2 className="text-4xl md:text-5xl leading-[1.1] font-bold mb-4 gradient-text">
 	          What we do
           </h2>
-          {/* <p className="text-xl text-gray-400">
-            Our commitment to quality and engineering best practices sets us apart.
-          </p> */}
+          <p className="text-xl text-gray-400">
+	          We can help you build amazing products.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -55,7 +55,7 @@ export default function Features() {
                   {feature.icon}
                 </div>
               </div> */}
-              <div className="ml-4">
+              <div className="">
                 <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
                 <p className="text-gray-400">{feature.description}</p>
               </div>

@@ -58,13 +58,13 @@ export default function Projects() {
   return (
     <section id="projects" className="py-24 relative">
       <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          {/* <div className="inline-block rounded-full bg-blue-500/10 px-3 py-1 text-sm text-blue-400 font-medium mb-4">
-            Our Work
-          </div> */}
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-text">
-	          Our work
+        <div className="mx-auto text mb-12">
+          <h2 className="text-4xl md:text-5xl leading-[1.1] font-bold mb-4 gradient-text">
+	          Insights
           </h2>
+          <p className="text-xl text-gray-400">
+          	Read about how we built successful products with our partners.
+          </p>
         </div>
 
         {/* <div className="flex justify-center mb-12">
