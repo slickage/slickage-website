@@ -24,6 +24,7 @@ RUN bun run build
 # copy production dependencies and source code into final image
 FROM base AS release
 COPY --from=install /temp/prod/node_modules node_modules
+COPY --from=prerelease /src/public/ .
 COPY --from=prerelease /src/src/ .
 COPY --from=prerelease /src/.next/ .next/
 COPY --from=prerelease /src/package.json .
