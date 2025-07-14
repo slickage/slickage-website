@@ -1,5 +1,6 @@
 import React from 'react';
 import { Linkedin, Github as GitHub } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -96,8 +97,8 @@ export default function Footer() {
               © {new Date().getFullYear()} Slickage. All rights reserved.
             </p>
             <div className="flex space-x-6">
-              <a href="#" className="text-gray-500 hover:text-blue-400 text-sm">Privacy Policy</a>
-              <a href="#" className="text-gray-500 hover:text-blue-400 text-sm">Cookie Policy</a>
+              <Link href="/privacy-policy" className="text-gray-500 hover:text-blue-400 text-sm">Privacy Policy</Link>
+              <Link href="/cookie-policy" className="text-gray-500 hover:text-blue-400 text-sm">Cookie Policy</Link>
             </div>
           </div>
         </div>
