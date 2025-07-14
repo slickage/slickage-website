@@ -40,7 +40,8 @@ export default function Projects() {
     },
   ];
 
-  const [activeCategory, setActiveCategory] = React.useState<string>('All');
+  const [activeCategory] = React.useState<string>('All');
+  // const [activeCategory, setActiveCategory] = React.useState<string>('All');
   // const categories = ['All', 'WebRTC', 'Data Engineering', 'DevOps', 'Security'];
 
   const filteredProjects =
