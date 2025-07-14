@@ -29,14 +29,6 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 - `lint:fix`: Run ESLint with auto-fix
 - `format`: Run Prettier to format code
 
-## Bundle Analysis
-
-To analyze your Next.js bundle size, run:
-
-```bash
-ANALYZE=true bun run build
-```
-
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
