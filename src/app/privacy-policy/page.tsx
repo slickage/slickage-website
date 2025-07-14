@@ -169,7 +169,7 @@ export default function PrivacyPolicyPage() {
 	      <p>General Terms and Conditions applicable to Use of a Web Site.</p>
       </section>
 
-      <section class="legal" id="disclaimer">
+      <section className="legal" id="disclaimer">
         <h1> Disclaimer for this web site</h1>
 	      <p>
 	      All the information on this website is published in good faith and for general information purpose only. This web site does not make any warranties about the completeness, reliability and accuracy of this information. Any action you take upon the information you find on this website, is strictly at your own risk. This web site will not be liable for any losses and/or damages in connection with the use of our website.
