@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react"
+import { ArrowRight } from 'lucide-react';
 
 export default function ServiceCTA() {
   return (
@@ -7,9 +7,12 @@ export default function ServiceCTA() {
       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col items-center text-center space-y-4 mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight gradient-text mb-4">Ready to start your project?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight gradient-text mb-4">
+            Ready to start your project?
+          </h2>
           <p className="mx-auto max-w-2xl text-gray-400 md:text-lg">
-            Let's discuss how we can help you achieve your business goals with our software development expertise.
+            Let's discuss how we can help you achieve your business goals with our software
+            development expertise.
           </p>
           <div className="pt-4">
             <button className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
@@ -20,6 +23,5 @@ export default function ServiceCTA() {
         </div>
       </div>
     </section>
-  )
+  );
 }
-

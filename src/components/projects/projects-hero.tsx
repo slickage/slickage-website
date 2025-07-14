@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from 'next/image';
 
 export default function ProjectsHero() {
   return (
@@ -24,11 +24,11 @@ export default function ProjectsHero() {
             Our Projects
           </h1>
           <p className="mx-auto max-w-2xl text-xl text-gray-400 mb-4">
-            Explore our portfolio of innovative software solutions that have helped businesses succeed.
+            Explore our portfolio of innovative software solutions that have helped businesses
+            succeed.
           </p>
         </div>
       </div>
     </section>
-  )
+  );
 }
-

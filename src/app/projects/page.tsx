@@ -1,14 +1,14 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import ProjectsHero from "@/components/projects/projects-hero"
-import ProjectCarousel from "@/components/projects/project-carousel"
-import ProjectCTA from "@/components/projects/project-cta"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ProjectsHero from '@/components/projects/projects-hero';
+import ProjectCarousel from '@/components/projects/project-carousel';
+import ProjectCTA from '@/components/projects/project-cta';
 import {
   featuredProjects,
   recentProjects,
   webProjects,
   mobileProjects,
   enterpriseProjects,
-} from "@/components/projects/project-data"
+} from '@/data/projects';
 
 export default function ProjectsPage() {
   return (
@@ -49,6 +49,5 @@ export default function ProjectsPage() {
 
       <ProjectCTA />
     </main>
-  )
+  );
 }
-

@@ -14,7 +14,7 @@ export default function Footer() {
             <div className="flex space-x-4">
               {[
                 { icon: <Linkedin className="h-5 w-5" />, href: '#' },
-                { icon: <GitHub className="h-5 w-5" />, href: '#' }
+                { icon: <GitHub className="h-5 w-5" />, href: '#' },
               ].map((social, index) => (
                 <a
                   key={index}
@@ -31,10 +31,17 @@ export default function Footer() {
           <div></div>
           <div></div>
 
-          <div className='md:text-right'>
+          <div className="md:text-right">
             <h4 className="text-lg font-semibold mb-6">Services</h4>
             <ul className="space-y-4">
-              {['Web Development', 'Mobile Development', 'Backend Solutions', 'Frontend Development', 'Data Analytics', 'Security Solutions'].map((service, index) => (
+              {[
+                'Web Development',
+                'Mobile Development',
+                'Backend Solutions',
+                'Frontend Development',
+                'Data Analytics',
+                'Security Solutions',
+              ].map((service, index) => (
                 <li key={index}>
                   <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
                     {service}
@@ -44,7 +51,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className='md:text-right'>
+          <div className="md:text-right">
             <h4 className="text-lg font-semibold mb-6">Company</h4>
             <ul className="space-y-4">
               {['About Us', 'Insights', 'Contact Us'].map((item, index) => (
@@ -97,4 +104,4 @@ export default function Footer() {
       </div>
     </footer>
   );
-};
+}

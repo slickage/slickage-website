@@ -1,5 +1,5 @@
-import Image from "next/image"
-import { ArrowRight } from "lucide-react"
+import Image from 'next/image';
+import { ArrowRight } from 'lucide-react';
 
 export default function JoinTeamSection() {
   return (
@@ -9,13 +9,15 @@ export default function JoinTeamSection() {
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <div className="inline-block rounded-full bg-blue-500/10 px-4 py-1.5 text-sm text-blue-400 font-medium mb-2">Join Our Team</div>
+            <div className="inline-block rounded-full bg-blue-500/10 px-4 py-1.5 text-sm text-blue-400 font-medium mb-2">
+              Join Our Team
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight gradient-text mb-4">
               We're always looking for talented people
             </h2>
             <p className="text-gray-300 text-lg">
-              If you're passionate about technology and want to work on exciting projects with a great team, we'd love
-              to hear from you.
+              If you're passionate about technology and want to work on exciting projects with a
+              great team, we'd love to hear from you.
             </p>
             <div className="pt-4">
               <button className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
@@ -36,6 +38,5 @@ export default function JoinTeamSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
-

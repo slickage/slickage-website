@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 export default function ContactSection() {
   return (
@@ -17,7 +17,8 @@ export default function ContactSection() {
                 Let's discuss your project
               </h2>
               <p className="text-lg text-gray-400 mb-8">
-                We'd love to hear from you. Fill out the form and our team will get back to you as soon as possible.
+                We'd love to hear from you. Fill out the form and our team will get back to you as
+                soon as possible.
               </p>
 
               {/* <div className="space-y-6">
@@ -63,7 +64,9 @@ export default function ContactSection() {
               <form>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">Name</label>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
+                      Name
+                    </label>
                     <input
                       type="text"
                       id="name"
@@ -72,7 +75,9 @@ export default function ContactSection() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
+                      Email
+                    </label>
                     <input
                       type="email"
                       id="email"
@@ -83,7 +88,9 @@ export default function ContactSection() {
                 </div>
 
                 <div className="mb-6">
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-1">Subject</label>
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-1">
+                    Subject
+                  </label>
                   <input
                     type="text"
                     id="subject"
@@ -93,7 +100,9 @@ export default function ContactSection() {
                 </div>
 
                 <div className="mb-6">
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">Message</label>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">
+                    Message
+                  </label>
                   <textarea
                     id="message"
                     rows={5}
@@ -116,4 +125,4 @@ export default function ContactSection() {
       </div>
     </section>
   );
-};
+}
