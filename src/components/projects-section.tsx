@@ -1,4 +1,4 @@
- 'use client';
+'use client';
 
 import React from 'react';
 import Image from 'next/image';
@@ -40,13 +40,13 @@ export default function Projects() {
     },
   ];
 
-  // const [activeCategory, setActiveCategory] = React.useState<string>('All');
+  const [activeCategory, setActiveCategory] = React.useState<string>('All');
   // const categories = ['All', 'WebRTC', 'Data Engineering', 'DevOps', 'Security'];
 
-  // const filteredProjects =
-  //   activeCategory === 'All'
-  //     ? projects
-  //     : projects.filter((project) => project.category === activeCategory);
+  const filteredProjects =
+    activeCategory === 'All'
+      ? projects
+      : projects.filter((project) => project.category === activeCategory);
 
   return (
     <section id="projects" className="py-24 relative">
