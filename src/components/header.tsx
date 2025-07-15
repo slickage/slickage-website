@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
-import Link from 'next/link';
+import { useState, useEffect } from 'react'
+import { Menu, X } from 'lucide-react'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -29,7 +30,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="text-2xl font-bold tracking-tight gradient-text">
-              Slickage
+	            <Image src="/logo-slickage-lines-blue-light.svg" alt="Company Logo" width={150} height={64} />
             </Link>
           </div>
 

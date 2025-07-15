@@ -36,9 +36,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
-    "tailwindcss": "^4.1",
-    "typescript": "^5",
     "prettier": "^3.0.0",
-    "@next/bundle-analyzer": "^13.1.1"
+    "tailwindcss": "^4.1",
+    "typescript": "^5"
   }
 }
