@@ -14,9 +14,9 @@
 }
 
 @media (width >=75rem) {
-	.container {
-		max-width: 75rem;
-	}
+  .container {
+    max-width: 75rem;
+  }
 }
 
 @layer utilities {

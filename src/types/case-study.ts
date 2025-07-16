@@ -7,7 +7,7 @@ export interface CaseStudy {
   id: string;
   title: string;
   subtitle: string;
-  heroImage: string;
+  heroImages: string[];
   overview: string;
   tags: string[];
   quickFacts?: Record<string, string>;

@@ -5,7 +5,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'pharmgkb',
     title: 'PharmGKB Case Study',
     subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    heroImage: '/placeholder.svg',
+    heroImages: ['/placeholder.svg'],
     overview:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc ut laoreet cursus, enim erat dictum urna, nec dictum massa enim nec sem.',
     tags: ['PharmGKB', 'Genomics', 'Research'],
@@ -52,37 +52,17 @@ export const caseStudies: CaseStudy[] = [
           'Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?',
       },
     ],
-    markdownContent: `
-# PharmGKB Case Study
-
-**Client:** PharmGKB  
-**Year:** 2023  
-**Project Type:** Genomics Platform
-
-## Challenge
-
-Lorem *ipsum* dolor sit amet, consectetur adipiscing elit.
-
-## Solution
-
-- Sed ut perspiciatis unde omnis iste natus error
-- Totam rem aperiam
-
-## Results
-
-> "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-> — Jane Doe, Project Lead, PharmGKB
-
-![PharmGKB platform screenshot](/placeholder.svg)
-    `,
   },
   {
     id: 'epochtalk',
     title: 'EpochTalk Case Study',
-    subtitle: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    heroImage: '/placeholder.svg',
+    subtitle: 'Redesigning a powerful—but unwieldy—admin interface',
+    heroImages: [
+      `https://${process.env.S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Settings.png`,
+      `https://${process.env.S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Admin-General.png`,
+    ],
     overview:
-      'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      'Epochtalk is a forum platform known for its feature-rich administration tools, but its original admin UI was beginning to show its age. While functionally complete, the interface was difficult to navigate, visually cluttered, and made it hard for users to quickly locate the controls and information they needed. The goal of this redesign was to modernize the experience—improving clarity, organization, and scalability—without sacrificing the breadth of functionality that power users relied on.',
     tags: ['EpochTalk', 'Forum', 'Community'],
     quickFacts: {
       Client: 'EpochTalk',
@@ -98,7 +78,7 @@ Lorem *ipsum* dolor sit amet, consectetur adipiscing elit.
       },
       {
         type: 'image',
-        src: '/placeholder.svg',
+        src: `/placeholder.svg`,
         alt: 'EpochTalk forum screenshot',
         caption: 'Background illustration',
       },
@@ -128,29 +108,6 @@ Lorem *ipsum* dolor sit amet, consectetur adipiscing elit.
           'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.',
       },
     ],
-    markdownContent: `
-# EpochTalk Case Study
-
-**Client:** EpochTalk  
-**Year:** 2022  
-**Project Type:** Community Forum
-
-## Background
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-
-## Implementation
-
-- Excepteur sint occaecat cupidatat non proident
-- Sunt in culpa qui officia deserunt mollit anim id est laborum
-
-## Impact
-
-> "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-> — John Smith, Community Manager, EpochTalk
-
-![EpochTalk forum screenshot](/placeholder.svg)
-    `,
   },
 ] as const;
 

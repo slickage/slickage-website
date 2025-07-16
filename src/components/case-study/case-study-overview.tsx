@@ -6,7 +6,7 @@ export default function CaseStudyOverview({
   quickFacts,
 }: Pick<CaseStudy, 'overview' | 'tags' | 'quickFacts'>) {
   return (
-    <section className="py-12 bg-[#0A0A0A] bg-gradient-to-r from-blue-500/10 to-violet-500/10">
+    <section className="py-8">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-8">
           <p className="text-xl text-gray-300 mb-4">{overview}</p>
