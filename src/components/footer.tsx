@@ -97,8 +97,12 @@ export default function Footer() {
               © {new Date().getFullYear()} Slickage. All rights reserved.
             </p>
             <div className="flex space-x-6">
-              <Link href="/privacy-policy" className="text-gray-500 hover:text-blue-400 text-sm">Privacy Policy</Link>
-              <Link href="/cookie-policy" className="text-gray-500 hover:text-blue-400 text-sm">Cookie Policy</Link>
+              <Link href="/privacy-policy" className="text-gray-500 hover:text-blue-400 text-sm">
+                Privacy Policy
+              </Link>
+              <Link href="/cookie-policy" className="text-gray-500 hover:text-blue-400 text-sm">
+                Cookie Policy
+              </Link>
             </div>
           </div>
         </div>

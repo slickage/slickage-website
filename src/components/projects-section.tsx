@@ -54,10 +54,10 @@ export default function Projects() {
       <div className="container mx-auto px-4">
         <div className="mx-auto text mb-12">
           <h2 className="text-4xl md:text-5xl leading-[1.1] font-bold mb-4 gradient-text">
-	          Insights
+            Insights
           </h2>
           <p className="text-xl text-gray-400">
-          	Read about how we built successful products with our partners.
+            Read about how we built successful products with our partners.
           </p>
         </div>
 

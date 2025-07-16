@@ -33,7 +33,8 @@ export default function HeroSection() {
             We build software that works
           </h1>
           <p className="text-xl text-gray-400 max-w-2xl mb-10">
-	          Fast, reliable, and beautifully crafted. We're a lean software engineering company based in Honolulu, Hawaii, creating exceptional digital products for partners worldwide.
+            Fast, reliable, and beautifully crafted. We're a lean software engineering company based
+            in Honolulu, Hawaii, creating exceptional digital products for partners worldwide.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <button className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
@@ -51,4 +52,4 @@ export default function HeroSection() {
       </div>
     </section>
   );
-};
+}
