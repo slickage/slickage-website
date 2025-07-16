@@ -4,6 +4,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: process.env.S3_BUCKET_URL,
+        pathname: '/images/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'images.pexels.com',
         pathname: '/photos/**',
       },
