@@ -13,7 +13,7 @@ export default function CaseStudyImage({
 }) {
   return (
     <div className="container mx-auto px-4 py-8">
-      <motion.div 
+      <motion.div
         className="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-blue-500/10 bg-white/5 cursor-pointer"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.97 }}
@@ -22,7 +22,7 @@ export default function CaseStudyImage({
           show: { opacity: 1, y: 0 },
         }}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        >
+      >
         <ImageLightbox
           src={src}
           alt={alt}

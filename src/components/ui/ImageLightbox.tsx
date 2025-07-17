@@ -47,7 +47,13 @@ export default function ImageLightbox({
         style={{ cursor: 'pointer', position: 'relative', width: '100%', height: '100%' }}
         onClick={() => setExpanded(true)}
       >
-        <Image className={className} src={src || '/placeholder.svg'} alt={alt} priority={priority} {...props} />
+        <Image
+          className={className}
+          src={src || '/placeholder.svg'}
+          alt={alt}
+          priority={priority}
+          {...props}
+        />
       </div>
       {typeof window !== 'undefined' &&
         ReactDOM.createPortal(
@@ -65,7 +71,7 @@ export default function ImageLightbox({
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                  className='relative flex items-center justify-center p-4 rounded-xl'
+                  className="relative flex items-center justify-center p-4 rounded-xl"
                 >
                   <Image
                     src={src || '/placeholder.svg'}
