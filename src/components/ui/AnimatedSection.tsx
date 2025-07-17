@@ -19,4 +19,4 @@ export default function AnimatedSection({ children }: React.PropsWithChildren<{}
       {children}
     </motion.div>
   );
-} 
+}

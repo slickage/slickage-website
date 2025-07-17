@@ -42,45 +42,41 @@ export default function ImageLightbox({
         style={{ cursor: 'pointer', position: 'relative', width: '100%', height: '100%' }}
         onClick={() => setExpanded(true)}
       >
-        <Image
-          src={src || '/placeholder.svg'}
-          alt={alt}
-          priority={priority}
-          {...props}
-        />
+        <Image src={src || '/placeholder.svg'} alt={alt} priority={priority} {...props} />
       </div>
-      {typeof window !== 'undefined' && ReactDOM.createPortal(
-        <AnimatePresence>
-          {expanded && (
-            <motion.div
-              className={`fixed inset-0 flex items-center justify-center z-50 cursor-zoom-out backdrop-blur-xs ${modalClassName}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setExpanded(false)}
-            >
+      {typeof window !== 'undefined' &&
+        ReactDOM.createPortal(
+          <AnimatePresence>
+            {expanded && (
               <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                className="relative flex items-center justify-center max-w-3xl max-h-[80vh] w-auto h-auto p-4 bg-black/80 rounded-xl"
+                className={`fixed inset-0 flex items-center justify-center z-50 cursor-zoom-out backdrop-blur-xs ${modalClassName}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setExpanded(false)}
               >
-                <Image
-                  src={src || '/placeholder.svg'}
-                  alt={alt}
-                  width={900}
-                  height={600}
-                  className="object-contain rounded-lg cursor-zoom-out"
-                  priority={priority}
-                  onClick={() => setExpanded(false)}
-                />
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  className="relative flex items-center justify-center max-w-3xl max-h-[80vh] w-auto h-auto p-4 bg-black/80 rounded-xl"
+                >
+                  <Image
+                    src={src || '/placeholder.svg'}
+                    alt={alt}
+                    width={900}
+                    height={600}
+                    className="object-contain rounded-lg cursor-zoom-out"
+                    priority={priority}
+                    onClick={() => setExpanded(false)}
+                  />
+                </motion.div>
               </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+            )}
+          </AnimatePresence>,
+          document.body,
+        )}
     </>
   );
-} 
+}
