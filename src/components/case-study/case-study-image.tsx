@@ -1,6 +1,7 @@
 'use client';
 import { motion } from 'motion/react';
-import ImageLightbox from '../ui/ImageLightbox';
+import dynamic from 'next/dynamic';
+const ImageLightbox = dynamic(() => import('../ui/ImageLightbox'));
 
 export default function CaseStudyImage({
   src,

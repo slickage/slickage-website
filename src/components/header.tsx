@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -52,15 +53,18 @@ export default function Header() {
               </Link>
             ))}
             <Link href="/contact">
-              <button className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors">
+              <Button className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors">
                 Get in Touch
-              </button>
+              </Button>
             </Link>
           </nav>
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden text-gray-300 hover:text-white"
+            aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -68,7 +72,12 @@ export default function Header() {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-[#0A0A0A] border-b border-gray-800">
+        <div
+          id="mobile-menu"
+          className="md:hidden absolute top-full left-0 right-0 bg-[#0A0A0A] border-b border-gray-800"
+          role="menu"
+          aria-label="Mobile navigation"
+        >
           <nav className="container mx-auto px-4 py-4">
             <div className="flex flex-col space-y-4">
               {['Services', 'Projects', 'Features', 'Contact'].map((item) => (
@@ -81,9 +90,9 @@ export default function Header() {
                   {item}
                 </Link>
               ))}
-              <button className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors w-full">
+              <Button className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors w-full">
                 Get in Touch
-              </button>
+              </Button>
             </div>
           </nav>
         </div>

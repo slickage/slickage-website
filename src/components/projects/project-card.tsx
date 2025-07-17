@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { ExternalLink } from 'lucide-react';
+import React from 'react';
 
 interface ProjectCardProps {
   project: {
@@ -13,7 +14,7 @@ interface ProjectCardProps {
   };
 }
 
-export default function ProjectCard({ project }: ProjectCardProps) {
+export default React.memo(function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Card
       key={project.id}
@@ -44,4 +45,4 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       </CardContent>
     </Card>
   );
-}
+});

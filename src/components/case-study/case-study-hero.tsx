@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import type { CaseStudy } from '@/types/case-study';
 import { motion } from 'motion/react';
-import ImageLightbox from '@/components/ui/ImageLightbox';
+import dynamic from 'next/dynamic';
+const ImageLightbox = dynamic(() => import('@/components/ui/ImageLightbox'));
 
 export default function CaseStudyHero({
   title,

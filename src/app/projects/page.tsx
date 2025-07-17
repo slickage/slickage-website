@@ -8,6 +8,34 @@ import {
   enterpriseProjects,
 } from '@/data/projects';
 
+export const metadata = {
+  title: 'Projects | Slickage Portfolio',
+  description:
+    'Explore our portfolio of innovative software solutions and successful projects delivered by Slickage.',
+  openGraph: {
+    title: 'Projects | Slickage Portfolio',
+    description:
+      'Explore our portfolio of innovative software solutions and successful projects delivered by Slickage.',
+    url: 'https://slickage.com/projects',
+    type: 'website',
+    images: [
+      {
+        url: '/logo-slickage-lines-blue-light.svg',
+        width: 1200,
+        height: 630,
+        alt: 'Slickage Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Projects | Slickage Portfolio',
+    description:
+      'Explore our portfolio of innovative software solutions and successful projects delivered by Slickage.',
+    images: ['/logo-slickage-lines-blue-light.svg'],
+  },
+};
+
 export default function ProjectsPage() {
   return (
     <main className="flex-1">
