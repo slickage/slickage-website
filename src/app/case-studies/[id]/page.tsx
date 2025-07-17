@@ -1,4 +1,3 @@
-// Case Study Detail Page Template for /case-studies/[id]
 import { notFound } from 'next/navigation';
 import { getCaseStudyById } from '@/data/case-studies';
 import {
@@ -9,6 +8,7 @@ import {
   CaseStudyQuote,
 } from '@/components/case-study';
 import type { CaseStudy } from '@/types/case-study';
+import AnimatedSection from '@/components/ui/AnimatedSection';
 
 // Uncomment and use this for future API fetching
 // async function fetchCaseStudy(id: string) {
@@ -34,26 +34,31 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
 
   return (
     <main className="flex-1">
-      <CaseStudyHero {...caseStudy} />
-      <CaseStudyOverview {...caseStudy} />
-      {caseStudy.content.map((item, idx) => {
-        if (item.type === 'section') {
-          return <CaseStudySection key={idx} title={item.title} content={item.content} />;
-        }
-        if (item.type === 'image') {
-          return <CaseStudyImage key={idx} src={item.src} alt={item.alt} caption={item.caption} />;
-        }
-        if (item.type === 'quote') {
-          return (
-            <CaseStudyQuote key={idx} quote={item.quote} author={item.author} role={item.role} />
-          );
-        }
-        return null;
-      })}
+      <AnimatedSection>
+        <CaseStudyHero {...caseStudy} />
+      </AnimatedSection>
+      <AnimatedSection>
+        <CaseStudyOverview {...caseStudy} />
+      </AnimatedSection>
+      {caseStudy.content.map((item, idx) => (
+        <AnimatedSection key={idx}>
+          {item.type === 'section' && (
+            <CaseStudySection title={item.title} content={item.content} />
+          )}
+          {item.type === 'image' && (
+            <CaseStudyImage src={item.src} alt={item.alt} caption={item.caption} />
+          )}
+          {item.type === 'quote' && (
+            <CaseStudyQuote quote={item.quote} author={item.author} role={item.role} />
+          )}
+        </AnimatedSection>
+      ))}
       {markdownHtml && (
-        <section className="prose prose-invert prose-lg slickage-prose mx-auto my-8">
-          <div dangerouslySetInnerHTML={{ __html: markdownHtml }} />
-        </section>
+        <AnimatedSection>
+          <section className="prose prose-invert prose-lg slickage-prose mx-auto my-8">
+            <div dangerouslySetInnerHTML={{ __html: markdownHtml }} />
+          </section>
+        </AnimatedSection>
       )}
     </main>
   );
