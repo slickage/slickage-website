@@ -1,5 +1,7 @@
 import type { CaseStudy } from '@/types/case-study';
 
+const S3_BUCKET_URL = process.env.S3_BUCKET_URL;
+
 export const caseStudies: CaseStudy[] = [
   {
     id: 'pharmgkb',
@@ -58,8 +60,8 @@ export const caseStudies: CaseStudy[] = [
     title: 'EpochTalk Case Study',
     subtitle: 'Redesigning a powerful—but unwieldy—admin interface',
     heroImages: [
-      `https://${process.env.S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Settings.png`,
-      `https://${process.env.S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Admin-General.png`,
+      S3_BUCKET_URL ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Settings.png` : '/placeholder.svg',
+      S3_BUCKET_URL ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Admin-General.png` : '/placeholder.svg',
     ],
     overview:
       'Epochtalk is a forum platform known for its feature-rich administration tools, but its original admin UI was beginning to show its age. While functionally complete, the interface was difficult to navigate, visually cluttered, and made it hard for users to quickly locate the controls and information they needed. The goal of this redesign was to modernize the experience—improving clarity, organization, and scalability—without sacrificing the breadth of functionality that power users relied on.',
@@ -82,7 +84,7 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         type: 'image',
-        src: `https://${process.env.S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Navigation-Overhaul.png`,
+        src: S3_BUCKET_URL ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Navigation-Overhaul.png` : '/placeholder.svg',
         alt: 'EpochTalk Navigation Overhaul',
         // caption: 'Implementation illustration',
       },
@@ -93,12 +95,12 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         type: 'image',
-        src: `https://${process.env.S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Layout-Boards.png`,
+        src: S3_BUCKET_URL ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Layout-Boards.png` : '/placeholder.svg',
         alt: 'EpochTalk Layout & Structural Improvements Boards',
       },
       {
         type: 'image',
-        src: `https://${process.env.S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Layout-Posts.png`,
+        src: S3_BUCKET_URL ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Layout-Posts.png` : '/placeholder.svg',
         alt: 'EpochTalk Layout & Structural Improvements Posts',
       },
       {
@@ -108,12 +110,12 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         type: 'image',
-        src: `https://${process.env.S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-UI-Portal.png`,
+        src: S3_BUCKET_URL ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-UI-Portal.png` : '/placeholder.svg',
         alt: 'EpochTalk Refined UI Components Portal',
       },
       {
         type: 'image',
-        src: `https://${process.env.S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-UI-Boards.png`,
+        src: S3_BUCKET_URL ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-UI-Boards.png` : '/placeholder.svg',
         alt: 'EpochTalk Refined UI Components Board',
       },
       {
@@ -123,7 +125,7 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         type: 'image',
-        src: `https://${process.env.S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Table-Enhancements.png`,
+        src: S3_BUCKET_URL ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Table-Enhancements.png` : '/placeholder.svg',
         alt: 'EpochTalk Table Enhancements',
       },
       {
