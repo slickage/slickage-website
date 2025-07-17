@@ -28,7 +28,7 @@ export default function CaseStudyHero({
   }, [expandedIdx]);
 
   return (
-    <section className="relative min-h-[40vh] flex items-center">
+    <section className="relative min-h-[30vh] flex items-center">
       <div className="container mx-auto px-4 py-8 md:py-8 relative z-10 ">
         <motion.div
           className="flex flex-col items-center text-center space-y-4 md:space-y-6"

@@ -9,9 +9,9 @@ export default function CaseStudyOverview({
     <section className="py-8">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-8">
-          <p className="text-xl text-gray-300 mb-4">{overview}</p>
+          <p className="text-xl text-gray-300 mb-4 whitespace-pre-wrap">{overview}</p>
           <div className="flex flex-wrap justify-center gap-2 mb-4">
-            {tags.map((tag) => (
+            {tags?.map((tag) => (
               <span
                 key={tag}
                 className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-medium"
