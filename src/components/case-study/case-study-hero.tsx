@@ -1,9 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import type { CaseStudy } from '@/types/case-study';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
+import ImageLightbox from '@/components/ui/ImageLightbox';
 
 export default function CaseStudyHero({
   title,
@@ -62,9 +62,8 @@ export default function CaseStudyHero({
                   show: { opacity: 1, y: 0 },
                 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                onClick={() => setExpandedIdx(idx)}
               >
-                <Image
+                <ImageLightbox
                   src={img || '/placeholder.svg'}
                   alt={`${title} image ${idx + 1}`}
                   fill
@@ -77,36 +76,6 @@ export default function CaseStudyHero({
           </motion.div>
         </motion.div>
       </div>
-      {/* Modal for expanded image with Motion for React */}
-      <AnimatePresence>
-        {expandedIdx !== null && (
-          <motion.div
-            className="fixed inset-0 flex items-center justify-center z-50 cursor-zoom-out backdrop-blur-xs"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setExpandedIdx(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-              className="relative flex items-center justify-center max-w-3xl max-h-[80vh] w-auto h-auto p-4 bg-black/80 rounded-xl"
-            >
-              <Image
-                src={heroImages[expandedIdx] || '/placeholder.svg'}
-                alt={`${title} expanded image ${expandedIdx + 1}`}
-                width={900}
-                height={600}
-                className="object-contain rounded-lg cursor-zoom-out"
-                priority
-                onClick={() => setExpandedIdx(null)}
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }
