@@ -69,7 +69,7 @@ export default function CaseStudyHero({
                   fill
                   className="object-cover rounded-lg shadow-md"
                   sizes="(max-width: 768px) 224px, 384px"
-                  priority={idx === 0}
+                  priority
                 />
               </motion.div>
             ))}
