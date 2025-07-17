@@ -20,20 +20,11 @@ import AnimatedSection from '@/components/ui/AnimatedSection';
 export default async function CaseStudyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const caseStudy: CaseStudy | undefined = await getCaseStudyById(id);
-  let markdownHtml: string | null = null;
-
-  if (caseStudy?.markdownContent) {
-    const { remark } = await import('remark');
-    const remarkHtml = (await import('remark-html')).default;
-    const remarkGfm = (await import('remark-gfm')).default;
-    const file = await remark().use(remarkGfm).use(remarkHtml).process(caseStudy.markdownContent);
-    markdownHtml = String(file);
-  }
 
   if (!caseStudy) return notFound();
 
   return (
-    <main className="flex-1">
+    <main className="flex-1 py-8">
       <AnimatedSection>
         <CaseStudyHero {...caseStudy} />
       </AnimatedSection>
@@ -53,13 +44,6 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
           )}
         </AnimatedSection>
       ))}
-      {markdownHtml && (
-        <AnimatedSection>
-          <section className="prose prose-invert prose-lg slickage-prose mx-auto my-8">
-            <div dangerouslySetInnerHTML={{ __html: markdownHtml }} />
-          </section>
-        </AnimatedSection>
-      )}
     </main>
   );
 }
