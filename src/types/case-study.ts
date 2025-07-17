@@ -12,5 +12,4 @@ export interface CaseStudy {
   tags: string[];
   quickFacts?: Record<string, string>;
   content: CaseStudyContentItem[];
-  markdownContent?: string;
 }
