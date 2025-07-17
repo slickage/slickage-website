@@ -67,7 +67,7 @@ export default function CaseStudyHero({
                   src={img || '/placeholder.svg'}
                   alt={`${title} image ${idx + 1}`}
                   fill
-                  className="object-cover rounded-lg shadow-md"
+                  className="object-fill rounded-lg"
                   sizes="(max-width: 768px) 224px, 384px"
                   priority
                 />

@@ -19,7 +19,8 @@ export default function ImageLightbox({
   modalClassName = '',
   ...props
 }: ImageLightboxProps) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState<boolean | null>(false);
+  const [isPortrait, setIsPortrait] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!expanded) return;
@@ -35,14 +36,18 @@ export default function ImageLightbox({
     };
   }, [expanded]);
 
+  const handleImageLoad = (e: any) => {
+    const { naturalWidth, naturalHeight } = e.target;
+    setIsPortrait(naturalHeight > naturalWidth);
+  };
+
   return (
     <>
       <div
-        className={className}
         style={{ cursor: 'pointer', position: 'relative', width: '100%', height: '100%' }}
         onClick={() => setExpanded(true)}
       >
-        <Image src={src || '/placeholder.svg'} alt={alt} priority={priority} {...props} />
+        <Image className={className} src={src || '/placeholder.svg'} alt={alt} priority={priority} {...props} />
       </div>
       {typeof window !== 'undefined' &&
         ReactDOM.createPortal(
@@ -60,16 +65,18 @@ export default function ImageLightbox({
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                  className="relative flex items-center justify-center max-w-3xl max-h-[80vh] w-auto h-auto p-4 bg-black/80 rounded-xl"
+                  className='relative flex items-center justify-center p-4 rounded-xl'
                 >
                   <Image
                     src={src || '/placeholder.svg'}
                     alt={alt}
                     width={900}
                     height={600}
-                    className="object-contain rounded-lg cursor-zoom-out"
+                    className={`object-contain rounded-lg cursor-zoom-out
+                      ${isPortrait ? 'w-3xl h-auto' : 'w-5xl h-auto'}`}
                     priority={priority}
                     onClick={() => setExpanded(false)}
+                    onLoad={handleImageLoad}
                   />
                 </motion.div>
               </motion.div>
