@@ -42,10 +42,9 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Development Workflow
 
-- Use shared UI components as documented in [`src/components/COMPONENTS.md`](src/components/COMPONENTS.md)
 - Use Tailwind CSS utility classes for styling
-- Run `npm run lint` to check code quality
-- Run `npm run format` to auto-format code
+- Run `bun lint` to check code quality
+- Run `bun format` to auto-format code
 
 ## Learn More
 
@@ -73,12 +72,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Deployment & CI/CD
 
-### Deploying on Vercel
-
-- Connect your GitHub repository to [Vercel](https://vercel.com/).
-- Set environment variables in the Vercel dashboard (see `.env` section above).
-- Push to `main` or open a pull request to trigger automatic deployments.
-
 ### Deploying with Docker
 
 - Build the Docker image:
@@ -90,11 +83,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
   docker run -p 3000:3000 --env-file .env slickage-website
   ```
 - The app will be available at [http://localhost:3000](http://localhost:3000)
-
-### Continuous Integration (CI)
-
-- This project includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that runs lint and build checks on every push and pull request.
-- To enable, ensure GitHub Actions is enabled for your repository.
 
 ## Error Handling
 

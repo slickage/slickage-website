@@ -120,7 +120,7 @@ export default function ImageLightbox({
                     width={900}
                     height={600}
                     className={`object-contain rounded-lg cursor-zoom-out
-                      ${isPortrait ? 'w-3xl h-auto' : 'w-5xl h-auto'}`}
+                      ${isPortrait ? 'w-3xl h-auto' : 'w-6xl h-auto'}`}
                     priority={priority}
                     onClick={() => setExpanded(false)}
                     onLoad={handleImageLoad}
