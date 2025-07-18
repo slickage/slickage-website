@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import {
   Card,
   CardContent,
@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface ServiceCardProps {
   icon: React.ReactNode;
@@ -15,7 +16,7 @@ interface ServiceCardProps {
   description: string;
 }
 
-export default function ServiceCard({ icon, title, description }: ServiceCardProps) {
+const ServiceCard: React.FC<ServiceCardProps> = React.memo(({ title, description, icon }) => {
   return (
     <Card className="border-0 shadow-xl bg-white/5 rounded-xl">
       <CardHeader>
@@ -32,10 +33,12 @@ export default function ServiceCard({ icon, title, description }: ServiceCardPro
         </p>
       </CardContent>
       <CardFooter>
-        <button className="flex items-center text-blue-400 hover:text-blue-500 font-medium transition-colors p-0 h-auto bg-transparent">
+        <Button className="flex items-center text-blue-400 hover:text-blue-500 font-medium transition-colors p-0 h-auto bg-transparent">
           Learn more <ArrowRight className="ml-1 h-4 w-4" />
-        </button>
+        </Button>
       </CardFooter>
     </Card>
   );
-}
+});
+
+export default ServiceCard;

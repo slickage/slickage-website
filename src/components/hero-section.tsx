@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function HeroSection() {
   const [scrollY, setScrollY] = useState(0);
@@ -33,13 +34,14 @@ export default function HeroSection() {
             We build software that works
           </h1>
           <p className="text-xl text-gray-400 max-w-2xl mb-10">
-	          Fast, reliable, and beautifully crafted. We're a lean software engineering company based in Honolulu, Hawaii, creating exceptional digital products for partners worldwide.
+            Fast, reliable, and beautifully crafted. We're a lean software engineering company based
+            in Honolulu, Hawaii, creating exceptional digital products for partners worldwide.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
+            <Button className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
               View Our Work
               <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -51,4 +53,4 @@ export default function HeroSection() {
       </div>
     </section>
   );
-};
+}

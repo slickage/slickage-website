@@ -77,12 +77,12 @@ export default function Footer() {
                   placeholder="Your email"
                   className="px-4 py-2 rounded-l-lg w-full bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
-                <button
+                <Button
                   type="submit"
                   className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-r-lg transition-colors"
                 >
                   Subscribe
-                </button>
+                </Button>
               </div>
             </form>
             <p className="text-sm text-gray-500">
@@ -97,8 +97,12 @@ export default function Footer() {
               © {new Date().getFullYear()} Slickage. All rights reserved.
             </p>
             <div className="flex space-x-6">
-              <Link href="/privacy-policy" className="text-gray-500 hover:text-blue-400 text-sm">Privacy Policy</Link>
-              <Link href="/cookie-policy" className="text-gray-500 hover:text-blue-400 text-sm">Cookie Policy</Link>
+              <Link href="/privacy-policy" className="text-gray-500 hover:text-blue-400 text-sm">
+                Privacy Policy
+              </Link>
+              <Link href="/cookie-policy" className="text-gray-500 hover:text-blue-400 text-sm">
+                Cookie Policy
+              </Link>
             </div>
           </div>
         </div>

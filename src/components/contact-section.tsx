@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Send } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function ContactSection() {
   return (
@@ -111,13 +112,10 @@ export default function ContactSection() {
                   ></textarea>
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center group"
-                >
+                <Button className="w-full px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
                   Send Message
                   <Send className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
+                </Button>
               </form>
             </div>
           </div>

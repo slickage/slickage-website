@@ -1,7 +1,5 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import ProjectsHero from '@/components/projects/projects-hero';
-import ProjectCarousel from '@/components/projects/project-carousel';
-import ProjectCTA from '@/components/projects/project-cta';
+import { ProjectsHero, ProjectCarousel, ProjectCta } from '@/components/projects';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui';
 import {
   featuredProjects,
   recentProjects,
@@ -9,6 +7,34 @@ import {
   mobileProjects,
   enterpriseProjects,
 } from '@/data/projects';
+
+export const metadata = {
+  title: 'Projects | Slickage Portfolio',
+  description:
+    'Explore our portfolio of innovative software solutions and successful projects delivered by Slickage.',
+  openGraph: {
+    title: 'Projects | Slickage Portfolio',
+    description:
+      'Explore our portfolio of innovative software solutions and successful projects delivered by Slickage.',
+    url: 'https://slickage.com/projects',
+    type: 'website',
+    images: [
+      {
+        url: '/logo-slickage-lines-blue-light.svg',
+        width: 1200,
+        height: 630,
+        alt: 'Slickage Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Projects | Slickage Portfolio',
+    description:
+      'Explore our portfolio of innovative software solutions and successful projects delivered by Slickage.',
+    images: ['/logo-slickage-lines-blue-light.svg'],
+  },
+};
 
 export default function ProjectsPage() {
   return (
@@ -47,7 +73,7 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <ProjectCTA />
+      <ProjectCta />
     </main>
   );
 }

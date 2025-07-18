@@ -79,7 +79,7 @@ export default function ProjectCarousel({ title, projects }: ProjectCarouselProp
         ref={carouselRef}
         onScroll={handleScroll}
       >
-        <div className="flex space-x-4" style={{ width: 'max-content' }}>
+        <div className="flex space-x-4 w-max">
           {projects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}

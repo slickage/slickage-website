@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import type { Project } from '@/types/project';
+import { Button } from '@/components/ui/button';
 
 export default function Projects() {
   const projects: Project[] = [
@@ -54,10 +55,10 @@ export default function Projects() {
       <div className="container mx-auto px-4">
         <div className="mx-auto text mb-12">
           <h2 className="text-4xl md:text-5xl leading-[1.1] font-bold mb-4 gradient-text">
-	          Insights
+            Insights
           </h2>
           <p className="text-xl text-gray-400">
-          	Read about how we built successful products with our partners.
+            Read about how we built successful products with our partners.
           </p>
         </div>
 
@@ -109,6 +110,7 @@ export default function Projects() {
                   src={project.image}
                   alt={project.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
@@ -117,7 +119,7 @@ export default function Projects() {
         </div>
 
         <div className="text-center mt-12">
-          <button className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 inline-flex items-center group">
+          <Button className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 inline-flex items-center group">
             View All Projects
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -133,7 +135,7 @@ export default function Projects() {
             >
               <path d="m13 19-7-7 7-7" />
             </svg>
-          </button>
+          </Button>
         </div>
       </div>
     </section>

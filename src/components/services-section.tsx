@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight, Globe, Smartphone, Server, Code, Database, Lock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface ServiceCardProps {
   title: string;
@@ -29,10 +30,10 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, tec
                 </span>
               ))}
             </div>
-            <button className="flex items-center text-blue-400 font-medium text-sm group-hover:text-blue-300 transition-colors">
+            <Button className="flex items-center text-blue-400 font-medium text-sm group-hover:text-blue-300 transition-colors">
               Learn more
               <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
+            </Button>
           </div>
         </div>
       </div>
