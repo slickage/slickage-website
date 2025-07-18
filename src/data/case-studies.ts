@@ -15,8 +15,7 @@ export const caseStudies: CaseStudy[] = [
     Our goal was to create an intuitive, doctor-friendly platform for viewing, organizing, and securely sharing imaging studies—while integrating with BEAM’s existing infrastructure.
 `,
     tags: [],
-    quickFacts: {
-    },
+    quickFacts: {},
     content: [
       {
         type: 'section',
@@ -210,6 +209,118 @@ Enter genetic profile information.
 View detailed drug recommendations specific to the selected genetic profile
 Filter drug sources (CPIC, DPWG, FDA)
 `,
+      },
+    ],
+  },
+  {
+    id: 'raisegiving',
+    title: 'Raisegiving Checkout Flow Redesign',
+    subtitle: 'Streamlining the donor experience for a nonprofit fundraising platform',
+    heroImages: [
+      S3_BUCKET_URL
+        ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Overview.gif`
+        : '/placeholder.svg',
+    ],
+    overview:
+      'Raisegiving was a startup building a platform for nonprofit fundraising. They brought in Slickage to provide engineering and product design leadership, with the immediate goal of reducing technical debt and improving the end-user experience. After a comprehensive UX audit, it became clear that the checkout process was a major point of friction—over 60% of donors were abandoning the flow before completing their donation.',
+    tags: ['React', 'Storybook', 'Vite'],
+    quickFacts: {
+      Client: 'PharmGKB',
+      Year: '2023',
+      'Project Type': 'Genomics Platform',
+    },
+    content: [
+      {
+        type: 'section',
+        title: 'Identifying the problem',
+        content: `Working closely with the CEO, Head of Customer Success, and engineering team, we identified the Campaign and Checkout pages as the most critical to redesign. User feedback and analytics showed that the checkout form was overwhelming: all options were presented at once in a single, lengthy page with little guidance.
+
+The existing checkout was dense: a single long page with all options exposed by default—payment methods, recurring schedules, donation plans, team selections, dedication messages, and more. It was too much too soon, and people didn’t know where to start.
+
+We confirmed the issue through interviews with the Head of Customer Success, user feedback, and a deeper look into analytics. Most donors weren’t confused about why to donate—they were just struggling with how.`,
+      },
+      {
+        type: 'section',
+        title: 'Our Approach',
+        content: `We started by mapping the full donation flow. This helped us untangle the sprawl of actions and decision points, and gave us a clear view of what needed to change. From there, we narrowed in on two big opportunities:
+  • Reduce friction by simplifying and sequencing the flow
+  • Optimize for mobile first, since the majority of donors were on mobile devices`,
+      },
+      {
+        type: 'image',
+        src: S3_BUCKET_URL
+          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Wireframe.png`
+          : '/placeholder.svg',
+        alt: 'Raisegiving Wireframe',
+      },
+      {
+        type: 'image',
+        src: S3_BUCKET_URL
+          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Mockups.png`
+          : '/placeholder.svg',
+        alt: 'Raisegiving Mockups',
+      },
+      {
+        type: 'section',
+        title: '',
+        content: `Rather than cramming everything into one screen, we broke the process into a step-by-step flow—each screen focused on a single, small decision. We used progressive disclosure to only show options when relevant (e.g. scheduling options only appear if recurring is selected). And we leaned into mobile-first design, knowing that a good mobile experience would scale up better than the other way around.`,
+      },
+      {
+        type: 'section',
+        title: 'What we redesigned',
+        content: ``,
+      },
+      {
+        type: 'image',
+        src: S3_BUCKET_URL
+          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Donation-Mobile.gif`
+          : '/placeholder.svg',
+        alt: 'Raisegiving Mockups',
+      },
+      {
+        type: 'image',
+        src: S3_BUCKET_URL
+          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Donation-Plans-Mobile.gif`
+          : '/placeholder.svg',
+        alt: 'Raisegiving Mockups',
+      },
+      {
+        type: 'image',
+        src: S3_BUCKET_URL
+          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Payment-Options.png`
+          : '/placeholder.svg',
+        alt: 'Raisegiving Mockups',
+      },
+      {
+        type: 'image',
+        src: S3_BUCKET_URL
+          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Donor-Info.png`
+          : '/placeholder.svg',
+        alt: 'Raisegiving Mockups',
+      },
+      {
+        type: 'section',
+        title: '',
+        content: `• Campaign summary up top: Shows campaign details and progress to keep donors connected to the cause.
+
+• Donation type selection: One-time vs. Recurring with dynamic fields that only appear when needed.
+
+• Donation plans: Optional swipeable cards for organizations that offer predefined giving tiers.
+
+• Payment methods: Clean, accessible UI for adding new cards or selecting saved profiles for returning users.
+
+• Donation summary: Recaps details, catches errors, and makes it easy to jump back and fix anything.
+
+• Celebratory confirmation: A fun, lightweight animation created using Figma + After Effects + Lottie.
+
+• Follow-up emails: Confirmation email includes campaign sharing and account creation. If donors abandon midway, we send a gentle reminder to come back and complete the donation.`,
+      },
+      {
+        type: 'section',
+        title: 'Results & Impact',
+        content: `We ran several review rounds with internal stakeholders and previewed the redesign with a handful of trusted customers. The feedback was clear: this version was dramatically easier to use and better aligned with how people actually give.
+
+Unfortunately, the company ran out of funding before the new flow could go live, so we didn’t get a chance to collect post-launch metrics. But the project served as a great example of how thoughtful UX, clean information architecture, and a mobile-first mindset can turn a frustrating experience into a seamless one.`,
       },
     ],
   },
