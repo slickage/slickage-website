@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: process.env.S3_BUCKET_URL,
+        hostname: 'slickage-website.s3.amazonaws.com',
         pathname: '/images/**',
       },
       {
