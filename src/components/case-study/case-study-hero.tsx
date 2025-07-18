@@ -29,7 +29,18 @@ export default function CaseStudyHero({
 
   return (
     <section className="relative min-h-[30vh] flex items-center">
-      <div className="container mx-auto px-4 py-8 md:py-8 relative z-10 ">
+
+    	<div className="hero-wide relative w-full h-dvh max-h-[50vh] bg-[url(https://images.pexels.com/photos/1181271/pexels-photo-1181271.jpeg)]">
+  			<div className="h-full flex items-end justify-center py-12 bg-linear-to-t from-slate-950 to-transparent">
+					<div className="container mx-auto flex flex-col items-center">
+						<div className="caption pill uppercase text-xs opacity-65 font-bold">Case Study</div>
+						<h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight gradient-text">{title}</h1>
+						<p className="mx-auto max-w-2xl text-xl text-gray-400">{subtitle}</p>
+					</div>
+		    </div>
+    	</div>
+
+      <div className="container mx-auto px-4 py-8 md:py-8 relative z-10 hidden">
         <motion.div
           className="flex flex-col items-center text-center space-y-4 md:space-y-6"
           initial={{ opacity: 0, y: 30 }}
