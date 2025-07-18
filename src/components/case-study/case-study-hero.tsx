@@ -30,11 +30,11 @@ export default function CaseStudyHero({
   return (
     <section className="relative min-h-[30vh] flex items-center">
 
-    	<div className="hero-wide relative w-full h-dvh max-h-[50vh] bg-[url(https://images.pexels.com/photos/1181271/pexels-photo-1181271.jpeg)]">
-  			<div className="h-full flex items-end justify-center py-12 bg-linear-to-t from-slate-950 to-transparent">
-					<div className="container mx-auto flex flex-col items-center">
-						<div className="caption pill uppercase text-xs opacity-65 font-bold">Case Study</div>
-						<h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight gradient-text">{title}</h1>
+    	<div className="hero-wide relative w-full h-dvh max-h-[75vh] md:max-h-[50vh] bg-[url(https://images.pexels.com/photos/1181271/pexels-photo-1181271.jpeg)]">
+  			<div className="h-full flex items-end justify-center px-4 py-16 bg-linear-to-t from-slate-950 to-transparent">
+					<div className="container mx-auto flex flex-col items-start md:items-center">
+						<div className="uppercase text-xs opacity-50 font-bold">Case Study</div>
+						<h1 className="mb-4 text-4xl md:text-5xl lg:text-6xl font-bold leading-tight gradient-text">{title}</h1>
 						<p className="mx-auto max-w-2xl text-xl text-gray-400">{subtitle}</p>
 					</div>
 		    </div>
