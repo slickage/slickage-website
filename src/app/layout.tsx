@@ -7,6 +7,7 @@ import Footer from '@/components/footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://beta.slickage.io'),
   title: 'Slickage - Software Development Company',
   description: 'A boutique software company based in Honolulu, Hawaii building big things.',
 };
