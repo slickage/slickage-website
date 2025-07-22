@@ -15,21 +15,28 @@ export default function InsightCard({ insight }: InsightCardProps) {
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-    hover: { scale: 1.03, boxShadow: '0 8px 32px rgba(0,0,0,0.18)', transition: { duration: 0.25 } }
+    hover: {
+      scale: 1.03,
+      boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+      transition: { duration: 0.25 },
+    },
   };
 
   // Tag hover
   const tagVariants = {
-    hover: { scale: 1.1, transition: { duration: 0.15 } }
+    hover: { scale: 1.1, transition: { duration: 0.15 } },
   };
 
   // Image zoom
   const imageVariants = {
-    hover: { scale: 1.07, transition: { duration: 0.5 } }
+    hover: { scale: 1.07, transition: { duration: 0.5 } },
   };
 
   return (
-    <Link href={`/case-studies/${insight.id}`} className="block focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl">
+    <Link
+      href={`/case-studies/${insight.id}`}
+      className="block focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
+    >
       <motion.div
         className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer"
         variants={cardVariants}
@@ -74,4 +81,4 @@ export default function InsightCard({ insight }: InsightCardProps) {
       </motion.div>
     </Link>
   );
-} 
+}

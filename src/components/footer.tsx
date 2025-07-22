@@ -14,7 +14,10 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               {[
-                { icon: <FaLinkedin className="h-5 w-5" />, href: 'https://www.linkedin.com/company/slickage-studios' },
+                {
+                  icon: <FaLinkedin className="h-5 w-5" />,
+                  href: 'https://www.linkedin.com/company/slickage-studios',
+                },
                 { icon: <FaGithub className="h-5 w-5" />, href: 'https://github.com/slickage' },
               ].map((social, index) => (
                 <a

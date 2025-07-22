@@ -26,8 +26,8 @@ export const featuredInsights: Insight[] = [
     image: S3_BUCKET_URL
       ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Overview.gif`
       : '/placeholder.svg',
-      tags: ['Vue', 'Rails'],
-    },
+    tags: ['Vue', 'Rails'],
+  },
   {
     id: 'beam',
     title: 'BEAM Cloud',
