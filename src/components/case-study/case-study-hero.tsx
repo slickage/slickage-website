@@ -3,14 +3,12 @@
 import { useState, useEffect } from 'react';
 import type { CaseStudy } from '@/types/case-study';
 import { motion } from 'motion/react';
-import dynamic from 'next/dynamic';
-const ImageLightbox = dynamic(() => import('@/components/ui/ImageLightbox'));
 
 export default function CaseStudyHero({
   title,
   subtitle,
-  heroImages,
-}: Pick<CaseStudy, 'title' | 'subtitle'> & { heroImages: string[] }) {
+  heroImage,
+}: Pick<CaseStudy, 'title' | 'subtitle'> & { heroImage: string }) {
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
 
   useEffect(() => {
@@ -29,7 +27,22 @@ export default function CaseStudyHero({
 
   return (
     <section className="relative min-h-[30vh] flex items-center">
-      <div className="container mx-auto px-4 py-8 md:py-8 relative z-10 ">
+
+    	<div className="hero-wide relative w-full h-dvh max-h-[75vh] md:max-h-[50vh]"
+     	style={{
+	     	backgroundImage: `url(${heroImage})`
+      }}
+     >
+  			<div className="h-full flex items-end justify-center px-4 py-16 bg-linear-to-t from-slate-950 to-transparent">
+					<div className="container mx-auto flex flex-col items-start md:items-center">
+						<div className="uppercase text-xs opacity-50 font-bold">Case Study</div>
+						<h1 className="mb-4 text-4xl md:text-5xl lg:text-6xl font-bold leading-tight gradient-text">{title}</h1>
+						<p className="mx-auto max-w-2xl text-xl text-gray-400">{subtitle}</p>
+					</div>
+		    </div>
+    	</div>
+
+      <div className="container mx-auto px-4 py-8 md:py-8 relative z-10 hidden">
         <motion.div
           className="flex flex-col items-center text-center space-y-4 md:space-y-6"
           initial={{ opacity: 0, y: 30 }}
@@ -52,28 +65,6 @@ export default function CaseStudyHero({
             initial="hidden"
             animate="show"
           >
-            {heroImages?.map((img, idx) => (
-              <motion.div
-                key={img}
-                className="w-50 h-72 md:w-80 md:h-[28rem] cursor-pointer relative"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  show: { opacity: 1, y: 0 },
-                }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              >
-                <ImageLightbox
-                  src={img || '/placeholder.svg'}
-                  alt={`${title} image ${idx + 1}`}
-                  fill
-                  className="object-fill rounded-lg"
-                  sizes="(max-width: 768px) 224px, 384px"
-                  priority
-                />
-              </motion.div>
-            ))}
           </motion.div>
         </motion.div>
       </div>

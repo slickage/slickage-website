@@ -7,7 +7,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'beam',
     title: 'BEAM Cloud',
     subtitle: 'Redesigning medical image collaboration for radiologists',
-    heroImages: [],
+    heroImage: "",
     overview: `BEAM was originally developed to address a persistent operational challenge in healthcare: the manual, time-intensive process of transferring large medical imaging studies—such as MRIs and CT scans—between facilities. Through a secure point-to-point hardware network, BEAM enabled imaging librarians to move studies digitally, eliminating the need to burn and mail physical DVDs.
 
     However, while the system improved workflows for imaging staff, it was not optimized for physicians—particularly radiologists—who needed to view and share studies for consultations. Recognizing this opportunity, BEAM’s leadership engaged our team to design and build BEAM Cloud: a modern, cloud-based application specifically tailored to the needs of medical professionals.
@@ -70,14 +70,10 @@ The success of BEAM Cloud also influenced the company’s broader product roadma
     id: 'epochtalk',
     title: 'Epochtalk Forum Administration',
     subtitle: 'Redesigning a powerful—but unwieldy—admin interface',
-    heroImages: [
-      S3_BUCKET_URL
+    heroImage:
+      `${S3_BUCKET_URL
         ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Settings.png`
-        : '/placeholder.svg',
-      S3_BUCKET_URL
-        ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Admin-General.png`
-        : '/placeholder.svg',
-    ],
+        : '/placeholder.svg'}`,
     overview:
       'Epochtalk is a forum platform known for its feature-rich administration tools, but its original admin UI was beginning to show its age. While functionally complete, the interface was difficult to navigate, visually cluttered, and made it hard for users to quickly locate the controls and information they needed. The goal of this redesign was to modernize the experience—improving clarity, organization, and scalability—without sacrificing the breadth of functionality that power users relied on.',
     tags: ['Elixir', 'Vue', 'Phoenix', 'Ecto'],
@@ -91,18 +87,33 @@ The success of BEAM Cloud also influenced the company’s broader product roadma
         type: 'section',
         title: 'Key Objectives',
         content: `  • Improve navigation across top-level and nested admin views
-        
-  • Organize information more intuitively to reduce cognitive load 
 
-  • Create a more flexible layout system to support future features 
+  • Organize information more intuitively to reduce cognitive load
+
+  • Create a more flexible layout system to support future features
 
   • Maintain full feature parity with the existing toolset`,
+      },
+      {
+        type: 'image',
+        src: S3_BUCKET_URL
+          ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Settings.png`
+          : '/placeholder.svg',
+        alt: 'EpochTalk Navigation Overhaul',
+        // caption: 'Implementation illustration',
+      },{
+        type: 'image',
+        src: S3_BUCKET_URL
+          ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Admin-General.png`
+          : '/placeholder.svg',
+        alt: 'EpochTalk Navigation Overhaul',
+        // caption: 'Implementation illustration',
       },
       {
         type: 'section',
         title: 'Navigation Overhaul',
         content: `The first step was rethinking how users moved through the admin interface. The original horizontal tab structure was replaced with a vertical sidebar, using compact icons with tooltips to save space and stay accessible as users scrolled. Sub-navigation elements were moved to a clearly defined header area at the top of each view, making it easier to orient within the interface.
-        
+
 To improve usability, primary actions like “Save” and “Reset” were relocated to a persistent action bar fixed to the bottom of the screen—ensuring they were always within reach, regardless of scroll depth.`,
       },
       {
@@ -117,7 +128,7 @@ To improve usability, primary actions like “Save” and “Reset” were reloc
         type: 'section',
         title: 'Layout & Structural Improvements',
         content: `A new responsive layout was introduced, based on a two-column grid with a 2:1 width ratio. This allowed less frequently used settings to live in the narrower sidebar, while keeping core content front and center. For data-heavy views like tables, a single-column layout was used to maximize horizontal space.
-        
+
 This layout flexibility not only improved information hierarchy, but also made it easier to accommodate new functionality as the product evolved.`,
       },
       {
@@ -138,7 +149,7 @@ This layout flexibility not only improved information hierarchy, but also made i
         type: 'section',
         title: 'Refined UI Components',
         content: `The redesign also included a full visual refresh of the admin UI. The interface was simplified by removing unnecessary lines, shading, and background fills. A restrained color palette helped draw attention to active elements and key actions. Panels—used to group related controls—were simplified to increase scanability, with smaller headers and contextual helper text to orient the user.
-        
+
 Form fields were redesigned to include persistent labels, embedded helper text, and contextual secondary actions—all while minimizing vertical space. Active and error states were made more legible without adding clutter, improving form usability across the board.`,
       },
       {
@@ -179,7 +190,7 @@ Form fields were redesigned to include persistent labels, embedded helper text, 
     id: 'pharmgkb',
     title: 'DDrX: Pharmacogenomic knowledgebase',
     subtitle: 'Building a  mobile interface to pharmacogenomic research data',
-    heroImages: [],
+    heroImage: "",
     overview:
       'The PharmGKB group at Stanford University is curating knowledge of how genetic variations affect how our bodies respond to medications.',
     tags: ['React', 'Storybook', 'Vite'],
@@ -216,11 +227,10 @@ Filter drug sources (CPIC, DPWG, FDA)
     id: 'raisegiving',
     title: 'Raisegiving Checkout Flow Redesign',
     subtitle: 'Streamlining the donor experience for a nonprofit fundraising platform',
-    heroImages: [
-      S3_BUCKET_URL
+    heroImage:
+      `${S3_BUCKET_URL
         ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Overview.gif`
-        : '/placeholder.svg',
-    ],
+        : '/placeholder.svg'}`,
     overview:
       'Raisegiving was a startup building a platform for nonprofit fundraising. They brought in Slickage to provide engineering and product design leadership, with the immediate goal of reducing technical debt and improving the end-user experience. After a comprehensive UX audit, it became clear that the checkout process was a major point of friction—over 60% of donors were abandoning the flow before completing their donation.',
     tags: ['Vue', 'Rails'],
@@ -238,6 +248,13 @@ Filter drug sources (CPIC, DPWG, FDA)
 The existing checkout was dense: a single long page with all options exposed by default—payment methods, recurring schedules, donation plans, team selections, dedication messages, and more. It was too much too soon, and people didn’t know where to start.
 
 We confirmed the issue through interviews with the Head of Customer Success, user feedback, and a deeper look into analytics. Most donors weren’t confused about why to donate—they were just struggling with how.`,
+      },
+      {
+        type: 'image',
+        src: S3_BUCKET_URL
+          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Wireframe.png`
+          : '/placeholder.svg',
+        alt: 'Raisegiving Wireframe',
       },
       {
         type: 'section',
