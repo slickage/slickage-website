@@ -29,7 +29,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
         <CaseStudyHero
           title={caseStudy.title}
           subtitle={caseStudy.subtitle}
-          heroImages={caseStudy.heroImages}
+          heroImage={caseStudy.heroImage}
         />
       </AnimatedSection>
       <AnimatedSection>
