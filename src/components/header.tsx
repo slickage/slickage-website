@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
+const HEADER_ITEMS = [''];
+
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -43,7 +45,7 @@ export default function Header() {
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">
-            {['About', 'Projects', 'Services'].map((item) => (
+            {HEADER_ITEMS.map((item) => (
               <Link
                 key={item}
                 href={`/${item.toLowerCase()}`}
@@ -52,7 +54,7 @@ export default function Header() {
                 {item}
               </Link>
             ))}
-            <Link href="/contact">
+            <Link href="/#contact">
               <Button className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors">
                 Get in Touch
               </Button>
@@ -80,7 +82,7 @@ export default function Header() {
         >
           <nav className="container mx-auto px-4 py-4">
             <div className="flex flex-col space-y-4">
-              {['Services', 'Projects', 'Features', 'Contact'].map((item) => (
+              {HEADER_ITEMS.map((item) => (
                 <Link
                   key={item}
                   href={`#${item.toLowerCase()}`}
@@ -90,9 +92,11 @@ export default function Header() {
                   {item}
                 </Link>
               ))}
-              <Button className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors w-full">
-                Get in Touch
-              </Button>
+              <Link href="/#contact">
+                <Button className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors w-full">
+                  Get in Touch
+                </Button>
+              </Link>
             </div>
           </nav>
         </div>
