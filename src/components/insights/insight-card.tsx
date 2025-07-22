@@ -46,7 +46,7 @@ export default function InsightCard({ insight }: InsightCardProps) {
               {insight.tags.map((tech: string, index: number) => (
                 <motion.span
                   key={index}
-                  className="px-2 py-1 text-xs font-medium rounded-md bg-gray-800 text-gray-300"
+                  className="px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-blue-400/30 via-blue-500/20 to-violet-400/20 text-blue-100 tracking-wide transition-all duration-150 shadow-none"
                   whileHover="hover"
                   variants={tagVariants}
                 >
@@ -55,7 +55,7 @@ export default function InsightCard({ insight }: InsightCardProps) {
               ))}
             </div>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-950 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-300 z-900"></div>
+          <div className="absolute left-0 right-0 bottom-0 h-4/5 bg-gradient-to-t from-gray-950/95 via-gray-950/80 to-transparent opacity-95 group-hover:opacity-100 transition-opacity duration-300 z-900"></div>
           <motion.div
             className="w-full h-full absolute inset-0"
             variants={imageVariants}
