@@ -233,11 +233,11 @@ Filter drug sources (CPIC, DPWG, FDA)
         : '/placeholder.svg'}`,
     overview:
       'Raisegiving was a startup building a platform for nonprofit fundraising. They brought in Slickage to provide engineering and product design leadership, with the immediate goal of reducing technical debt and improving the end-user experience. After a comprehensive UX audit, it became clear that the checkout process was a major point of friction—over 60% of donors were abandoning the flow before completing their donation.',
-    tags: ['React', 'Storybook', 'Vite'],
+    tags: ['Vue', 'Rails'],
     quickFacts: {
-      Client: 'PharmGKB',
-      Year: '2023',
-      'Project Type': 'Genomics Platform',
+      Client: 'Raisegiving',
+      Year: '2022',
+      'Project Type': 'Donation Platform',
     },
     content: [
       {
