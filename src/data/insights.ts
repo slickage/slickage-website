@@ -1,6 +1,9 @@
 import type { Insight } from '@/types/insight';
 
-const S3_BUCKET_URL = process.env.S3_BUCKET_URL;
+if (!process.env.NEXT_PUBLIC_S3_BUCKET_URL) {
+  throw new Error('NEXT_PUBLIC_S3_BUCKET_URL is not defined');
+}
+const S3_BUCKET_URL = process.env.NEXT_PUBLIC_S3_BUCKET_URL;
 
 export const featuredInsights: Insight[] = [
   {
@@ -14,22 +17,18 @@ export const featuredInsights: Insight[] = [
     id: 'epochtalk',
     title: 'Epochtalk Forum Administration',
     description: 'Redesigning a powerful—but unwieldy—admin interface',
-    image: `${
-      S3_BUCKET_URL
-        ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Settings.png`
-        : '/placeholder.svg'
-    }`,
+    image: S3_BUCKET_URL
+      ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Settings.png`
+      : '/placeholder.svg',
     tags: ['Elixir', 'Vue', 'Phoenix', 'Ecto'],
   },
   {
     id: 'raisegiving',
     title: 'Raisegiving Checkout Flow Redesign',
     description: 'Streamlining the donor experience for a nonprofit fundraising platform',
-    image: `${
-      S3_BUCKET_URL
-        ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Overview.gif`
-        : '/placeholder.svg'
-    }`,
+    image: S3_BUCKET_URL
+      ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Overview.gif`
+      : '/placeholder.svg',
     tags: ['Vue', 'Rails'],
   },
   {

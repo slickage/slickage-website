@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "inspect": "NODE_OPTIONS='--inspect' next dev"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.2",
