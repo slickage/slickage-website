@@ -55,7 +55,9 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.ECR_REPOSITORY }}:${{ github.sha }} .
+          docker build \
+            --build-arg NEXT_PUBLIC_S3_BUCKET_URL=${{ secrets.S3_BUCKET_URL }} \
+            -t ${{ secrets.ECR_REPOSITORY }}:${{ github.sha }} .
         if: github.event_name == 'push'
 
       - name: Tag Docker image to latest
