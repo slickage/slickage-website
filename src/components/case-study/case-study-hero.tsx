@@ -28,20 +28,32 @@ export default function CaseStudyHero({
 
   return (
     <section className="relative min-h-[30vh] flex items-center">
-    	<div className="hero-wide relative w-full h-dvh max-h-[75vh] md:max-h-[50vh] overflow-hidden"
-     	style={{
-	     	// backgroundImage: `url(${heroImage})`
-      }}
-    >
-			<Image src={heroImage} alt="Hero image" className="blur-[3px] w-full h-full md:h-auto sm:object-cover" width={0} height={0} sizes="100vw" />
-  			<div className="h-full flex items-end justify-center px-4 py-16 bg-linear-to-t from-slate-950 to-transparent absolute w-full bottom-0">
-					<div className="container mx-auto flex flex-col items-start md:items-center">
-						<div className="uppercase text-xs opacity-50 font-bold">Case Study</div>
-						<h1 className="mb-4 text-4xl md:text-5xl lg:text-6xl font-bold leading-tight gradient-text">{title}</h1>
-						<p className="mx-auto max-w-2xl text-xl text-gray-400">{subtitle}</p>
-					</div>
-		    </div>
-    	</div>
+      <div
+        className="hero-wide relative w-full h-dvh max-h-[75vh] md:max-h-[50vh] overflow-hidden"
+        style={
+          {
+            // backgroundImage: `url(${heroImage})`
+          }
+        }
+      >
+        <Image
+          src={heroImage}
+          alt="Hero image"
+          className="blur-[3px] w-full h-full md:h-auto sm:object-cover"
+          width={0}
+          height={0}
+          sizes="100vw"
+        />
+        <div className="h-full flex items-end justify-center px-4 py-16 bg-linear-to-t from-slate-950 to-transparent absolute w-full bottom-0">
+          <div className="container mx-auto flex flex-col items-start md:items-center">
+            <div className="uppercase text-xs opacity-50 font-bold">Case Study</div>
+            <h1 className="mb-4 text-4xl md:text-5xl lg:text-6xl font-bold leading-tight gradient-text">
+              {title}
+            </h1>
+            <p className="mx-auto max-w-2xl text-xl text-gray-400">{subtitle}</p>
+          </div>
+        </div>
+      </div>
 
       <div className="container mx-auto px-4 py-8 md:py-8 relative z-10 hidden">
         <motion.div
@@ -65,8 +77,7 @@ export default function CaseStudyHero({
             }}
             initial="hidden"
             animate="show"
-          >
-          </motion.div>
+          ></motion.div>
         </motion.div>
       </div>
     </section>
