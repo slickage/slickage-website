@@ -2,6 +2,6 @@ export interface Insight {
   id: string;
   title: string;
   description: string;
-  image: string;
+  imageSrc: string;
   tags: string[];
 }

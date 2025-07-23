@@ -1,8 +1,5 @@
 import type { Insight } from '@/types/insight';
 
-if (!process.env.NEXT_PUBLIC_S3_BUCKET_URL) {
-  throw new Error('NEXT_PUBLIC_S3_BUCKET_URL is not defined');
-}
 const S3_BUCKET_URL = process.env.NEXT_PUBLIC_S3_BUCKET_URL;
 
 export const featuredInsights: Insight[] = [
@@ -10,14 +7,14 @@ export const featuredInsights: Insight[] = [
     id: 'pharmgkb',
     title: 'DDrX: Pharmacogenomic knowledgebase',
     description: 'Building a  mobile interface to pharmacogenomic research data',
-    image: '/placeholder.svg',
+    imageSrc: '/placeholder.svg',
     tags: ['React', 'Storybook', 'Vite'],
   },
   {
     id: 'epochtalk',
     title: 'Epochtalk Forum Administration',
     description: 'Redesigning a powerful—but unwieldy—admin interface',
-    image: S3_BUCKET_URL
+    imageSrc: S3_BUCKET_URL
       ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Settings.png`
       : '/placeholder.svg',
     tags: ['Elixir', 'Vue', 'Phoenix', 'Ecto'],
@@ -26,7 +23,7 @@ export const featuredInsights: Insight[] = [
     id: 'raisegiving',
     title: 'Raisegiving Checkout Flow Redesign',
     description: 'Streamlining the donor experience for a nonprofit fundraising platform',
-    image: S3_BUCKET_URL
+    imageSrc: S3_BUCKET_URL
       ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Overview.gif`
       : '/placeholder.svg',
     tags: ['Vue', 'Rails'],
@@ -35,7 +32,7 @@ export const featuredInsights: Insight[] = [
     id: 'beam',
     title: 'BEAM Cloud',
     description: 'Redesigning medical image collaboration for radiologists',
-    image: '/placeholder.svg',
+    imageSrc: '/placeholder.svg',
     tags: [],
   },
 ];

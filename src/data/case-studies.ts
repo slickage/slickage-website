@@ -1,8 +1,5 @@
 import type { CaseStudy } from '@/types/case-study';
 
-if (!process.env.NEXT_PUBLIC_S3_BUCKET_URL) {
-  throw new Error('NEXT_PUBLIC_S3_BUCKET_URL is not defined');
-}
 const S3_BUCKET_URL = process.env.NEXT_PUBLIC_S3_BUCKET_URL;
 
 export const caseStudies: CaseStudy[] = [

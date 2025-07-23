@@ -69,7 +69,7 @@ export default function InsightCard({ insight }: InsightCardProps) {
             whileHover="hover"
           >
             <Image
-              src={insight.image}
+              src={insight.imageSrc}
               alt={insight.title}
               fill
               priority
