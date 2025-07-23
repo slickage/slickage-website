@@ -7,7 +7,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'beam',
     title: 'BEAM Cloud',
     subtitle: 'Redesigning medical image collaboration for radiologists',
-    heroImage: "",
+    heroImage: "/placeholder.svg",
     overview: `BEAM was originally developed to address a persistent operational challenge in healthcare: the manual, time-intensive process of transferring large medical imaging studies—such as MRIs and CT scans—between facilities. Through a secure point-to-point hardware network, BEAM enabled imaging librarians to move studies digitally, eliminating the need to burn and mail physical DVDs.
 
     However, while the system improved workflows for imaging staff, it was not optimized for physicians—particularly radiologists—who needed to view and share studies for consultations. Recognizing this opportunity, BEAM’s leadership engaged our team to design and build BEAM Cloud: a modern, cloud-based application specifically tailored to the needs of medical professionals.
@@ -190,7 +190,7 @@ Form fields were redesigned to include persistent labels, embedded helper text, 
     id: 'pharmgkb',
     title: 'DDrX: Pharmacogenomic knowledgebase',
     subtitle: 'Building a  mobile interface to pharmacogenomic research data',
-    heroImage: "",
+    heroImage: "/placeholder.svg",
     overview:
       'The PharmGKB group at Stanford University is curating knowledge of how genetic variations affect how our bodies respond to medications.',
     tags: ['React', 'Storybook', 'Vite'],
