@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import type { CaseStudy } from '@/types/case-study';
 import { motion } from 'motion/react';
+import Image from 'next/image';
 
 export default function CaseStudyHero({
   title,
@@ -27,13 +28,13 @@ export default function CaseStudyHero({
 
   return (
     <section className="relative min-h-[30vh] flex items-center">
-
-    	<div className="hero-wide relative w-full h-dvh max-h-[75vh] md:max-h-[50vh]"
+    	<div className="hero-wide relative w-full h-dvh max-h-[75vh] md:max-h-[50vh] overflow-hidden"
      	style={{
-	     	backgroundImage: `url(${heroImage})`
+	     	// backgroundImage: `url(${heroImage})`
       }}
-     >
-  			<div className="h-full flex items-end justify-center px-4 py-16 bg-linear-to-t from-slate-950 to-transparent">
+    >
+			<Image src={heroImage} alt="Hero image" className="blur-[3px] w-full h-full md:h-auto sm:object-cover" width={0} height={0} sizes="100vw" />
+  			<div className="h-full flex items-end justify-center px-4 py-16 bg-linear-to-t from-slate-950 to-transparent absolute w-full bottom-0">
 					<div className="container mx-auto flex flex-col items-start md:items-center">
 						<div className="uppercase text-xs opacity-50 font-bold">Case Study</div>
 						<h1 className="mb-4 text-4xl md:text-5xl lg:text-6xl font-bold leading-tight gradient-text">{title}</h1>
