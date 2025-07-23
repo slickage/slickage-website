@@ -68,7 +68,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - Example usage in code: `process.env.MY_VARIABLE`
 - **Never commit your `.env` files to version control.**
 - The following environment variables are required for local development and production:
-  - `S3_BUCKET_URL` (used for remote images and assets)
+  - `NEXT_PUBLIC_S3_BUCKET_URL` (used for remote images and assets)
 - To add a new config value, add it to your `.env` and reference it in your code using `process.env.YOUR_VARIABLE`.
 
 ## Deployment & CI/CD
