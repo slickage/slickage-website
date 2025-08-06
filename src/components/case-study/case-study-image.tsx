@@ -33,7 +33,7 @@ export default function CaseStudyImage({
           priority
         />
         {caption && (
-          <div className="px-4 py-2 text-center text-gray-400 text-sm bg-[#0A0A0A] bg-opacity-80">
+          <div className="px-4 py-2 text-center text-gray-400 text-sm bg-opacity-80">
             {caption}
           </div>
         )}
