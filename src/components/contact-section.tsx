@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { 
-  Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function ContactSection() {
