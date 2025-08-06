@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import type { CaseStudy } from '@/types/case-study';
 import { motion } from 'motion/react';
 import Image from 'next/image';
+import { getS3ImageUrl } from '@/lib/utils';
+import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
 
 export default function CaseStudyHero({
   title,
@@ -11,6 +13,31 @@ export default function CaseStudyHero({
   heroImage,
 }: Pick<CaseStudy, 'title' | 'subtitle'> & { heroImage: string }) {
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>('/placeholder.svg');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadImage = async () => {
+      try {
+        if (heroImage === '/placeholder.svg') {
+          setImageUrl('/placeholder.svg');
+          setIsLoading(false);
+          return;
+        }
+
+        setIsLoading(true);
+        const url = await getS3ImageUrl(heroImage);
+        setImageUrl(url);
+      } catch (error) {
+        console.error('Error loading hero image:', error);
+        setImageUrl('/placeholder.svg');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadImage();
+  }, [heroImage]);
 
   useEffect(() => {
     if (expandedIdx === null) return;
@@ -28,22 +55,19 @@ export default function CaseStudyHero({
 
   return (
     <section className="relative min-h-[30vh] flex items-center">
-      <div
-        className="hero-wide relative w-full h-dvh max-h-[75vh] md:max-h-[50vh] overflow-hidden"
-        style={
-          {
-            // backgroundImage: `url(${heroImage})`
-          }
-        }
-      >
-        <Image
-          src={heroImage}
-          alt="Hero image"
-          className="blur-[3px] w-full h-full md:h-auto sm:object-cover"
-          width={0}
-          height={0}
-          sizes="100vw"
-        />
+      <div className="hero-wide relative w-full h-dvh max-h-[75vh] md:max-h-[50vh] overflow-hidden">
+        {isLoading && <LoadingSpinnerOverlay />}
+        {!isLoading && (
+          <Image
+            src={imageUrl}
+            alt="Hero image"
+            className="blur-[3px] w-full h-full md:h-auto sm:object-cover"
+            width={0}
+            height={0}
+            sizes="100vw"
+            priority
+          />
+        )}
         <div className="h-full flex items-end justify-center px-4 py-16 bg-linear-to-t from-slate-950 to-transparent absolute w-full bottom-0">
           <div className="container mx-auto flex flex-col items-start md:items-center">
             <div className="uppercase text-xs opacity-50 font-bold">Case Study</div>

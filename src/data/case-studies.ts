@@ -1,7 +1,5 @@
 import type { CaseStudy } from '@/types/case-study';
 
-const S3_BUCKET_URL = process.env.NEXT_PUBLIC_S3_BUCKET_URL;
-
 export const caseStudies: CaseStudy[] = [
   {
     id: 'beam',
@@ -70,11 +68,7 @@ The success of BEAM Cloud also influenced the company’s broader product roadma
     id: 'epochtalk',
     title: 'Epochtalk Forum Administration',
     subtitle: 'Redesigning a powerful—but unwieldy—admin interface',
-    heroImage: `${
-      S3_BUCKET_URL
-        ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Settings.png`
-        : '/placeholder.svg'
-    }`,
+    heroImage: 'images/case-studies/epochtalk/Epochtalk-Settings.png',
     overview:
       'Epochtalk is a forum platform known for its feature-rich administration tools, but its original admin UI was beginning to show its age. While functionally complete, the interface was difficult to navigate, visually cluttered, and made it hard for users to quickly locate the controls and information they needed. The goal of this redesign was to modernize the experience—improving clarity, organization, and scalability—without sacrificing the breadth of functionality that power users relied on.',
     tags: ['Elixir', 'Vue', 'Phoenix', 'Ecto'],
@@ -97,17 +91,13 @@ The success of BEAM Cloud also influenced the company’s broader product roadma
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Settings.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/epochtalk/Epochtalk-Settings.png',
         alt: 'EpochTalk Navigation Overhaul',
         // caption: 'Implementation illustration',
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Admin-General.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/epochtalk/Epochtalk-Admin-General.png',
         alt: 'EpochTalk Navigation Overhaul',
         // caption: 'Implementation illustration',
       },
@@ -120,9 +110,7 @@ To improve usability, primary actions like “Save” and “Reset” were reloc
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Navigation-Overhaul.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/epochtalk/Epochtalk-Navigation-Overhaul.png',
         alt: 'EpochTalk Navigation Overhaul',
         // caption: 'Implementation illustration',
       },
@@ -135,16 +123,12 @@ This layout flexibility not only improved information hierarchy, but also made i
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Layout-Boards.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/epochtalk/Epochtalk-Layout-Boards.png',
         alt: 'EpochTalk Layout & Structural Improvements Boards',
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Layout-Posts.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/epochtalk/Epochtalk-Layout-Posts.png',
         alt: 'EpochTalk Layout & Structural Improvements Posts',
       },
       {
@@ -156,16 +140,12 @@ Form fields were redesigned to include persistent labels, embedded helper text, 
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-UI-Portal.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/epochtalk/Epochtalk-UI-Portal.png',
         alt: 'EpochTalk Refined UI Components Portal',
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-UI-Boards.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/epochtalk/Epochtalk-UI-Boards.png',
         alt: 'EpochTalk Refined UI Components Board',
       },
       {
@@ -175,9 +155,7 @@ Form fields were redesigned to include persistent labels, embedded helper text, 
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Table-Enhancements.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/epochtalk/Epochtalk-Table-Enhancements.png',
         alt: 'EpochTalk Table Enhancements',
       },
       {
@@ -229,11 +207,7 @@ Filter drug sources (CPIC, DPWG, FDA)
     id: 'raisegiving',
     title: 'Raisegiving Checkout Flow Redesign',
     subtitle: 'Streamlining the donor experience for a nonprofit fundraising platform',
-    heroImage: `${
-      S3_BUCKET_URL
-        ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Overview.gif`
-        : '/placeholder.svg'
-    }`,
+    heroImage: 'images/case-studies/raisegiving/Raisegiving-Overview.gif',
     overview:
       'Raisegiving was a startup building a platform for nonprofit fundraising. They brought in Slickage to provide engineering and product design leadership, with the immediate goal of reducing technical debt and improving the end-user experience. After a comprehensive UX audit, it became clear that the checkout process was a major point of friction—over 60% of donors were abandoning the flow before completing their donation.',
     tags: ['Vue', 'Rails'],
@@ -254,9 +228,7 @@ We confirmed the issue through interviews with the Head of Customer Success, use
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Wireframe.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/raisegiving/Raisegiving-Wireframe.png',
         alt: 'Raisegiving Wireframe',
       },
       {
@@ -268,16 +240,12 @@ We confirmed the issue through interviews with the Head of Customer Success, use
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Wireframe.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/raisegiving/Raisegiving-Wireframe.png',
         alt: 'Raisegiving Wireframe',
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Mockups.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/raisegiving/Raisegiving-Mockups.png',
         alt: 'Raisegiving Mockups',
       },
       {
@@ -292,30 +260,22 @@ We confirmed the issue through interviews with the Head of Customer Success, use
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Donation-Mobile.gif`
-          : '/placeholder.svg',
+        src: 'images/case-studies/raisegiving/Raisegiving-Donation-Mobile.gif',
         alt: 'Raisegiving Mockups',
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Donation-Plans-Mobile.gif`
-          : '/placeholder.svg',
+        src: 'images/case-studies/raisegiving/Raisegiving-Donation-Plans-Mobile.gif',
         alt: 'Raisegiving Mockups',
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Payment-Options.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/raisegiving/Raisegiving-Payment-Options.png',
         alt: 'Raisegiving Mockups',
       },
       {
         type: 'image',
-        src: S3_BUCKET_URL
-          ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Donor-Info.png`
-          : '/placeholder.svg',
+        src: 'images/case-studies/raisegiving/Raisegiving-Donor-Info.png',
         alt: 'Raisegiving Mockups',
       },
       {
