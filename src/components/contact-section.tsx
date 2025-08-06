@@ -1,13 +1,16 @@
 'use client';
 
 import React from 'react';
-import { Send } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Mail, MapPin } from 'lucide-react';
+import ContactForm from './contact/contact-form';
 
 export default function ContactSection() {
   return (
-    <section id="contact" className="py-24 bg-[#0A0A0A]">
-      <div className="container mx-auto px-4">
+    <section id="contact" className="py-24 relative">
+      <div className="absolute inset-0 bg-[#0A0A0A]">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10" />
+      </div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -22,7 +25,7 @@ export default function ContactSection() {
                 soon as possible.
               </p>
 
-              {/* <div className="space-y-6">
+              <div className="space-y-6">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
                     <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500/10 text-blue-400">
@@ -31,19 +34,7 @@ export default function ContactSection() {
                   </div>
                   <div className="ml-4">
                     <h3 className="text-lg font-semibold text-white">Email</h3>
-                    <p className="text-gray-400">hello@archipelago.dev</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500/10 text-blue-400">
-                      <Phone className="h-5 w-5" />
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-white">Phone</h3>
-                    <p className="text-gray-400">+1 (808) 555-0123</p>
+                    <p className="text-gray-400">inquiry@slickage.com</p>
                   </div>
                 </div>
 
@@ -58,66 +49,9 @@ export default function ContactSection() {
                     <p className="text-gray-400">Honolulu, Hawaii</p>
                   </div>
                 </div>
-              </div> */}
+              </div>
             </div>
-
-            <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300">
-              <form>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                      placeholder="Your email"
-                    />
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-1">
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                    placeholder="Subject"
-                  />
-                </div>
-
-                <div className="mb-6">
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    rows={5}
-                    className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                    placeholder="Your message"
-                  ></textarea>
-                </div>
-
-                <Button className="w-full px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
-                  Send Message
-                  <Send className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </Button>
-              </form>
-            </div>
+            <ContactForm />
           </div>
         </div>
       </div>

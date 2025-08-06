@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin } from 'lucide-react';
 
 export default function ContactInfo() {
   return (
@@ -13,16 +13,7 @@ export default function ContactInfo() {
             </div>
             <div>
               <h4 className="font-medium text-white">Email</h4>
-              <p className="text-gray-400">info@slickage.com</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <div className="rounded-full bg-blue-500/10 w-10 h-10 flex items-center justify-center flex-shrink-0">
-              <Phone className="h-5 w-5 text-blue-500" />
-            </div>
-            <div>
-              <h4 className="font-medium text-white">Phone</h4>
-              <p className="text-gray-400">+1 (808) 123-4567</p>
+              <p className="text-gray-400">inquiry@slickage.com</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
@@ -30,9 +21,9 @@ export default function ContactInfo() {
               <MapPin className="h-5 w-5 text-blue-500" />
             </div>
             <div>
-              <h4 className="font-medium text-white">Office</h4>
+              <h4 className="font-medium text-white">Slickage Studios, LLC</h4>
               <p className="text-gray-400">
-                1234 Ala Moana Blvd
+                1600 Kapiolani Blvd., Ste. 1315
                 <br />
                 Honolulu, HI 96814
               </p>

@@ -26,7 +26,7 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
-        isScrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-md border-b border-gray-800' : 'bg-transparent'
+        isScrolled ? 'bg-[#0A0A0A]/60 backdrop-blur-md border-b border-gray-800' : 'bg-transparent'
       }`}
     >
       <div className="container mx-auto px-4">
@@ -54,7 +54,7 @@ export default function Header() {
                 {item}
               </Link>
             ))}
-            <Link href="/#contact">
+            <Link href="/contact">
               <Button className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors">
                 Get in Touch
               </Button>
@@ -76,7 +76,7 @@ export default function Header() {
       {isMobileMenuOpen && (
         <div
           id="mobile-menu"
-          className="md:hidden absolute top-full left-0 right-0 bg-[#0A0A0A] border-b border-gray-800"
+          className="md:hidden absolute top-full left-0 right-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10 border-b border-gray-800"
           role="menu"
           aria-label="Mobile navigation"
         >
@@ -92,8 +92,11 @@ export default function Header() {
                   {item}
                 </Link>
               ))}
-              <Link href="/#contact">
-                <Button className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors w-full">
+              <Link href="/contact">
+                <Button
+                  className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors w-full"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
                   Get in Touch
                 </Button>
               </Link>

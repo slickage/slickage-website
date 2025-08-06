@@ -1,10 +1,4 @@
-import {
-  ContactHero,
-  ContactForm,
-  ContactInfo,
-  BusinessHours,
-  FaqSection,
-} from '@/components/contact';
+import { ContactHero, ContactForm, ContactInfo, FaqSection } from '@/components/contact';
 
 export const metadata = {
   title: 'Contact Slickage | Get in Touch',
@@ -39,7 +33,7 @@ export default function ContactPage() {
     <main className="flex-1">
       <ContactHero />
 
-      <section className="py-24 relative bg-[#0A0A0A] bg-gradient-to-r from-blue-500/10 to-violet-500/10">
+      <section className="py-16 relative bg-[#0A0A0A] bg-gradient-to-r from-blue-500/10 to-violet-500/10">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
@@ -48,7 +42,6 @@ export default function ContactPage() {
 
             <div>
               <ContactInfo />
-              <BusinessHours />
             </div>
           </div>
         </div>

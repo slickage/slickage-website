@@ -10,7 +10,6 @@ import {
 import type { CaseStudy } from '@/types/case-study';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 
-// Uncomment and use this for future API fetching
 // async function fetchCaseStudy(id: string) {
 //   const res = await fetch(`/api/case-studies/${id}`);
 //   if (!res.ok) throw new Error('Failed to fetch');

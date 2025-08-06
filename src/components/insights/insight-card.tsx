@@ -11,7 +11,6 @@ interface InsightCardProps {
 }
 
 export default function InsightCard({ insight }: InsightCardProps) {
-  // Card entry and hover
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -22,12 +21,10 @@ export default function InsightCard({ insight }: InsightCardProps) {
     },
   };
 
-  // Tag hover
   const tagVariants = {
     hover: { scale: 1.1, transition: { duration: 0.15 } },
   };
 
-  // Image zoom
   const imageVariants = {
     hover: { scale: 1.07, transition: { duration: 0.5 } },
   };
