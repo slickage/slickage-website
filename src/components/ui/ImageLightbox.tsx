@@ -29,7 +29,6 @@ export default function ImageLightbox({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setExpanded(false);
       if (e.key === 'Tab' && modalRef.current) {
-        // Trap focus inside modal
         const focusableEls = modalRef.current.querySelectorAll<HTMLElement>(
           'a, button, textarea, input, select, [tabindex]:not([tabindex="-1"])',
         );
@@ -47,7 +46,7 @@ export default function ImageLightbox({
     const handleScroll = () => setExpanded(false);
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('scroll', handleScroll);
-    // Focus modal on open
+
     setTimeout(() => {
       if (modalRef.current) {
         const focusable = modalRef.current.querySelector<HTMLElement>(
@@ -60,7 +59,7 @@ export default function ImageLightbox({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('scroll', handleScroll);
-      // Return focus to trigger
+
       if (triggerRef.current) triggerRef.current.focus();
     };
   }, [expanded]);

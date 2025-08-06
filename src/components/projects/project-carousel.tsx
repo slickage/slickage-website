@@ -27,7 +27,6 @@ export default function ProjectCarousel({ title, projects }: ProjectCarouselProp
         behavior: 'smooth',
       });
 
-      // Check if we need to show/hide arrows after scrolling
       setTimeout(() => {
         if (carouselRef.current) {
           const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
