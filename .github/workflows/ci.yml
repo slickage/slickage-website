@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  code-quality:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,6 +26,3 @@ jobs:
 
       - name: Type Check
         run: bun run tsc --noEmit
-
-      - name: Test
-        run: echo "No tests yet"
