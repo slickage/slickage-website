@@ -10,6 +10,7 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "inspect": "NODE_OPTIONS='--inspect' next dev"
   },
   "dependencies": {

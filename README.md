@@ -39,12 +39,15 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 - `lint`: Run ESLint
 - `lint:fix`: Run ESLint with auto-fix
 - `format`: Run Prettier to format code
+- `format:check`: Check code formatting without making changes
+- `inspect`: Start development server with Node.js inspector
 
 ## Development Workflow
 
 - Use Tailwind CSS utility classes for styling
 - Run `bun lint` to check code quality
 - Run `bun format` to auto-format code
+- Run `bun format:check` to verify code formatting
 - Run `bun run tsc --noEmit` to check TypeScript types without emitting files
 
 ## Learn More
