@@ -32,7 +32,7 @@ export default function LoadingSpinner({ size = 'md', className = '' }: LoadingS
 export function LoadingSpinnerOverlay({ className = '' }: { className?: string }) {
   return (
     <div
-      className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900/90 via-gray-800/85 to-gray-900/90 z-10 ${className}`}
+      className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-500/20 via-violet-500/15 to-blue-600/25 backdrop-blur-sm border border-white/5 z-10 ${className}`}
     >
       <LoadingSpinner size="lg" />
     </div>

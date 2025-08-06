@@ -34,12 +34,14 @@ export default function ImageLightbox({
         );
         const firstEl = focusableEls[0];
         const lastEl = focusableEls[focusableEls.length - 1];
-        if (!e.shiftKey && document.activeElement === lastEl) {
-          e.preventDefault();
-          firstEl.focus();
-        } else if (e.shiftKey && document.activeElement === firstEl) {
-          e.preventDefault();
-          lastEl.focus();
+        if (firstEl && lastEl) {
+          if (!e.shiftKey && document.activeElement === lastEl) {
+            e.preventDefault();
+            firstEl.focus();
+          } else if (e.shiftKey && document.activeElement === firstEl) {
+            e.preventDefault();
+            lastEl.focus();
+          }
         }
       }
     };

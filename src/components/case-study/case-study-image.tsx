@@ -22,7 +22,6 @@ export default function CaseStudyImage({
   useEffect(() => {
     const loadImage = async () => {
       try {
-        // If it's already a placeholder image, don't show loading
         if (src === '/placeholder.svg') {
           setImageUrl('/placeholder.svg');
           setIsLoading(false);

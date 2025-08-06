@@ -106,17 +106,17 @@ export const recentProjects: Project[] = [
 ];
 
 export const webProjects: Project[] = [
-  featuredProjects[0],
-  featuredProjects[2],
-  featuredProjects[5],
-  recentProjects[1],
-  recentProjects[3],
+  featuredProjects[0]!,
+  featuredProjects[2]!,
+  featuredProjects[5]!,
+  recentProjects[1]!,
+  recentProjects[3]!,
 ];
 
 export const mobileProjects: Project[] = [
-  featuredProjects[1],
-  recentProjects[0],
-  recentProjects[4],
+  featuredProjects[1]!,
+  recentProjects[0]!,
+  recentProjects[4]!,
 ];
 
-export const enterpriseProjects: Project[] = [featuredProjects[3], recentProjects[5]];
+export const enterpriseProjects: Project[] = [featuredProjects[3]!, recentProjects[5]!];

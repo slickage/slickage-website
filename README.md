@@ -76,7 +76,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 The following environment variables are required for full functionality:
 
 - `S3_BUCKET_URL` - S3 bucket hostname for private image assets (server-side only)
-- `AWS_ACCESS_KEY_ID` - AWS access key for S3 operations  
+- `AWS_ACCESS_KEY_ID` - AWS access key for S3 operations
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key for S3 operations
 - `AWS_REGION` - AWS region for S3 bucket
 

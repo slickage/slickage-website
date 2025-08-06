@@ -19,8 +19,6 @@ export async function getS3ImageUrl(
     return fallbackUrl;
   }
 
-  
-
   try {
     const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
 

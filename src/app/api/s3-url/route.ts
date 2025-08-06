@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { env } from '@/lib/env';
 
 const s3 = new S3Client({
-  region: process.env.AWS_REGION!,
+  region: env.AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
   },
 });
 
@@ -19,7 +20,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'No key provided' }, { status: 400 });
     }
 
-    const bucketName = process.env.S3_BUCKET_URL?.split('.')[0];
+    const bucketName = env.S3_BUCKET_URL.split('.')[0];
 
     if (!bucketName) {
       throw new Error('S3 bucket URL is not configured correctly');
