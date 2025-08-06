@@ -114,7 +114,7 @@ export default function ContactSection() {
 
                 <Button className="w-full px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
                   Send Message
-                  {/* <Send className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" /> */}
+                  <Send className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Button>
               </form>
             </div>
