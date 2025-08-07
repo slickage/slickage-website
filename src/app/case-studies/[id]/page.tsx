@@ -10,12 +10,6 @@ import {
 import type { CaseStudy } from '@/types/case-study';
 import AnimatedSection from '@/components/ui/AnimatedSection';
 
-// async function fetchCaseStudy(id: string) {
-//   const res = await fetch(`/api/case-studies/${id}`);
-//   if (!res.ok) throw new Error('Failed to fetch');
-//   return res.json();
-// }
-
 export default async function CaseStudyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const caseStudy: CaseStudy | undefined = await getCaseStudyById(id);

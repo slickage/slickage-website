@@ -1,106 +1,152 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+import { logger } from '@/lib/utils/logger';
+import { getClientIp } from '@/lib/utils/ip-utils';
+import { contactSchema, ContactFormData } from '@/lib/validation/contact-schema';
+import {
+  validateHoneypot,
+  validateFormTiming,
+  validatePhoneNumber,
+  validateLinkSpam,
+} from '@/lib/validation/security-validators';
+import { checkRateLimit, MAX_SUBMISSIONS_PER_HOUR } from '@/lib/security/rate-limiter';
+import { verifyRecaptcha, validateRecaptchaScore } from '@/lib/security/recaptcha';
+import { sanitizeContactData, saveContactSubmission } from '@/lib/services/contact-service';
 
-const rateLimitMap = new Map();
-const RATE_LIMIT = 5; // max submissions
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
+export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+  let clientIp: string = 'unknown';
 
-function getClientIp(req: Request) {
-  const ip = req.headers.get('x-forwarded-for');
-  if (ip && ip.split(',')[0]) {
-    return ip.split(',')[0].trim();
-  }
-  return 'unknown';
-}
+  try {
+    clientIp = getClientIp(request);
+    const body = await request.json();
 
-function stripTags(input: string = '') {
-  return input.replace(/<[^>]*>?/gm, '');
-}
+    const validatedData: ContactFormData = contactSchema.parse(body);
 
-function escapeHtml(input: string = '') {
-  return input.replace(
-    /[&<>'"]/g,
-    (c) =>
-      ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        "'": '&#39;',
-        '"': '&quot;',
-      })[c] || c,
-  );
-}
+    const honeypotResult = validateHoneypot(validatedData, clientIp);
+    if (!honeypotResult.isValid) {
+      return NextResponse.json({ error: honeypotResult.error }, { status: 400 });
+    }
 
-async function sendContactEmail({
-  name,
-  email,
-  phone,
-  subject,
-  message,
-}: {
-  name: string;
-  email: string;
-  phone: string;
-  subject: string;
-  message: string;
-}) {
-  // TODO: Integrate with email service
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  console.log('Stub email send:', { name, email, phone, subject, message });
-}
+    const timingResult = validateFormTiming(validatedData, clientIp);
+    if (!timingResult.isValid) {
+      return NextResponse.json({ error: timingResult.error }, { status: 400 });
+    }
 
-export async function POST(req: Request) {
-  const data = await req.json();
-  const { name, email, phone, subject, message, website, elapsed } = data;
+    if (validatedData.recaptchaToken) {
+      const recaptchaResult = await verifyRecaptcha(validatedData.recaptchaToken);
+      
+      if (!recaptchaResult.success) {
+        logger.security(`reCAPTCHA failed: IP ${clientIp}, error: ${recaptchaResult.error}`);
+        return NextResponse.json(
+          { error: 'Security verification failed. Please try again.' },
+          { status: 400 }
+        );
+      }
 
-  if (website && website.trim() !== '') {
-    return NextResponse.json({ error: 'Spam detected.' }, { status: 400 });
-  }
+      if (!validateRecaptchaScore(recaptchaResult.score)) {
+        logger.security(`reCAPTCHA low score: IP ${clientIp}, score: ${recaptchaResult.score}`);
+        return NextResponse.json(
+          { error: 'Security verification failed. Please try again.' },
+          { status: 400 }
+        );
+      }
 
-  if (typeof elapsed !== 'number' || elapsed < 2000) {
-    return NextResponse.json({ error: 'Form submitted too quickly.' }, { status: 400 });
-  }
+      logger.debug(`reCAPTCHA passed: IP ${clientIp}, score: ${recaptchaResult.score}`);
+    }
 
-  const ip = getClientIp(req);
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip) || { count: 0, first: now };
-  if (now - entry.first > RATE_LIMIT_WINDOW) {
-    entry.count = 0;
-    entry.first = now;
-  }
-  entry.count++;
-  rateLimitMap.set(ip, entry);
-  if (entry.count > RATE_LIMIT) {
+    const phoneResult = validatePhoneNumber(validatedData);
+    if (!phoneResult.isValid) {
+      return NextResponse.json({ error: phoneResult.error }, { status: 400 });
+    }
+
+    const linkSpamResult = validateLinkSpam(validatedData, clientIp);
+    if (!linkSpamResult.isValid) {
+      return NextResponse.json({ error: linkSpamResult.error }, { status: 400 });
+    }
+
+    const rateLimitResult = checkRateLimit(clientIp);
+    if (rateLimitResult.limited) {
+      const minutesUntilReset = Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000 / 60);
+      
+      return NextResponse.json(
+        {
+          error: `Too many submissions. Please try again in ${minutesUntilReset} minutes.`,
+          retryAfter: minutesUntilReset
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000).toString(),
+            'X-RateLimit-Limit': MAX_SUBMISSIONS_PER_HOUR.toString(),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toISOString(),
+          }
+        }
+      );
+    }
+
+    const sanitizedData = sanitizeContactData(validatedData);
+    const submissionResult = await saveContactSubmission(sanitizedData, clientIp, startTime);
+
+    if (!submissionResult.success) {
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable. Please try again later.' },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json(
-      { error: 'Too many submissions. Please try again later.' },
-      { status: 429 },
+      {
+        message: 'Form submitted successfully',
+        submissionId: submissionResult.submissionId,
+      },
+      {
+        status: 200,
+        headers: {
+          'X-RateLimit-Limit': MAX_SUBMISSIONS_PER_HOUR.toString(),
+          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+          'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toISOString(),
+        }
+      }
     );
+  } catch (error) {
+    const processingTime = Date.now() - startTime;
+    logger.error(
+      `Error processing contact form: IP ${clientIp}, processing time ${processingTime}ms`,
+      error
+    );
+
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        {
+          error: 'Validation failed',
+          details: error.issues.map((err: z.ZodIssue) => ({
+            field: err.path.join('.'),
+            message: err.message,
+          })),
+        },
+        { status: 400 }
+      );
+    }
+
+    if (error instanceof SyntaxError) {
+      return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+    }
+
+    if (error instanceof Error) {
+      logger.error('Database error:', error.message);
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable. Please try again later.' },
+        { status: 503 }
+      );
+    }
+
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
+}
 
-  const cleanName = stripTags(typeof name === 'string' ? name : '');
-  const cleanEmail = stripTags(typeof email === 'string' ? email : '');
-  const cleanPhone = stripTags(typeof phone === 'string' ? phone : '');
-  const cleanSubject = stripTags(typeof subject === 'string' ? subject : '');
-  const cleanMessage = stripTags(typeof message === 'string' ? message : '');
-
-  const linkCount = (cleanMessage.match(/https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=%]+/gi) || [])
-    .length;
-  if (linkCount > 2) {
-    return NextResponse.json({ error: 'Too many links in message.' }, { status: 400 });
-  }
-
-  const safeName = escapeHtml(cleanName);
-  const safeEmail = escapeHtml(cleanEmail);
-  const safePhone = escapeHtml(cleanPhone);
-  const safeSubject = escapeHtml(cleanSubject);
-  const safeMessage = escapeHtml(cleanMessage);
-
-  await sendContactEmail({
-    name: safeName,
-    email: safeEmail,
-    phone: safePhone,
-    subject: safeSubject,
-    message: safeMessage,
-  });
-
-  return NextResponse.json({ message: `Thank you, ${safeName}, for your message!` });
+// Handle GET requests (optional - for health check)
+export async function GET() {
+  return NextResponse.json({ message: 'Contact API endpoint is working' }, { status: 200 });
 }
