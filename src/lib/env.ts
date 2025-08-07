@@ -16,6 +16,10 @@ const optionalEnvVars = {
 } as const;
 
 function validateEnv() {
+  if (typeof window !== 'undefined') {
+    return;
+  }
+
   const missingVars: string[] = [];
 
   for (const [key, value] of Object.entries(requiredEnvVars)) {
@@ -33,6 +37,18 @@ function validateEnv() {
 }
 
 function getEnv() {
+  if (typeof window === 'undefined') {
+    return {
+      S3_BUCKET_URL: process.env.S3_BUCKET_URL || '',
+      AWS_ACCESS_KEY_ID:
+        process.env.NETLIFY_AWS_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID || '',
+      AWS_SECRET_ACCESS_KEY:
+        process.env.NETLIFY_AWS_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY || '',
+      AWS_REGION: process.env.NETLIFY_AWS_REGION || process.env.AWS_REGION || 'us-west-2',
+      NODE_ENV: process.env.NODE_ENV || 'production',
+    };
+  }
+
   validateEnv();
   return {
     ...requiredEnvVars,
