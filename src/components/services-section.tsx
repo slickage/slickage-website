@@ -83,7 +83,7 @@ export default function ServicesSection() {
   ];
 
   return (
-    <section id="services" className="py-24 relative bg-[#0A0A0A]">
+    <section id="services" className="py-24 relative">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <div className="inline-block rounded-full bg-blue-500/10 px-3 py-1 text-sm text-blue-400 font-medium mb-4">

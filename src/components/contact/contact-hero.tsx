@@ -3,7 +3,7 @@ import Image from 'next/image';
 export default function ContactHero() {
   return (
     <section id="contact-hero" className="relative min-h-[60vh] flex items-center">
-      <div className="absolute inset-0 bg-[#0A0A0A]">
+      <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10" />
         <div className="absolute inset-0">
           <Image

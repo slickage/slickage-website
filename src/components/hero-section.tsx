@@ -18,8 +18,8 @@ export default function HeroSection() {
 
   return (
     <section id="hero" className="relative min-h-screen flex items-center">
-      <div className="absolute inset-0 bg-[#0A0A0A]">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10" />
+      <div className="absolute inset-0">
+        <div className="absolute inset-0" />
         <div
           className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7130555/pexels-photo-7130555.jpeg')] opacity-5 bg-cover bg-center bg-no-repeat mix-blend-overlay"
           style={{

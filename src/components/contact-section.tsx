@@ -6,7 +6,7 @@ import { FaLinkedin } from 'react-icons/fa';
 
 export default function ContactSection() {
   return (
-    <section id="contact" className="py-24 bg-[#0A0A0A]">
+    <section id="contact" className="py-24">
       <div className="container mx-auto px-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-center">
