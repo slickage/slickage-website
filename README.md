@@ -83,11 +83,13 @@ The following environment variables are required for full functionality:
 ### Deployment-Specific Notes
 
 **For Netlify Deployment:**
+
 - Netlify reserves standard AWS environment variable names (`AWS_ACCESS_KEY_ID`, etc.)
 - Use the `NETLIFY_*` prefixed versions in Netlify's environment variable settings
 - The code automatically falls back to standard names for local development
 
 **For Other Platforms:**
+
 - Use standard AWS environment variable names (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`)
 
 ### Optional Environment Variables
