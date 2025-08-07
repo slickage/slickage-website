@@ -1,17 +1,44 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import type { Insight } from '@/types/insight';
+import { getS3ImageUrl } from '@/lib/utils';
+import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
 
 interface InsightCardProps {
   insight: Insight;
 }
 
 export default function InsightCard({ insight }: InsightCardProps) {
-  // Card entry and hover
+  const [imageUrl, setImageUrl] = useState<string>('/placeholder.svg');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadImage = async () => {
+      try {
+        if (insight.imageSrc === '/placeholder.svg') {
+          setImageUrl('/placeholder.svg');
+          setIsLoading(false);
+          return;
+        }
+
+        setIsLoading(true);
+        const url = await getS3ImageUrl(insight.imageSrc);
+        setImageUrl(url);
+      } catch (error) {
+        console.error('Error loading image:', error);
+        setImageUrl('/placeholder.svg');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadImage();
+  }, [insight.imageSrc]);
+
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -22,12 +49,10 @@ export default function InsightCard({ insight }: InsightCardProps) {
     },
   };
 
-  // Tag hover
   const tagVariants = {
     hover: { scale: 1.1, transition: { duration: 0.15 } },
   };
 
-  // Image zoom
   const imageVariants = {
     hover: { scale: 1.07, transition: { duration: 0.5 } },
   };
@@ -68,14 +93,20 @@ export default function InsightCard({ insight }: InsightCardProps) {
             variants={imageVariants}
             whileHover="hover"
           >
-            <Image
-              src={insight.imageSrc}
-              alt={insight.title}
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
-              className="object-cover"
-            />
+            <div className="relative w-full h-full">
+              {isLoading && <LoadingSpinnerOverlay />}
+              {!isLoading && (
+                <Image
+                  src={imageUrl}
+                  alt={insight.title}
+                  fill
+                  priority
+                  unoptimized
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
+                  className="object-cover transition-opacity duration-300"
+                />
+              )}
+            </div>
           </motion.div>
         </div>
       </motion.div>
