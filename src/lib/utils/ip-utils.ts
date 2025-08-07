@@ -9,7 +9,8 @@ export function getClientIp(request: NextRequest): string {
   const remoteAddr = request.headers.get('remote-addr');
 
   if (forwarded) {
-    return forwarded.split(',')[0].trim();
+    const firstIp = forwarded.split(',')[0];
+    return firstIp ? firstIp.trim() : 'unknown';
   }
   if (realIp) {
     return realIp.trim();

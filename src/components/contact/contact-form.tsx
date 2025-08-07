@@ -72,13 +72,13 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
     return () => {
       // Cleanup script if component unmounts
       const scripts = document.querySelectorAll('script[src*="recaptcha"]');
-      scripts.forEach(script => script.remove());
+      scripts.forEach((script) => script.remove());
     };
   }, []);
 
   const formatPhoneNumber = (value: string): string => {
     const digits = value.replace(/\D/g, '');
-    
+
     if (digits.length <= 3) {
       return digits;
     } else if (digits.length <= 6) {
@@ -92,7 +92,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    
+
     if (name === 'phone') {
       const formattedPhone = formatPhoneNumber(value);
       setFormData((prev) => ({ ...prev, [name]: formattedPhone }));
@@ -109,22 +109,22 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
     }
   };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
     setFieldErrors({});
-    
+
     const elapsed = Date.now() - startTime;
 
     try {
       let recaptchaToken = '';
-      
+
       if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && window.grecaptcha && recaptchaLoaded) {
         try {
           recaptchaToken = await window.grecaptcha.execute(
             process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
-            { action: 'contact_form' }
+            { action: 'contact_form' },
           );
         } catch (recaptchaError) {
           console.warn('reCAPTCHA execution failed:', recaptchaError);
@@ -134,10 +134,10 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          ...formData, 
+        body: JSON.stringify({
+          ...formData,
           elapsed,
-          recaptchaToken 
+          recaptchaToken,
         }),
       });
 
@@ -202,7 +202,9 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
               <polyline points="22 4 12 14.01 9 11.01" />
             </svg>
           </div>
-          <h3 className="text-2xl font-bold text-white mb-3 gradient-text">Message Sent Successfully!</h3>
+          <h3 className="text-2xl font-bold text-white mb-3 gradient-text">
+            Message Sent Successfully!
+          </h3>
           <p className="text-gray-300 mb-6 leading-relaxed">
             Thank you for reaching out. We'll get back to you as soon as possible.
           </p>
@@ -218,7 +220,13 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
   }
 
   return (
-    <div className={standalone ? "bg-white/5 backdrop-blur-sm rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300" : ""}>
+    <div
+      className={
+        standalone
+          ? 'bg-white/5 backdrop-blur-sm rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300'
+          : ''
+      }
+    >
       {/* General error message */}
       {error && (
         <div className="mb-6 p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
@@ -370,22 +378,22 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
             </>
           )}
         </Button>
-        
+
         {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
           <p className="mt-3 text-xs text-gray-500 text-center">
             This site is protected by reCAPTCHA and the Google{' '}
-            <a 
-              href="https://policies.google.com/privacy" 
-              target="_blank" 
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-300 underline"
             >
               Privacy Policy
             </a>{' '}
             and{' '}
-            <a 
-              href="https://policies.google.com/terms" 
-              target="_blank" 
+            <a
+              href="https://policies.google.com/terms"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-300 underline"
             >

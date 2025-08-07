@@ -36,19 +36,29 @@ export function sanitizeContactData(data: ContactFormData): ProcessedContactData
 export async function saveContactSubmission(
   sanitizedData: ProcessedContactData,
   clientIp: string,
-  startTime: number
+  startTime: number,
 ): Promise<ContactSubmissionResult> {
   try {
     const submission = await db.insert(form_submissions).values(sanitizedData).returning();
-    
+
+    if (!submission || submission.length === 0) {
+      throw new Error('Failed to insert submission - no data returned');
+    }
+
     const processingTime = Date.now() - startTime;
+    const submissionId = submission[0]?.id;
+    
+    if (!submissionId) {
+      throw new Error('Failed to get submission ID');
+    }
+    
     logger.info(
-      `Form submission successful: ID ${submission[0].id}, IP ${clientIp}, processing time ${processingTime}ms`
+      `Form submission successful: ID ${submissionId}, IP ${clientIp}, processing time ${processingTime}ms`,
     );
 
     return {
       success: true,
-      submissionId: submission[0].id,
+      submissionId,
     };
   } catch (error) {
     logger.error('Database error during contact submission:', error);

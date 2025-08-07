@@ -17,29 +17,29 @@ export interface RateLimitResult {
 export function checkRateLimit(ip: string): RateLimitResult {
   const now = Date.now();
   const times = submissionTimes.get(ip) || [];
-  
-  const recentTimes = times.filter(time => now - time < RATE_LIMIT_WINDOW);
-  
+
+  const recentTimes = times.filter((time) => now - time < RATE_LIMIT_WINDOW);
+
   if (recentTimes.length >= MAX_SUBMISSIONS_PER_HOUR) {
     const oldestSubmission = Math.min(...recentTimes);
     const resetTime = oldestSubmission + RATE_LIMIT_WINDOW;
-    
+
     logger.security(`Rate limit exceeded: IP ${ip}`);
-    
+
     return {
       limited: true,
       remaining: 0,
-      resetTime
+      resetTime,
     };
   }
-  
+
   recentTimes.push(now);
   submissionTimes.set(ip, recentTimes);
-  
+
   return {
     limited: false,
     remaining: MAX_SUBMISSIONS_PER_HOUR - recentTimes.length,
-    resetTime: now + RATE_LIMIT_WINDOW
+    resetTime: now + RATE_LIMIT_WINDOW,
   };
 }
 

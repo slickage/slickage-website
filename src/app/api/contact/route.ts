@@ -35,12 +35,12 @@ export async function POST(request: NextRequest) {
 
     if (validatedData.recaptchaToken) {
       const recaptchaResult = await verifyRecaptcha(validatedData.recaptchaToken);
-      
+
       if (!recaptchaResult.success) {
         logger.security(`reCAPTCHA failed: IP ${clientIp}, error: ${recaptchaResult.error}`);
         return NextResponse.json(
           { error: 'Security verification failed. Please try again.' },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
         logger.security(`reCAPTCHA low score: IP ${clientIp}, score: ${recaptchaResult.score}`);
         return NextResponse.json(
           { error: 'Security verification failed. Please try again.' },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -68,11 +68,11 @@ export async function POST(request: NextRequest) {
     const rateLimitResult = checkRateLimit(clientIp);
     if (rateLimitResult.limited) {
       const minutesUntilReset = Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000 / 60);
-      
+
       return NextResponse.json(
         {
           error: `Too many submissions. Please try again in ${minutesUntilReset} minutes.`,
-          retryAfter: minutesUntilReset
+          retryAfter: minutesUntilReset,
         },
         {
           status: 429,
@@ -81,8 +81,8 @@ export async function POST(request: NextRequest) {
             'X-RateLimit-Limit': MAX_SUBMISSIONS_PER_HOUR.toString(),
             'X-RateLimit-Remaining': '0',
             'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toISOString(),
-          }
-        }
+          },
+        },
       );
     }
 
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
     if (!submissionResult.success) {
       return NextResponse.json(
         { error: 'Service temporarily unavailable. Please try again later.' },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
@@ -107,14 +107,14 @@ export async function POST(request: NextRequest) {
           'X-RateLimit-Limit': MAX_SUBMISSIONS_PER_HOUR.toString(),
           'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
           'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toISOString(),
-        }
-      }
+        },
+      },
     );
   } catch (error) {
     const processingTime = Date.now() - startTime;
     logger.error(
       `Error processing contact form: IP ${clientIp}, processing time ${processingTime}ms`,
-      error
+      error,
     );
 
     if (error instanceof z.ZodError) {
@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
             message: err.message,
           })),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
       logger.error('Database error:', error.message);
       return NextResponse.json(
         { error: 'Service temporarily unavailable. Please try again later.' },
-        { status: 503 }
+        { status: 503 },
       );
     }
 

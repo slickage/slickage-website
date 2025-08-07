@@ -13,7 +13,10 @@ export interface SecurityValidationResult {
 /**
  * Check honeypot field for spam
  */
-export function validateHoneypot(data: ContactFormData, clientIp: string): SecurityValidationResult {
+export function validateHoneypot(
+  data: ContactFormData,
+  clientIp: string,
+): SecurityValidationResult {
   if (data.website && data.website.trim() !== '') {
     logger.security(`Spam detected (honeypot): IP ${clientIp}`);
     return { isValid: false, error: 'Invalid submission' };
@@ -24,7 +27,10 @@ export function validateHoneypot(data: ContactFormData, clientIp: string): Secur
 /**
  * Check if form was submitted too quickly
  */
-export function validateFormTiming(data: ContactFormData, clientIp: string): SecurityValidationResult {
+export function validateFormTiming(
+  data: ContactFormData,
+  clientIp: string,
+): SecurityValidationResult {
   if (data.elapsed && data.elapsed < MIN_FORM_TIME) {
     logger.security(`Spam detected (too fast): IP ${clientIp}, elapsed ${data.elapsed}ms`);
     return { isValid: false, error: 'Please take more time to fill out the form' };
@@ -48,7 +54,10 @@ export function validatePhoneNumber(data: ContactFormData): SecurityValidationRe
 /**
  * Check for link spam in message
  */
-export function validateLinkSpam(data: ContactFormData, clientIp: string): SecurityValidationResult {
+export function validateLinkSpam(
+  data: ContactFormData,
+  clientIp: string,
+): SecurityValidationResult {
   const linkCount = countLinks(data.message);
   if (linkCount > MAX_LINKS_IN_MESSAGE) {
     logger.security(`Spam detected (too many links): IP ${clientIp}, links ${linkCount}`);
