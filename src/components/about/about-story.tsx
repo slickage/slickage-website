@@ -3,7 +3,7 @@ import Image from 'next/image';
 export default function AboutStory() {
   return (
     <section className="relative py-24 md:py-32">
-      <div className="absolute inset-0" />
+      <div className="absolute inset-0"/>
       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
