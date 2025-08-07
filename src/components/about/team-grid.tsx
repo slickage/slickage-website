@@ -38,7 +38,7 @@ export default function TeamGrid() {
 
   return (
     <section className="relative py-24 md:py-32">
-      <div className="absolute inset-0"/>
+      <div className="absolute inset-0" />
       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col items-center text-center space-y-4 mb-12">
