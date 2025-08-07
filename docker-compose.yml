@@ -1,0 +1,16 @@
+services:
+  web:
+    build: "."
+    ports:
+      - "80:3000"
+    env_file: "docker.env"
+  postgres:
+    image: "postgres:latest"
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: slickage-website
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data

@@ -36,6 +36,7 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+docker.env
 
 # Allow .env.example to be committed
 !.env.example
@@ -46,3 +47,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Data files
+/data/*
