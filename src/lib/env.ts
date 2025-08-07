@@ -5,9 +5,9 @@
 
 const requiredEnvVars = {
   S3_BUCKET_URL: process.env.S3_BUCKET_URL,
-  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
-  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
-  AWS_REGION: process.env.AWS_REGION,
+  AWS_ACCESS_KEY_ID: process.env.NETLIFY_AWS_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY: process.env.NETLIFY_AWS_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY,
+  AWS_REGION: process.env.NETLIFY_AWS_REGION || process.env.AWS_REGION,
 } as const;
 
 const optionalEnvVars = {
