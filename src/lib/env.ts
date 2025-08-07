@@ -14,7 +14,6 @@ const optionalEnvVars = {
   NODE_ENV: process.env.NODE_ENV || 'development',
 } as const;
 
-// Validate required environment variables
 function validateEnv() {
   const missingVars: string[] = [];
 
@@ -32,10 +31,7 @@ function validateEnv() {
   }
 }
 
-// Only validate in production or when explicitly requested
-if (process.env.NODE_ENV === 'production' || process.env.VALIDATE_ENV === 'true') {
-  validateEnv();
-}
+validateEnv();
 
 export const env = {
   ...requiredEnvVars,
