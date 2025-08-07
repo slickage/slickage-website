@@ -25,9 +25,9 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out border-b border-transparent ${
         isScrolled
-          ? 'bg-gradient-to-r from-blue-950/90 to-violet-950/90 backdrop-blur-md border-b border-blue-800/30'
+          ? 'xxbg-gradient-to-r from-blue-950/90 to-violet-950/90 bg-black/30 backdrop-blur-md border-b border-white/10'
           : 'bg-transparent'
       }`}
     >
