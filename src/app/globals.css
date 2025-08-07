@@ -41,7 +41,7 @@
   }
 
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-violet-400;
   }
 
   .animation-delay-75 {
