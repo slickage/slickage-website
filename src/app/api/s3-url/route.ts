@@ -1,0 +1,41 @@
+import { NextResponse } from 'next/server';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { env } from '@/lib/env';
+
+const s3 = new S3Client({
+  region: env.AWS_REGION,
+  credentials: {
+    accessKeyId: env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const key = searchParams.get('key');
+
+    if (!key) {
+      return NextResponse.json({ error: 'No key provided' }, { status: 400 });
+    }
+
+    const bucketName = env.S3_BUCKET_URL.split('.')[0];
+
+    if (!bucketName) {
+      throw new Error('S3 bucket URL is not configured correctly');
+    }
+
+    const command = new GetObjectCommand({
+      Bucket: bucketName,
+      Key: key,
+    });
+
+    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+
+    return NextResponse.json({ url });
+  } catch (error) {
+    console.error('Error generating presigned URL:', error);
+    return NextResponse.json({ error: 'Failed to generate URL' }, { status: 500 });
+  }
+}

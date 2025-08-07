@@ -28,7 +28,11 @@ interface ApiError {
   retryAfter?: number;
 }
 
-export default function ContactForm() {
+interface ContactFormProps {
+  standalone?: boolean;
+}
+
+export default function ContactForm({ standalone = false }: ContactFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -214,7 +218,7 @@ export default function ContactForm() {
   }
 
   return (
-    <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300">
+    <div className={standalone ? "bg-white/5 backdrop-blur-sm rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300" : ""}>
       {/* General error message */}
       {error && (
         <div className="mb-6 p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
@@ -245,7 +249,7 @@ export default function ContactForm() {
           />
         </div>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
             Name <span className="text-red-400">*</span>
           </label>
@@ -264,7 +268,7 @@ export default function ContactForm() {
           />
           {fieldErrors.name && <p className="mt-1 text-sm text-red-400">{fieldErrors.name}</p>}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
               Email <span className="text-red-400">*</span>
@@ -307,7 +311,7 @@ export default function ContactForm() {
             {fieldErrors.phone && <p className="mt-1 text-sm text-red-400">{fieldErrors.phone}</p>}
           </div>
         </div>
-        <div className="mb-6">
+        <div className="mb-4">
           <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-1">
             Company or Project Name <span className="text-red-400">*</span>
           </label>
@@ -328,7 +332,7 @@ export default function ContactForm() {
             <p className="mt-1 text-sm text-red-400">{fieldErrors.subject}</p>
           )}
         </div>
-        <div className="mb-6">
+        <div className="mb-4">
           <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">
             How can we help you? <span className="text-red-400">*</span>
           </label>
