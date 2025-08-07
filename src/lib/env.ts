@@ -32,17 +32,33 @@ function validateEnv() {
   }
 }
 
-validateEnv();
+function getEnv() {
+  validateEnv();
+  return {
+    ...requiredEnvVars,
+    ...optionalEnvVars,
+  } as {
+    S3_BUCKET_URL: string;
+    AWS_ACCESS_KEY_ID: string;
+    AWS_SECRET_ACCESS_KEY: string;
+    AWS_REGION: string;
+    NODE_ENV: string;
+  };
+}
 
-export const env = {
-  ...requiredEnvVars,
-  ...optionalEnvVars,
-} as {
+export const env = new Proxy({} as {
   S3_BUCKET_URL: string;
   AWS_ACCESS_KEY_ID: string;
   AWS_SECRET_ACCESS_KEY: string;
   AWS_REGION: string;
   NODE_ENV: string;
-};
+}, {
+  get(target, prop) {
+    if (!target.S3_BUCKET_URL) {
+      Object.assign(target, getEnv());
+    }
+    return target[prop as keyof typeof target];
+  }
+});
 
 export { validateEnv };
