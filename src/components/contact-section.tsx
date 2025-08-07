@@ -10,57 +10,6 @@ export default function ContactSection() {
       <div className="container mx-auto px-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-center">
-            {/* <div>
-              <div className="inline-block rounded-full bg-blue-500/10 px-3 py-1 text-sm text-blue-400 font-medium mb-4">
-                Get in Touch
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold gradient-text mb-6">
-                Let's discuss your project
-              </h2>
-              <p className="text-lg text-gray-400 mb-8">
-                We'd love to hear from you. Fill out the form and our team will get back to you as
-                soon as possible.
-              </p>
-
-              {/* <div className="space-y-6">
-                <div className="flex items-start">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500/10 text-blue-400">
-                      <Mail className="h-5 w-5" />
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-white">Email</h3>
-                    <p className="text-gray-400">hello@archipelago.dev</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500/10 text-blue-400">
-                      <Phone className="h-5 w-5" />
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-white">Phone</h3>
-                    <p className="text-gray-400">+1 (808) 555-0123</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-blue-500/10 text-blue-400">
-                      <MapPin className="h-5 w-5" />
-                    </div>
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="text-lg font-semibold text-white">Location</h3>
-                    <p className="text-gray-400">Honolulu, Hawaii</p>
-                  </div>
-                </div>
-              </div> 
-            </div> */}
-
             <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300 text-center max-w-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center">
