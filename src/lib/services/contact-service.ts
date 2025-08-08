@@ -47,11 +47,11 @@ export async function saveContactSubmission(
 
     const processingTime = Date.now() - startTime;
     const submissionId = submission[0]?.id;
-    
+
     if (!submissionId) {
       throw new Error('Failed to get submission ID');
     }
-    
+
     logger.info(
       `Form submission successful: ID ${submissionId}, IP ${clientIp}, processing time ${processingTime}ms`,
     );

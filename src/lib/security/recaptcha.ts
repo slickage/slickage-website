@@ -1,4 +1,5 @@
 import { logger } from '../utils/logger';
+import { env } from '../env';
 
 export interface RecaptchaResult {
   success: boolean;
@@ -10,7 +11,7 @@ export interface RecaptchaResult {
  * Verify reCAPTCHA v3 token
  */
 export async function verifyRecaptcha(token: string): Promise<RecaptchaResult> {
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  const secretKey = env.RECAPTCHA_SECRET_KEY;
 
   if (!secretKey) {
     logger.warn('RECAPTCHA_SECRET_KEY not configured');

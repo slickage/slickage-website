@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { env } from '@/lib/env';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -22,7 +23,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (env.NODE_ENV !== 'production') {
       console.error('ErrorBoundary caught an error:', error, errorInfo);
     }
   }

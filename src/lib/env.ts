@@ -1,83 +1,78 @@
 /**
- * Environment variable validation and type safety
+ * Server-side environment variables
  * Based on Next.js best practices: https://nextjs.org/docs/app/guides/environment-variables
  */
 
-const requiredEnvVars = {
-  S3_BUCKET_URL: process.env.S3_BUCKET_URL,
-  AWS_ACCESS_KEY_ID: process.env.NETLIFY_AWS_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID,
-  AWS_SECRET_ACCESS_KEY:
-    process.env.NETLIFY_AWS_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY,
-  AWS_REGION: process.env.NETLIFY_AWS_REGION || process.env.AWS_REGION,
-} as const;
+type ServerEnv = {
+  S3_BUCKET_URL: string;
+  AWS_ACCESS_KEY_ID: string;
+  AWS_SECRET_ACCESS_KEY: string;
+  AWS_REGION: string;
+  RECAPTCHA_SITE_KEY: string;
+  RECAPTCHA_SECRET_KEY: string;
+  DATABASE_URL: string;
+  NODE_ENV: string;
+};
 
-const optionalEnvVars = {
-  NODE_ENV: process.env.NODE_ENV || 'development',
-} as const;
-
-function validateEnv() {
+function getServerEnv(): ServerEnv {
+  // Return empty values on client-side
   if (typeof window !== 'undefined') {
-    return;
-  }
-
-  const missingVars: string[] = [];
-
-  for (const [key, value] of Object.entries(requiredEnvVars)) {
-    if (!value) {
-      missingVars.push(key);
-    }
-  }
-
-  if (missingVars.length > 0) {
-    throw new Error(
-      `Missing required environment variables: ${missingVars.join(', ')}\n` +
-        'Please check your .env file and ensure all required variables are set.',
-    );
-  }
-}
-
-function getEnv() {
-  if (typeof window === 'undefined') {
     return {
-      S3_BUCKET_URL: process.env.S3_BUCKET_URL || '',
-      AWS_ACCESS_KEY_ID:
-        process.env.NETLIFY_AWS_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID || '',
-      AWS_SECRET_ACCESS_KEY:
-        process.env.NETLIFY_AWS_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY || '',
-      AWS_REGION: process.env.NETLIFY_AWS_REGION || process.env.AWS_REGION || 'us-west-2',
+      S3_BUCKET_URL: '',
+      AWS_ACCESS_KEY_ID: '',
+      AWS_SECRET_ACCESS_KEY: '',
+      AWS_REGION: '',
+      RECAPTCHA_SITE_KEY: '',
+      RECAPTCHA_SECRET_KEY: '',
+      DATABASE_URL: '',
       NODE_ENV: process.env.NODE_ENV || 'production',
     };
   }
 
-  validateEnv();
+  // Only validate at runtime, not during build
+  if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PHASE) {
+    const requiredVars = [
+      'S3_BUCKET_URL',
+      'AWS_ACCESS_KEY_ID',
+      'AWS_SECRET_ACCESS_KEY',
+      'AWS_REGION',
+      'RECAPTCHA_SITE_KEY',
+      'RECAPTCHA_SECRET_KEY',
+      'DATABASE_URL',
+    ];
+
+    const missingVars = requiredVars.filter(
+      (key) => !process.env[key] && !process.env[`NETLIFY_${key}`],
+    );
+
+    if (missingVars.length > 0) {
+      throw new Error(
+        `Missing required server environment variables: ${missingVars.join(', ')}\n` +
+          'Please check your .env file and ensure all required variables are set.',
+      );
+    }
+  }
+
   return {
-    ...requiredEnvVars,
-    ...optionalEnvVars,
-  } as {
-    S3_BUCKET_URL: string;
-    AWS_ACCESS_KEY_ID: string;
-    AWS_SECRET_ACCESS_KEY: string;
-    AWS_REGION: string;
-    NODE_ENV: string;
+    S3_BUCKET_URL: process.env.S3_BUCKET_URL || '',
+    AWS_ACCESS_KEY_ID: process.env.NETLIFY_AWS_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID || '',
+    AWS_SECRET_ACCESS_KEY:
+      process.env.NETLIFY_AWS_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY || '',
+    AWS_REGION: process.env.NETLIFY_AWS_REGION || process.env.AWS_REGION || 'us-west-2',
+    RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY || '',
+    RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY || '',
+    DATABASE_URL: process.env.DATABASE_URL || '',
+    NODE_ENV: process.env.NODE_ENV || 'production',
   };
 }
 
-export const env = new Proxy(
-  {} as {
-    S3_BUCKET_URL: string;
-    AWS_ACCESS_KEY_ID: string;
-    AWS_SECRET_ACCESS_KEY: string;
-    AWS_REGION: string;
-    NODE_ENV: string;
-  },
-  {
-    get(target, prop) {
-      if (!target.S3_BUCKET_URL) {
-        Object.assign(target, getEnv());
-      }
-      return target[prop as keyof typeof target];
-    },
-  },
-);
+let envInstance: ServerEnv | null = null;
 
-export { validateEnv };
+export const env: ServerEnv = new Proxy({} as ServerEnv, {
+  get(_target, prop) {
+    if (!envInstance) {
+      envInstance = getServerEnv();
+    }
+    return envInstance[prop as keyof ServerEnv];
+  },
+});
