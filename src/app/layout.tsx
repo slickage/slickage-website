@@ -8,8 +8,39 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://beta.slickage.io'),
-  title: 'Slickage - Software Development Company',
-  description: 'A boutique software company based in Honolulu, Hawaii building big things.',
+  title: {
+    default: 'Slickage - Software Development Company',
+    template: '%s | Slickage',
+  },
+  description:
+    'A boutique software company based in Honolulu, Hawaii building big things. We specialize in web applications, iOS development, and product design.',
+  keywords: [
+    'software development',
+    'web applications',
+    'iOS development',
+    'product design',
+    'Hawaii',
+    'Honolulu',
+  ],
+  authors: [{ name: 'Slickage' }],
+  creator: 'Slickage',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://beta.slickage.io',
+    title: 'Slickage - Software Development Company',
+    description: 'A boutique software company based in Honolulu, Hawaii building big things.',
+    siteName: 'Slickage',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Slickage - Software Development Company',
+    description: 'A boutique software company based in Honolulu, Hawaii building big things.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

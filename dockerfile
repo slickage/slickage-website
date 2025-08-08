@@ -20,9 +20,7 @@ COPY . .
 # [optional] tests & build
 ENV NODE_ENV=production
 
-ARG NEXT_PUBLIC_S3_BUCKET_URL
-ENV NEXT_PUBLIC_S3_BUCKET_URL=$NEXT_PUBLIC_S3_BUCKET_URL
-RUN NEXT_PUBLIC_S3_BUCKET_URL=$NEXT_PUBLIC_S3_BUCKET_URL bun run build
+RUN bun run build
 
 RUN addgroup --system --gid 1001 nextjs
 

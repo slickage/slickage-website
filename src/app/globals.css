@@ -6,7 +6,7 @@
   }
 
   body {
-    @apply bg-[#0A0A0A] text-gray-200 antialiased;
+    @apply bg-[#0A0A0A] bg-gradient-to-r from-blue-500/10 to-violet-500/10 text-gray-200 antialiased;
     font-family:
       -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
       'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
@@ -41,7 +41,11 @@
   }
 
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-violet-400;
+  }
+
+  .animation-delay-75 {
+    animation-delay: 0.075s;
   }
 }
 

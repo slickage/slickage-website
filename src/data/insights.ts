@@ -1,7 +1,5 @@
 import type { Insight } from '@/types/insight';
 
-const S3_BUCKET_URL = process.env.NEXT_PUBLIC_S3_BUCKET_URL;
-
 export const featuredInsights: Insight[] = [
   {
     id: 'pharmgkb',
@@ -14,18 +12,14 @@ export const featuredInsights: Insight[] = [
     id: 'epochtalk',
     title: 'Epochtalk Forum Administration',
     description: 'Redesigning a powerful—but unwieldy—admin interface',
-    imageSrc: S3_BUCKET_URL
-      ? `https://${S3_BUCKET_URL}/images/case-studies/epochtalk/Epochtalk-Settings.png`
-      : '/placeholder.svg',
+    imageSrc: 'images/case-studies/epochtalk/Epochtalk-Settings.png',
     tags: ['Elixir', 'Vue', 'Phoenix', 'Ecto'],
   },
   {
     id: 'raisegiving',
     title: 'Raisegiving Checkout Flow Redesign',
     description: 'Streamlining the donor experience for a nonprofit fundraising platform',
-    imageSrc: S3_BUCKET_URL
-      ? `https://${S3_BUCKET_URL}/images/case-studies/raisegiving/Raisegiving-Overview.gif`
-      : '/placeholder.svg',
+    imageSrc: 'images/case-studies/raisegiving/Raisegiving-Overview.gif',
     tags: ['Vue', 'Rails'],
   },
   {

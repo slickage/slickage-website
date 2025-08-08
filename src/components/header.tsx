@@ -25,8 +25,10 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
-        isScrolled ? 'bg-[#0A0A0A]/90 backdrop-blur-md border-b border-gray-800' : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out border-b border-transparent ${
+        isScrolled
+          ? 'xxbg-gradient-to-r from-blue-950/90 to-violet-950/90 bg-black/30 backdrop-blur-md border-b border-white/10'
+          : 'bg-transparent'
       }`}
     >
       <div className="container mx-auto px-4">
@@ -76,7 +78,7 @@ export default function Header() {
       {isMobileMenuOpen && (
         <div
           id="mobile-menu"
-          className="md:hidden absolute top-full left-0 right-0 bg-[#0A0A0A] border-b border-gray-800"
+          className="md:hidden absolute top-full left-0 right-0 border-b border-gray-800"
           role="menu"
           aria-label="Mobile navigation"
         >
