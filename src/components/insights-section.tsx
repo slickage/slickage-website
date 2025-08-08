@@ -18,8 +18,8 @@ export default async function Insights() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {insights.map((insight: Insight) => (
-            <InsightCard key={insight.id} insight={insight} />
+          {insights.map((insight: Insight, index: number) => (
+            <InsightCard key={insight.id} insight={insight} index={index} />
           ))}
         </div>
       </div>

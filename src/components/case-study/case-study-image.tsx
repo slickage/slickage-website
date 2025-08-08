@@ -2,10 +2,9 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
-import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
-import { useImageLoader } from '@/lib/hooks/useImageLoader';
+import { LazyImageLightbox } from '@/components/ui';
 
-const ImageLightbox = dynamic(() => import('../ui/ImageLightbox'));
+const LazyImageLightboxComponent = dynamic(() => import('../ui/LazyImageLightbox'));
 
 export default function CaseStudyImage({
   src,
@@ -16,7 +15,6 @@ export default function CaseStudyImage({
   alt: string;
   caption?: string;
 }) {
-  const { imageUrl, isLoading } = useImageLoader(src);
   return (
     <div className="container mx-auto px-4 py-8">
       <motion.div
@@ -30,17 +28,19 @@ export default function CaseStudyImage({
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       >
         <div className="relative min-h-[400px]">
-          {isLoading && <LoadingSpinnerOverlay />}
-          {!isLoading && (
-            <ImageLightbox
-              src={imageUrl}
-              alt={alt}
-              width={900}
-              height={500}
-              className="object-fill w-full h-auto"
-              priority
-            />
-          )}
+          <LazyImageLightboxComponent
+            src={src}
+            alt={alt}
+            width={900}
+            height={500}
+            className="object-fill w-full h-auto"
+            priority={false}
+            lazy={true}
+            threshold={0.1}
+            rootMargin="100px"
+            showLoadingSpinner={true}
+            containerClassName="w-full h-full"
+          />
         </div>
         {caption && (
           <div className="px-4 py-2 text-center text-gray-400 text-sm bg-opacity-80">{caption}</div>

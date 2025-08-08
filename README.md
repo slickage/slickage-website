@@ -6,8 +6,20 @@ A modern, scalable website for Slickage, a boutique software company based in Ho
 - Static and dynamic data support
 - Optimized images and performance best practices
 - Easy-to-update project and case study data
+- Comprehensive lazy loading implementation
+- Robust error handling and security features
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## 📚 Documentation
+
+For comprehensive documentation, development guidelines, and feature implementations, see the [docs](./docs/) folder:
+
+- **[Environment Setup](./docs/setup/environment.md)** - Get started with local development
+- **[Code Style Guide](./docs/guidelines/code-style.md)** - Coding standards and best practices
+- **[Component Architecture](./docs/guidelines/component-architecture.md)** - Component design patterns
+- **[Lazy Loading Implementation](./docs/features/lazy-loading.md)** - Image lazy loading system
+- **[Documentation Index](./docs/README.md)** - Complete documentation overview
 
 ## Getting Started
 
@@ -25,9 +37,11 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 - [ ] Clone the repository
 - [ ] Install dependencies ( `bun install`)
-- [ ] Creare `.env` and fill in required values
+- [ ] Create `.env` and fill in required values (see [Environment Setup](./docs/setup/environment.md))
 - [ ] Run the development server (`bun dev`)
 - [ ] Open the app at [http://localhost:3000](http://localhost:3000)
+- [ ] Review the [Code Style Guide](./docs/guidelines/code-style.md)
+- [ ] Explore the [Component Architecture](./docs/guidelines/component-architecture.md)
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
@@ -49,6 +63,7 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 - Run `bun format` to auto-format code
 - Run `bun format:check` to verify code formatting
 - Run `bun run tsc --noEmit` to check TypeScript types without emitting files
+- Follow the [Code Style Guide](./docs/guidelines/code-style.md) for consistency
 
 ## Learn More
 
@@ -79,6 +94,8 @@ The following environment variables are required for full functionality:
 - `AWS_ACCESS_KEY_ID` - AWS access key for S3 operations
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key for S3 operations
 - `AWS_REGION` - AWS region for S3 bucket
+
+For detailed setup instructions, see the [Environment Setup Guide](./docs/setup/environment.md).
 
 ### Deployment-Specific Notes
 
@@ -134,3 +151,15 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary';
 ```
 
 For more information on React error boundaries, see the [React docs](https://reactjs.org/docs/error-boundaries.html).
+
+## Contributing
+
+When contributing to this project:
+
+1. Follow the [Code Style Guide](./docs/guidelines/code-style.md)
+2. Review the [Component Architecture Guide](./docs/guidelines/component-architecture.md)
+3. Update documentation for new features
+4. Write tests for new functionality
+5. Ensure all linting and type checks pass
+
+For detailed contribution guidelines, see the [Documentation Index](./docs/README.md).

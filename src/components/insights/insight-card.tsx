@@ -1,20 +1,17 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import type { Insight } from '@/types/insight';
-import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
-import { useImageLoader } from '@/lib/hooks/useImageLoader';
+import { LazyImage } from '@/components/ui';
 
 interface InsightCardProps {
   insight: Insight;
+  index?: number; // Add index prop to determine if card is above the fold
 }
 
-export default function InsightCard({ insight }: InsightCardProps) {
-  const { imageUrl, isLoading } = useImageLoader(insight.imageSrc);
-
+export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -32,6 +29,9 @@ export default function InsightCard({ insight }: InsightCardProps) {
   const imageVariants = {
     hover: { scale: 1.07, transition: { duration: 0.5 } },
   };
+
+  // Set priority for first 3 cards (likely above the fold)
+  const isAboveTheFold = index < 3;
 
   return (
     <Link
@@ -70,18 +70,20 @@ export default function InsightCard({ insight }: InsightCardProps) {
             whileHover="hover"
           >
             <div className="relative w-full h-full">
-              {isLoading && <LoadingSpinnerOverlay />}
-              {!isLoading && (
-                <Image
-                  src={imageUrl}
-                  alt={insight.title}
-                  fill
-                  priority
-                  unoptimized
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
-                  className="object-cover transition-opacity duration-300"
-                />
-              )}
+              <LazyImage
+                src={insight.imageSrc}
+                alt={insight.title}
+                fill
+                priority={isAboveTheFold}
+                lazy={!isAboveTheFold} // Disable lazy loading for above-the-fold cards
+                threshold={0.1}
+                rootMargin="50px"
+                showLoadingSpinner={false}
+                containerClassName="w-full h-full"
+                className="object-cover transition-opacity duration-300"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
+                unoptimized
+              />
             </div>
           </motion.div>
         </div>
