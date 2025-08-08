@@ -1,27 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { useScrollPosition } from '@/lib/hooks/useScrollPosition';
 
 const HEADER_ITEMS = [''];
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const { isScrolled } = useScrollPosition({ threshold: 10 });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   return (
     <header

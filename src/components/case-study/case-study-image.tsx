@@ -1,9 +1,9 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
-import { getS3ImageUrl } from '@/lib/utils';
 import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
+import { useImageLoader } from '@/lib/hooks/useImageLoader';
 
 const ImageLightbox = dynamic(() => import('../ui/ImageLightbox'));
 
@@ -16,31 +16,7 @@ export default function CaseStudyImage({
   alt: string;
   caption?: string;
 }) {
-  const [imageUrl, setImageUrl] = useState<string>('/placeholder.svg');
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadImage = async () => {
-      try {
-        if (src === '/placeholder.svg') {
-          setImageUrl('/placeholder.svg');
-          setIsLoading(false);
-          return;
-        }
-
-        setIsLoading(true);
-        const url = await getS3ImageUrl(src);
-        setImageUrl(url);
-      } catch (error) {
-        console.error('Error loading image:', error);
-        setImageUrl('/placeholder.svg');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadImage();
-  }, [src]);
+  const { imageUrl, isLoading } = useImageLoader(src);
   return (
     <div className="container mx-auto px-4 py-8">
       <motion.div
