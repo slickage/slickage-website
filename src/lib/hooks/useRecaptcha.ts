@@ -11,6 +11,8 @@ export function useRecaptcha() {
       return;
     }
 
+    const currentScrollY = window.scrollY;
+
     const loadRecaptcha = () => {
       const script = document.createElement('script');
       script.src = `https://www.google.com/recaptcha/api.js?render=${config.siteKey}`;
@@ -20,6 +22,7 @@ export function useRecaptcha() {
       script.onload = () => {
         if (window.grecaptcha) {
           window.grecaptcha.ready(() => {
+            window.scrollTo(0, currentScrollY);
             setIsLoaded(true);
           });
         } else {
@@ -35,9 +38,10 @@ export function useRecaptcha() {
       document.head.appendChild(script);
     };
 
-    loadRecaptcha();
+    const timeoutId = setTimeout(loadRecaptcha, 100);
 
     return () => {
+      clearTimeout(timeoutId);
       const scripts = document.querySelectorAll('script[src*="recaptcha"]');
       scripts.forEach((script) => script.remove());
     };
