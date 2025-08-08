@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
+import ScrollRestorer from '@/components/ScrollRestorer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body className={`${inter.className} bg-gradient-to-r from-blue-500/10 to-violet-500/10`}>
+        <ScrollRestorer />
         <Header />
         {children}
         <Footer />
