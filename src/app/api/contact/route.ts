@@ -9,7 +9,7 @@ import {
   validatePhoneNumber,
   validateLinkSpam,
 } from '@/lib/validation/security-validators';
-import { checkRateLimit, MAX_SUBMISSIONS_PER_HOUR } from '@/lib/security/rate-limiter';
+import { checkRateLimit, MAX_SUBMISSIONS_PER_HOUR, buildRateLimitHeaders } from '@/lib/security/rate-limiter';
 import { verifyRecaptcha, validateRecaptchaScore } from '@/lib/security/recaptcha';
 import { sanitizeContactData, saveContactSubmission } from '@/lib/services/contact-service';
 
@@ -68,21 +68,9 @@ export async function POST(request: NextRequest) {
     const rateLimitResult = checkRateLimit(clientIp);
     if (rateLimitResult.limited) {
       const minutesUntilReset = Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000 / 60);
-
       return NextResponse.json(
-        {
-          error: `Too many submissions. Please try again in ${minutesUntilReset} minutes.`,
-          retryAfter: minutesUntilReset,
-        },
-        {
-          status: 429,
-          headers: {
-            'Retry-After': Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000).toString(),
-            'X-RateLimit-Limit': MAX_SUBMISSIONS_PER_HOUR.toString(),
-            'X-RateLimit-Remaining': '0',
-            'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toISOString(),
-          },
-        },
+        { error: `Too many submissions. Please try again in ${minutesUntilReset} minutes.`, retryAfter: minutesUntilReset },
+        { status: 429, headers: buildRateLimitHeaders(rateLimitResult) },
       );
     }
 
@@ -97,18 +85,8 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      {
-        message: 'Form submitted successfully',
-        submissionId: submissionResult.submissionId,
-      },
-      {
-        status: 200,
-        headers: {
-          'X-RateLimit-Limit': MAX_SUBMISSIONS_PER_HOUR.toString(),
-          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
-          'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toISOString(),
-        },
-      },
+      { message: 'Form submitted successfully', submissionId: submissionResult.submissionId },
+      { status: 200, headers: buildRateLimitHeaders(rateLimitResult) },
     );
   } catch (error) {
     const processingTime = Date.now() - startTime;
