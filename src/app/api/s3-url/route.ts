@@ -20,10 +20,9 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'No key provided' }, { status: 400 });
     }
 
-    const bucketName = env.S3_BUCKET_URL.split('.')[0];
-
+    const bucketName = env.S3_BUCKET_NAME;
     if (!bucketName) {
-      throw new Error('S3 bucket URL is not configured correctly');
+      return NextResponse.json({ error: 'S3 bucket is not configured' }, { status: 500 });
     }
 
     const command = new GetObjectCommand({
