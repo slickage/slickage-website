@@ -1,9 +1,12 @@
 /**
- * Server-side environment variables
- * Based on Next.js best practices: https://nextjs.org/docs/app/guides/environment-variables
+ * Environment variables with Zod validation
+ * Server vs client separation:
+ *  - On the client, returns safe defaults (never exposes secrets)
+ *  - On the server, parses and validates process.env
  */
+import { z } from 'zod';
 
-type ServerEnv = {
+export type ServerEnv = {
   S3_BUCKET_NAME: string;
   AWS_ACCESS_KEY_ID: string;
   AWS_SECRET_ACCESS_KEY: string;
@@ -11,11 +14,24 @@ type ServerEnv = {
   RECAPTCHA_SITE_KEY: string;
   RECAPTCHA_SECRET_KEY: string;
   DATABASE_URL: string;
-  NODE_ENV: string;
+  NODE_ENV: 'development' | 'test' | 'production';
 };
 
+const ServerEnvSchema = z.object({
+  S3_BUCKET_NAME: z.string().default(''),
+  AWS_ACCESS_KEY_ID: z.string().default(''),
+  AWS_SECRET_ACCESS_KEY: z.string().default(''),
+  AWS_REGION: z.string().default('us-west-2'),
+  RECAPTCHA_SITE_KEY: z.string().default(''),
+  RECAPTCHA_SECRET_KEY: z.string().default(''),
+  DATABASE_URL: z.string().default(''),
+  NODE_ENV: z
+    .enum(['development', 'test', 'production'])
+    .default((process.env.NODE_ENV as 'development' | 'test' | 'production') || 'production'),
+});
+
 function getServerEnv(): ServerEnv {
-  // Return empty values on client-side
+  // Client-side: never expose secrets
   if (typeof window !== 'undefined') {
     return {
       S3_BUCKET_NAME: '',
@@ -25,13 +41,15 @@ function getServerEnv(): ServerEnv {
       RECAPTCHA_SITE_KEY: '',
       RECAPTCHA_SECRET_KEY: '',
       DATABASE_URL: '',
-      NODE_ENV: process.env.NODE_ENV || 'production',
+      NODE_ENV: (process.env.NODE_ENV as ServerEnv['NODE_ENV']) || 'production',
     };
   }
 
-  // Only validate at runtime, not during build
-  if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PHASE) {
-    const requiredVars = [
+  const parsed = ServerEnvSchema.parse(process.env);
+  const isNextBuild = Boolean(process.env.NEXT_PHASE);
+
+  if (parsed.NODE_ENV === 'production' && !isNextBuild) {
+    const requiredKeys: Array<keyof ServerEnv> = [
       'S3_BUCKET_NAME',
       'AWS_ACCESS_KEY_ID',
       'AWS_SECRET_ACCESS_KEY',
@@ -41,29 +59,16 @@ function getServerEnv(): ServerEnv {
       'DATABASE_URL',
     ];
 
-    const missingVars = requiredVars.filter(
-      (key) => !process.env[key] && !process.env[`NETLIFY_${key}`],
-    );
-
-    if (missingVars.length > 0) {
+    const missing = requiredKeys.filter((key) => !parsed[key] || parsed[key].length === 0);
+    if (missing.length > 0) {
       throw new Error(
-        `Missing required server environment variables: ${missingVars.join(', ')}\n` +
-          'Please check your .env file and ensure all required variables are set.',
+        `Missing required server environment variables: ${missing.join(', ')}\n` +
+          'Please check your environment configuration.',
       );
     }
   }
 
-  return {
-    S3_BUCKET_NAME: process.env.S3_BUCKET_NAME || '',
-    AWS_ACCESS_KEY_ID: process.env.NETLIFY_AWS_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID || '',
-    AWS_SECRET_ACCESS_KEY:
-      process.env.NETLIFY_AWS_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY || '',
-    AWS_REGION: process.env.NETLIFY_AWS_REGION || process.env.AWS_REGION || 'us-west-2',
-    RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY || '',
-    RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY || '',
-    DATABASE_URL: process.env.DATABASE_URL || '',
-    NODE_ENV: process.env.NODE_ENV || 'production',
-  };
+  return parsed;
 }
 
 let envInstance: ServerEnv | null = null;
