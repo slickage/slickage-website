@@ -11,6 +11,7 @@ type ServerEnv = {
   RECAPTCHA_SITE_KEY: string;
   RECAPTCHA_SECRET_KEY: string;
   DATABASE_URL: string;
+  SLACK_WEBHOOK_URL?: string;
   NODE_ENV: string;
 };
 
@@ -25,6 +26,7 @@ function getServerEnv(): ServerEnv {
       RECAPTCHA_SITE_KEY: '',
       RECAPTCHA_SECRET_KEY: '',
       DATABASE_URL: '',
+      SLACK_WEBHOOK_URL: '',
       NODE_ENV: process.env.NODE_ENV || 'production',
     };
   }
@@ -62,6 +64,7 @@ function getServerEnv(): ServerEnv {
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY || '',
     RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY || '',
     DATABASE_URL: process.env.DATABASE_URL || '',
+    SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL || '',
     NODE_ENV: process.env.NODE_ENV || 'production',
   };
 }
