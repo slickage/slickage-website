@@ -50,7 +50,11 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const sectionRef = useRef<HTMLDivElement | null>(null);
-  const { siteKey, isEnabled, isLoaded: recaptchaLoaded } = useRecaptcha({
+  const {
+    siteKey,
+    isEnabled,
+    isLoaded: recaptchaLoaded,
+  } = useRecaptcha({
     strategy: 'in-viewport',
     triggerRef: sectionRef,
   });

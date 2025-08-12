@@ -10,9 +10,8 @@ export default function ScrollRestorer() {
       }
     } catch {}
 
-    const nav = (performance.getEntriesByType('navigation')[0] || null) as
-      | PerformanceNavigationTiming
-      | null;
+    const nav = (performance.getEntriesByType('navigation')[0] ||
+      null) as PerformanceNavigationTiming | null;
     const isReload = nav?.type === 'reload';
 
     const storageKey = 'scroll-restorer:y';
@@ -60,5 +59,3 @@ export default function ScrollRestorer() {
 
   return null;
 }
-
-
