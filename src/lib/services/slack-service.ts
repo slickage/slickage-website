@@ -215,7 +215,7 @@ export class SlackService {
  */
 export function createSlackService(): SlackService | null {
   const webhookUrl = process.env.SLACK_WEBHOOK_URL;
-  
+
   if (!webhookUrl) {
     logger.warn('SLACK_WEBHOOK_URL not configured, Slack notifications disabled');
     return null;

@@ -80,9 +80,9 @@ Message: I'm interested in your web development services...
 
 ### Environment Variables
 
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| `SLACK_WEBHOOK_URL` | Slack webhook URL for notifications | Yes | - |
+| Variable            | Description                         | Required | Default |
+| ------------------- | ----------------------------------- | -------- | ------- |
+| `SLACK_WEBHOOK_URL` | Slack webhook URL for notifications | Yes      | -       |
 
 ### Message Customization
 
@@ -186,11 +186,11 @@ logger.setLevel('debug');
 
 ```typescript
 class SlackService {
-  constructor(webhookUrl: string)
-  async sendMessage(message: SlackMessage): Promise<boolean>
-  createContactFormMessage(data: ContactFormData): SlackMessage
-  createTextMessage(text: string): SlackMessage
-  createErrorMessage(error: string, context?: Record<string, any>): SlackMessage
+  constructor(webhookUrl: string);
+  async sendMessage(message: SlackMessage): Promise<boolean>;
+  createContactFormMessage(data: ContactFormData): SlackMessage;
+  createTextMessage(text: string): SlackMessage;
+  createErrorMessage(error: string, context?: Record<string, any>): SlackMessage;
 }
 ```
 
