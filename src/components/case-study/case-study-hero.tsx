@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import type { CaseStudy } from '@/types/case-study';
 import { motion } from 'motion/react';
 import Image from 'next/image';
-import { getS3ImageUrl } from '@/lib/utils';
 import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
+import { useImageLoader } from '@/lib/hooks/useImageLoader';
 
 export default function CaseStudyHero({
   title,
@@ -13,31 +13,7 @@ export default function CaseStudyHero({
   heroImage,
 }: Pick<CaseStudy, 'title' | 'subtitle'> & { heroImage: string }) {
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
-  const [imageUrl, setImageUrl] = useState<string>('/placeholder.svg');
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadImage = async () => {
-      try {
-        if (heroImage === '/placeholder.svg') {
-          setImageUrl('/placeholder.svg');
-          setIsLoading(false);
-          return;
-        }
-
-        setIsLoading(true);
-        const url = await getS3ImageUrl(heroImage);
-        setImageUrl(url);
-      } catch (error) {
-        console.error('Error loading hero image:', error);
-        setImageUrl('/placeholder.svg');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadImage();
-  }, [heroImage]);
+  const { imageUrl, isLoading } = useImageLoader(heroImage);
 
   useEffect(() => {
     if (expandedIdx === null) return;

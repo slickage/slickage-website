@@ -32,10 +32,11 @@ COPY --from=prerelease /app/src/ ./src/
 COPY --from=prerelease --chown=bun:nextjs /app/.next/ ./.next/
 COPY --from=prerelease /app/package.json ./
 COPY --from=prerelease /app/next.config.ts ./
+COPY --from=prerelease /app/drizzle.config.ts ./
 # run the app
 USER bun
 EXPOSE 3000/tcp
-ENTRYPOINT [ "bun", "run", "start" ]
+CMD  ["bun", "run", "start"]
 
 # FROM oven/bun:1.2.16
 # WORKDIR /src/
