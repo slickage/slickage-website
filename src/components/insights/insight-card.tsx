@@ -1,43 +1,19 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import type { Insight } from '@/types/insight';
-import { getS3ImageUrl } from '@/lib/utils';
 import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
+import { useImageLoader } from '@/lib/hooks/useImageLoader';
 
 interface InsightCardProps {
   insight: Insight;
 }
 
 export default function InsightCard({ insight }: InsightCardProps) {
-  const [imageUrl, setImageUrl] = useState<string>('/placeholder.svg');
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadImage = async () => {
-      try {
-        if (insight.imageSrc === '/placeholder.svg') {
-          setImageUrl('/placeholder.svg');
-          setIsLoading(false);
-          return;
-        }
-
-        setIsLoading(true);
-        const url = await getS3ImageUrl(insight.imageSrc);
-        setImageUrl(url);
-      } catch (error) {
-        console.error('Error loading image:', error);
-        setImageUrl('/placeholder.svg');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadImage();
-  }, [insight.imageSrc]);
+  const { imageUrl, isLoading } = useImageLoader(insight.imageSrc);
 
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
