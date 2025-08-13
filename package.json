@@ -18,7 +18,14 @@
     "db:push": "drizzle-kit push",
     "db:pull": "drizzle-kit pull",
     "db:studio": "drizzle-kit studio",
-    "db:test": "tsx src/db/example.ts"
+    "db:test": "tsx src/db/example.ts",
+    "test": "bun run tests/run-tests.ts",
+    "test:watch": "bun run tests/run-tests.ts --watch",
+    "test:coverage": "bun run tests/run-tests.ts",
+    "test:security": "bun run tests/security/rate-limiter.test.ts",
+    "test:utils": "bun run tests/utils/redis.test.ts",
+    "test:integration": "bun run tests/integration/redis-rate-limiting.test.ts",
+    "test:unit": "bun run tests/security/rate-limiter.test.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.859.0",
@@ -32,6 +39,7 @@
     "dotenv": "^17.2.1",
     "drizzle-kit": "^0.31.4",
     "drizzle-orm": "^0.44.4",
+    "ioredis": "^5.7.0",
     "lucide-react": "^0.477.0",
     "motion": "^12.23.12",
     "next": "^15.4.6",
@@ -47,6 +55,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@tailwindcss/postcss": "^4.1.11",
+    "@types/bun": "^1.2.20",
+    "@types/ioredis": "^5.0.0",
     "@types/node": "^20.19.9",
     "@types/pg": "^8.15.5",
     "@types/react": "^19.1.9",

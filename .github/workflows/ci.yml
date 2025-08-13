@@ -21,6 +21,16 @@ jobs:
         with:
           bun-version: latest
 
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
       - name: Install dependencies
         run: bun install
 
@@ -31,4 +41,60 @@ jobs:
         run: bun run lint
 
       - name: Type Check
-        run: bun run tsc --noEmit
+        run: bun run tsc:check
+
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    # Removed dependency to enable parallel execution with code-quality
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Cache test results
+        uses: actions/cache@v4
+        with:
+          path: |
+            coverage/
+            .nyc_output/
+            .bun/install/cache
+          key: ${{ runner.os }}-test-cache-${{ hashFiles('**/bun.lock') }}-${{ hashFiles('**/*.test.ts') }}-${{ hashFiles('**/*.test.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-test-cache-${{ hashFiles('**/bun.lock') }}-
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run Tests with Coverage
+        run: bun test --coverage --bail --reporter=junit --reporter-outfile=./test-results.xml
+        env:
+          NODE_ENV: test
+          REDIS_URL: redis://localhost:6379
+          DATABASE_URL: postgres://docker:docker@localhost:5432/slickage-website-test
+        # Add timeout to prevent hanging tests
+        timeout-minutes: 10
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: |
+            test-results.xml
+            coverage/
+          retention-days: 30

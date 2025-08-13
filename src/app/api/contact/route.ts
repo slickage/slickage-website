@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: linkSpamResult.error }, { status: 400 });
     }
 
-    const rateLimitResult = checkRateLimit(clientIp);
+    const rateLimitResult = await checkRateLimit(clientIp);
     if (rateLimitResult.limited) {
       const minutesUntilReset = Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000 / 60);
 

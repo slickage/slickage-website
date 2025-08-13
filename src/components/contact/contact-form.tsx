@@ -146,7 +146,11 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
         } else {
           let errorMessage = errorData.error || 'An error occurred while submitting the form.';
 
-          if (res.status === 429 && errorData.retryAfter) {
+          if (
+            res.status === 429 &&
+            errorData.retryAfter &&
+            !errorMessage.includes('try again in')
+          ) {
             errorMessage += ` Please try again in ${errorData.retryAfter} minutes.`;
           }
 

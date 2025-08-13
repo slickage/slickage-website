@@ -13,6 +13,7 @@ type ServerEnv = {
   DATABASE_URL: string;
   SLACK_WEBHOOK_URL?: string;
   NODE_ENV: string;
+  REDIS_URL?: string;
 };
 
 function getServerEnv(): ServerEnv {
@@ -28,6 +29,7 @@ function getServerEnv(): ServerEnv {
       DATABASE_URL: '',
       SLACK_WEBHOOK_URL: '',
       NODE_ENV: process.env.NODE_ENV || 'production',
+      REDIS_URL: '',
     };
   }
 
@@ -66,6 +68,7 @@ function getServerEnv(): ServerEnv {
     DATABASE_URL: process.env.DATABASE_URL || '',
     SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL || '',
     NODE_ENV: process.env.NODE_ENV || 'production',
+    REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
   };
 }
 
