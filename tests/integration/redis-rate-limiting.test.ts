@@ -303,7 +303,7 @@ describe('Redis Rate Limiting Integration Tests', () => {
     for (let i = 0; i < MAX_SUBMISSIONS_PER_HOUR; i++) {
       const result = await checkRateLimit(testIp);
       expect(result.limited).toBe(false);
-      
+
       // Add small delay between requests to ensure Redis operations complete
       if (i < MAX_SUBMISSIONS_PER_HOUR - 1) {
         await new Promise((resolve) => setTimeout(resolve, 50));

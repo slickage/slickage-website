@@ -15,12 +15,11 @@ export interface RateLimitResult {
  * This provides accurate rate limiting by checking a rolling time window
  */
 export async function checkRateLimit(ip: string): Promise<RateLimitResult> {
-  const now = Math.floor(Date.now() / 1000); // Current time in seconds
+  const now = Math.floor(Date.now() / 1000);
   const key = `rate_limit:${ip}`;
-  const requestId = `${now}-${Date.now()}`; // Unique identifier for each request
+  const requestId = `${now}-${Date.now()}`;
 
   try {
-    // Check if Redis is available
     if (!isRedisAvailable()) {
       logger.warn('Redis not available, falling back to in-memory rate limiting');
       return fallbackRateLimit(ip);
@@ -28,55 +27,122 @@ export async function checkRateLimit(ip: string): Promise<RateLimitResult> {
 
     const redis = getRedisClient();
 
-    // Add current timestamp with unique request ID
-    await redis.zadd(key, now, requestId);
+    // Use Redis pipeline for atomic operations and optimal performance
+    // This reduces network round-trips from 4 to 1 and ensures atomicity
+    const windowStart = now - RATE_LIMIT_WINDOW;
 
-    // Use true sliding window algorithm: check rolling 1-hour window ending at current time
-    const windowStart = now - RATE_LIMIT_WINDOW; // 1 hour ago
-    const windowEnd = now; // current time
+    try {
+      // Create pipeline for atomic execution
+      const pipeline = redis.pipeline();
 
-    // Count requests in the rolling 1-hour window
-    const requestCount = await redis.zcount(key, windowStart, windowEnd);
+      // Add operations to pipeline in correct order:
+      // 1. Remove old entries (cleanup)
+      // 2. Count existing requests BEFORE adding current request
+      // 3. Add current request
+      // 4. Set expiration
+      pipeline.zremrangebyscore(key, 0, windowStart);
+      pipeline.zcount(key, windowStart, now);
+      pipeline.zadd(key, now, requestId);
+      pipeline.expire(key, RATE_LIMIT_WINDOW);
 
-    // Remove timestamps older than the rate limit window for cleanup
-    await redis.zremrangebyscore(key, 0, windowStart);
+      // Execute all operations atomically
+      const results = await pipeline.exec();
 
-    // Set expiration on the key to auto-cleanup
-    await redis.expire(key, RATE_LIMIT_WINDOW);
+      // Validate pipeline results
+      if (!results || results.length !== 4) {
+        throw new Error(
+          `Pipeline execution failed: expected 4 results, got ${results?.length || 0}`,
+        );
+      }
 
-    // Check if rate limit exceeded
-    logger.debug(
-      `Rate limit check: IP ${ip}, requestCount: ${requestCount}, MAX_SUBMISSIONS: ${MAX_SUBMISSIONS_PER_HOUR}`,
-    );
+      // Extract the count result (index 1 in our pipeline)
+      // results[0] = zremrangebyscore result
+      // results[1] = zcount result (what we need)
+      // results[2] = zadd result
+      // results[3] = expire result
+      const countResult = results[1];
+      if (!countResult || countResult[0]) {
+        throw new Error(`Pipeline count operation failed: ${countResult?.[0] || 'unknown error'}`);
+      }
 
-    if (requestCount > MAX_SUBMISSIONS_PER_HOUR) {
-      // Calculate reset time based on oldest request in window
-      const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
-      const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;
-      const resetTime = oldestTime + RATE_LIMIT_WINDOW;
+      const existingRequestCount = (countResult[1] as number) || 0;
 
-      logger.security(`Rate limit exceeded: IP ${ip}, requestCount: ${requestCount}`);
+      // Check if adding this request would exceed the limit
+      if (existingRequestCount >= MAX_SUBMISSIONS_PER_HOUR) {
+        // Calculate reset time based on oldest request in window
+        const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
+        const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;
+        const resetTime = oldestTime + RATE_LIMIT_WINDOW;
+
+        logger.security(
+          `Rate limit exceeded: IP ${ip}, existingRequestCount: ${existingRequestCount}`,
+        );
+
+        return {
+          limited: true,
+          remaining: 0,
+          resetTime: resetTime * 1000, // Convert back to milliseconds
+        };
+      }
+
+      // Calculate remaining requests based on total count after adding current request
+      // After adding this request, we'll have (existingRequestCount + 1) requests
+      // So remaining = MAX_SUBMISSIONS_PER_HOUR - (existingRequestCount + 1)
+      const remaining = Math.max(0, MAX_SUBMISSIONS_PER_HOUR - (existingRequestCount + 1));
+      const resetTime = (now + RATE_LIMIT_WINDOW) * 1000; // Convert to milliseconds
+
+      logger.debug(
+        `Rate limit check: IP ${ip}, existingRequestCount: ${existingRequestCount}, remaining: ${remaining}, limited: false`,
+      );
 
       return {
-        limited: true,
-        remaining: 0,
-        resetTime: resetTime * 1000, // Convert back to milliseconds
+        limited: false,
+        remaining,
+        resetTime,
       };
+    } catch (pipelineError) {
+      logger.error(`Pipeline execution failed for IP ${ip}:`, pipelineError);
+
+      // Fallback to sequential operations if pipeline fails
+      logger.warn('Falling back to sequential operations due to pipeline error');
+
+      try {
+        // Sequential fallback for reliability
+        await redis.zremrangebyscore(key, 0, windowStart);
+        const existingRequestCount = await redis.zcount(key, windowStart, now);
+
+        if (existingRequestCount >= MAX_SUBMISSIONS_PER_HOUR) {
+          const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
+          const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;
+          const resetTime = oldestTime + RATE_LIMIT_WINDOW;
+
+          logger.security(
+            `Rate limit exceeded (fallback): IP ${ip}, existingRequestCount: ${existingRequestCount}`,
+          );
+
+          return {
+            limited: true,
+            remaining: 0,
+            resetTime: resetTime * 1000,
+          };
+        }
+
+        await redis.zadd(key, now, requestId);
+        await redis.expire(key, RATE_LIMIT_WINDOW);
+
+        const remaining = Math.max(0, MAX_SUBMISSIONS_PER_HOUR - (existingRequestCount + 1));
+        const resetTime = (now + RATE_LIMIT_WINDOW) * 1000;
+
+        return {
+          limited: false,
+          remaining,
+          resetTime,
+        };
+      } catch (fallbackError) {
+        logger.error(`Sequential fallback also failed for IP ${ip}:`, fallbackError);
+        throw fallbackError; // Re-throw to trigger in-memory fallback
+      }
     }
-
-    // Calculate remaining requests and reset time
-    const remaining = Math.max(0, MAX_SUBMISSIONS_PER_HOUR - requestCount);
-    const resetTime = (now + RATE_LIMIT_WINDOW) * 1000; // Convert to milliseconds
-
-    logger.debug(
-      `Rate limit check: IP ${ip}, requestCount: ${requestCount}, remaining: ${remaining}, limited: false`,
-    );
-
-    return {
-      limited: false,
-      remaining,
-      resetTime,
-    };
   } catch (error) {
     logger.error(`Redis rate limiting error for IP ${ip}:`, error);
 

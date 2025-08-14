@@ -1,6 +1,25 @@
 import Redis from 'ioredis';
 import { logger } from './logger';
 
+// Redis connection configuration for optimal performance and reliability
+const redisOptions = {
+  // Connection settings
+  lazyConnect: true,
+  family: 4, // IPv4 for better performance
+  connectTimeout: 10000,
+  commandTimeout: 5000,
+  // Retry and resilience settings
+  maxRetriesPerRequest: 3,
+  retryDelayOnFailover: 100,
+  enableReadyCheck: true,
+  maxLoadingTimeout: 10000,
+  // Connection pool and performance settings
+  keepAlive: 30000,
+  enableOfflineQueue: true,
+  // Health monitoring and maintenance
+  healthCheckInterval: 30000,
+};
+
 let redis: Redis | null = null;
 
 export function getRedisClient(): Redis {
@@ -8,13 +27,9 @@ export function getRedisClient(): Redis {
     const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
 
     try {
-      redis = new Redis(redisUrl, {
-        maxRetriesPerRequest: 3,
-        lazyConnect: false,
-        connectTimeout: 10000,
-        commandTimeout: 5000,
-      });
+      redis = new Redis(redisUrl, redisOptions);
 
+      // Enhanced event handling for better monitoring
       redis.on('connect', () => {
         logger.info('Redis connected successfully');
       });
@@ -25,6 +40,7 @@ export function getRedisClient(): Redis {
 
       redis.on('close', () => {
         logger.warn('Redis connection closed');
+        redis = null; // Reset for reconnection
       });
 
       redis.on('reconnecting', () => {
@@ -33,6 +49,11 @@ export function getRedisClient(): Redis {
 
       redis.on('ready', () => {
         logger.info('Redis is ready');
+      });
+
+      redis.on('end', () => {
+        logger.warn('Redis connection ended');
+        redis = null;
       });
     } catch (error) {
       logger.error('Failed to create Redis client:', error);

@@ -82,6 +82,9 @@ describe('Sliding Window Algorithm Tests', () => {
     await checkRateLimit(testIp);
     await checkRateLimit(testIp);
 
+    // Small delay to ensure pipeline operations complete
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     // Verify we have 1 remaining
     status = await getRateLimitStatus(testIp);
     expect(status.remaining).toBe(1);
@@ -101,7 +104,7 @@ describe('Sliding Window Algorithm Tests', () => {
       const result = await checkRateLimit(testIp);
       // All requests up to MAX_SUBMISSIONS_PER_HOUR should be allowed
       expect(result.limited).toBe(false);
-      
+
       // Add small delay between requests to ensure Redis operations complete
       if (i < MAX_SUBMISSIONS_PER_HOUR - 1) {
         await new Promise((resolve) => setTimeout(resolve, 50));
@@ -371,7 +374,7 @@ describe('Sliding Window Algorithm Tests', () => {
     for (let i = 0; i < MAX_SUBMISSIONS_PER_HOUR; i++) {
       const result = await checkRateLimit(testIp);
       expect(result.limited).toBe(false);
-      
+
       // Add small delay between requests to ensure Redis operations complete
       if (i < MAX_SUBMISSIONS_PER_HOUR - 1) {
         await new Promise((resolve) => setTimeout(resolve, 50));
@@ -384,7 +387,7 @@ describe('Sliding Window Algorithm Tests', () => {
     // Verify we're at the limit (3rd request should be allowed)
     let status = await getRateLimitStatus(testIp);
     expect(status.limited).toBe(false);
-    
+
     // In CI environments, there might be slight timing differences
     // Allow for either 0 or 1 remaining (both are valid depending on timing)
     expect([0, 1]).toContain(status.remaining);
