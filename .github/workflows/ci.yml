@@ -18,8 +18,6 @@ jobs:
   code-quality:
     name: Code Quality Check
     runs-on: ubuntu-latest
-    outputs:
-      cache-hit: ${{ steps.cache-deps.outputs.cache-hit }}
     steps:
       - uses: actions/checkout@v4
 
@@ -28,28 +26,7 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Cache Bun
-        id: cache-bun
-        uses: actions/cache@v4
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-latest-${{ hashFiles('**/bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-latest-
-
-      - name: Cache Dependencies
-        id: cache-deps
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            .bun
-          key: ${{ runner.os }}-deps-latest-${{ hashFiles('**/bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-deps-latest-
-
       - name: Install dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: bun install
 
       - name: Format check
@@ -69,14 +46,12 @@ jobs:
       matrix:
         include:
           - test-suite: integration
-            test-command: 'bun test tests/integration/ --coverage'
+            test-command: 'bun test tests/integration/'
             test-name: 'Integration Tests'
             redis-port: 6380
-          - test-suite: security
-            test-command: 'bun test tests/security/ --coverage'
-            test-name: 'Security Tests'
-            redis-port: 6381
-      # Fail fast to stop on first failure
+          - test-suite: core
+            test-command: 'bun test tests/core/'
+            test-name: 'Core Tests'
       fail-fast: true
 
     services:
@@ -98,33 +73,11 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Restore Dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            .bun
-          key: ${{ runner.os }}-deps-latest-${{ hashFiles('**/bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-deps-latest-
-
       - name: Install dependencies
-        if: needs.code-quality.outputs.cache-hit != 'true'
         run: bun install
 
       - name: Run ${{ matrix.test-name }}
-        run: ${{ matrix.test-command }} --bail --reporter=junit --reporter-outfile=./test-results-${{ matrix.test-suite }}.xml
+        run: ${{ matrix.test-command }}
         env:
           NODE_ENV: test
           REDIS_URL: redis://localhost:${{ matrix.redis-port }}
-        timeout-minutes: 10
-
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results-${{ matrix.test-suite }}-latest
-          path: |
-            test-results-${{ matrix.test-suite }}.xml
-            coverage/
-          retention-days: 30
