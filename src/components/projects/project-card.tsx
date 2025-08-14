@@ -1,7 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
-import { ExternalLink } from 'lucide-react';
 import React from 'react';
 
 interface ProjectCardProps {
@@ -36,12 +34,7 @@ export default React.memo(function ProjectCard({ project }: ProjectCardProps) {
         </div>
         <h4 className="text-lg font-bold mb-2 text-white">{project.title}</h4>
         <p className="text-sm text-gray-400 mb-4 line-clamp-2">{project.description}</p>
-        <Link
-          href={`/projects/${project.id}`}
-          className="inline-flex items-center text-sm font-medium text-blue-400 hover:text-blue-500 transition-colors"
-        >
-          View Project <ExternalLink className="ml-1 h-4 w-4" />
-        </Link>
+        <div className="text-sm text-gray-500 italic">Project details available upon request</div>
       </CardContent>
     </Card>
   );
