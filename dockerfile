@@ -36,8 +36,7 @@ COPY --from=prerelease /app/drizzle.config.ts ./
 # run the app
 USER bun
 EXPOSE 3000/tcp
-CMD  ["sh", "-c", "until bun db:push; do sleep 1; done; bun run start"]
-# ENTRYPOINT [ "bun", "run", "start" ]
+CMD  ["bun", "run", "start"]
 
 # FROM oven/bun:1.2.16
 # WORKDIR /src/

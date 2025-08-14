@@ -12,6 +12,7 @@ import {
 import { checkRateLimit, MAX_SUBMISSIONS_PER_HOUR } from '@/lib/security/rate-limiter';
 import { verifyRecaptcha, validateRecaptchaScore } from '@/lib/security/recaptcha';
 import { sanitizeContactData, saveContactSubmission } from '@/lib/services/contact-service';
+import { createSlackService } from '@/lib/services/slack-service';
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
@@ -94,6 +95,25 @@ export async function POST(request: NextRequest) {
         { error: 'Service temporarily unavailable. Please try again later.' },
         { status: 503 },
       );
+    }
+
+    const slackService = createSlackService();
+    if (slackService) {
+      const processingTime = Date.now() - startTime;
+      const slackMessage = slackService.createContactFormMessage({
+        name: sanitizedData.name,
+        email: sanitizedData.email,
+        phone: sanitizedData.phone || undefined,
+        subject: sanitizedData.subject,
+        message: sanitizedData.message,
+        submissionId: submissionResult.submissionId!,
+        clientIp,
+        processingTime,
+      });
+
+      slackService.sendMessage(slackMessage).catch((error) => {
+        logger.error('Failed to send Slack notification:', error);
+      });
     }
 
     return NextResponse.json(

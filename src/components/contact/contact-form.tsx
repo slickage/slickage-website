@@ -2,7 +2,7 @@
 
 import type React from 'react';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -49,7 +49,15 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const { siteKey, isEnabled, isLoaded: recaptchaLoaded } = useRecaptcha();
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const {
+    siteKey,
+    isEnabled,
+    isLoaded: recaptchaLoaded,
+  } = useRecaptcha({
+    strategy: 'in-viewport',
+    triggerRef: sectionRef,
+  });
 
   const formatPhoneNumber = (value: string): string => {
     const digits = value.replace(/\D/g, '');
@@ -191,13 +199,13 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
 
   return (
     <div
+      ref={sectionRef}
       className={
         standalone
           ? 'bg-white/5 backdrop-blur-sm rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300'
           : ''
       }
     >
-      {/* General error message */}
       {error && (
         <div className="mb-6 p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
           <p className="text-red-400 text-sm">{error}</p>
@@ -205,7 +213,6 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
       )}
 
       <form onSubmit={handleSubmit}>
-        {/* Honeypot field (visually hidden) */}
         <div
           style={{
             position: 'absolute',
