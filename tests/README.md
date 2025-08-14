@@ -22,8 +22,6 @@ tests/
 ├── integration/        # Integration tests requiring external services
 │   ├── redis-rate-limiting.test.ts
 │   └── sliding-window.test.ts
-├── utils/             # Utility function tests
-│   └── redis.test.ts
 └── README.md          # This file
 ```
 
@@ -39,10 +37,6 @@ tests/
 - **Redis Rate Limiting**: Tests requiring a running Redis instance
 - **Sliding Window Algorithm**: Comprehensive testing of the sliding window implementation
 
-### Utility Tests (`tests/utils/`)
-
-- **Redis Utilities**: Mocked Redis functionality tests
-
 ## Running Specific Test Categories
 
 Run all tests in a specific directory:
@@ -50,7 +44,6 @@ Run all tests in a specific directory:
 ```bash
 bun test tests/security/
 bun test tests/integration/
-bun test tests/utils/
 ```
 
 Run a specific test file:
@@ -80,7 +73,6 @@ Unit tests can run without external dependencies:
 
 ```bash
 bun test tests/security/
-bun test tests/utils/
 ```
 
 ## Test Writing Guidelines
