@@ -9,17 +9,16 @@ Welcome to the Slickage website documentation. This folder contains comprehensiv
 - [Contact Form System](./features/contact-form.md) - Contact form with validation and security
 - [S3 Image Integration](./features/s3-images.md) - AWS S3 image handling and optimization
 - [Error Handling](./features/error-handling.md) - Error boundaries and error management
+- [Route Optimization](./features/route-optimization.md) - Next.js build optimization and unused route management
+- [Slack Integration](./features/slack-integration.md) - Real-time notifications for contact form submissions
 
 ### Development Guidelines
 - [Code Style Guide](./guidelines/code-style.md) - Coding standards and best practices
 - [Component Architecture](./guidelines/component-architecture.md) - Component design patterns
-- [Testing Strategy](./guidelines/testing.md) - Testing approaches and conventions
 - [Performance Guidelines](./guidelines/performance.md) - Performance optimization practices
 
 ### Setup & Deployment
 - [Environment Setup](./setup/environment.md) - Local development environment
-- [Deployment Guide](./setup/deployment.md) - Production deployment procedures
-- [CI/CD Pipeline](./setup/ci-cd.md) - Continuous integration and deployment
 
 ## 📝 Documentation Standards
 
