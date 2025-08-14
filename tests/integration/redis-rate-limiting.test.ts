@@ -10,14 +10,24 @@ import {
 import { initializeRedis, isRedisAvailable } from '../../src/lib/utils/redis';
 
 describe('Redis Rate Limiting Integration Tests', () => {
-  const testIp = '192.168.1.100';
-  const testIp2 = '192.168.1.101';
+  // Use unique IPs for each test to avoid conflicts
+  let testIp: string;
+  let testIp2: string;
 
   beforeEach(async () => {
+    // Generate unique IPs for each test to avoid conflicts
+    testIp = `192.168.1.${Math.floor(Math.random() * 254) + 1}`;
+    testIp2 = `192.168.1.${Math.floor(Math.random() * 254) + 1}`;
+
+    // Ensure IPs are different
+    while (testIp === testIp2) {
+      testIp2 = `192.168.1.${Math.floor(Math.random() * 254) + 1}`;
+    }
+
     // Initialize Redis connection before each test
     try {
       await initializeRedis();
-      
+
       // Wait a moment for connection to establish
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (error) {
@@ -31,6 +41,9 @@ describe('Redis Rate Limiting Integration Tests', () => {
       if (isRedisAvailable()) {
         await resetRateLimit(testIp);
         await resetRateLimit(testIp2);
+
+        // Add a small delay to ensure cleanup completes
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
     } catch (error) {
       // Ignore cleanup errors
@@ -42,7 +55,7 @@ describe('Redis Rate Limiting Integration Tests', () => {
       console.log('⚠️  Redis not available, skipping test');
       return;
     }
-    
+
     const status = await getRateLimitStatus(testIp);
     expect(status.remaining).toBe(3);
     expect(status.limited).toBe(false);
@@ -54,16 +67,22 @@ describe('Redis Rate Limiting Integration Tests', () => {
       console.log('⚠️  Redis not available, skipping test');
       return;
     }
-    
+
     // First submission
     const firstResult = await checkRateLimit(testIp);
     expect(firstResult.limited).toBe(false);
     expect(firstResult.remaining).toBe(2);
 
+    // Small delay to ensure Redis operations complete
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     // Second submission
     const secondResult = await checkRateLimit(testIp);
     expect(secondResult.limited).toBe(false);
     expect(secondResult.remaining).toBe(1);
+
+    // Small delay to ensure Redis operations complete
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Third submission
     const thirdResult = await checkRateLimit(testIp);
@@ -76,10 +95,12 @@ describe('Redis Rate Limiting Integration Tests', () => {
       console.log('⚠️  Redis not available, skipping test');
       return;
     }
-    
+
     // Use up all attempts
     await checkRateLimit(testIp);
+    await new Promise((resolve) => setTimeout(resolve, 100));
     await checkRateLimit(testIp);
+    await new Promise((resolve) => setTimeout(resolve, 100));
     await checkRateLimit(testIp);
 
     // Fourth submission should be blocked
@@ -93,10 +114,12 @@ describe('Redis Rate Limiting Integration Tests', () => {
       console.log('⚠️  Redis not available, skipping test');
       return;
     }
-    
+
     // Use up all attempts
     await checkRateLimit(testIp);
+    await new Promise((resolve) => setTimeout(resolve, 100));
     await checkRateLimit(testIp);
+    await new Promise((resolve) => setTimeout(resolve, 100));
     await checkRateLimit(testIp);
 
     // Reset
@@ -115,7 +138,7 @@ describe('Redis Rate Limiting Integration Tests', () => {
       console.log('⚠️  Redis not available, skipping test');
       return;
     }
-    
+
     // Test IP 1
     await checkRateLimit(testIp);
     const status1 = await getRateLimitStatus(testIp);
@@ -131,11 +154,11 @@ describe('Redis Rate Limiting Integration Tests', () => {
       console.log('⚠️  Redis not available, skipping test');
       return;
     }
-    
+
     // Make 2 requests
     await checkRateLimit(testIp);
     await checkRateLimit(testIp);
-    
+
     const status = await getRateLimitStatus(testIp);
     expect(status.remaining).toBe(1);
     expect(status.limited).toBe(false);
@@ -146,29 +169,29 @@ describe('Redis Rate Limiting Integration Tests', () => {
       console.log('⚠️  Redis not available, skipping test');
       return;
     }
-    
+
     // Make rapid requests
     const promises: Promise<any>[] = [];
     for (let i = 0; i < 5; i++) {
       promises.push(checkRateLimit(testIp));
     }
-    
+
     const results = await Promise.all(promises);
-    
-    // Due to race conditions in concurrent Redis operations, 
+
+    // Due to race conditions in concurrent Redis operations,
     // more requests might get through than would in sequential execution
     // This is normal behavior for non-atomic rate limiting
-    
+
     // Verify that at least the first request is allowed
     expect(results[0].limited).toBe(false);
-    
+
     // Verify that blocked requests (if any) have remaining = 0
     for (const result of results) {
       if (result.limited) {
         expect(result.remaining).toBe(0);
       }
     }
-    
+
     // Verify that all results have valid structure
     for (const result of results) {
       expect(result).toHaveProperty('limited');
@@ -182,27 +205,46 @@ describe('Redis Rate Limiting Integration Tests', () => {
       console.log('⚠️  Redis not available, skipping test');
       return;
     }
-    
+
+    // Ensure clean state by resetting first
+    await resetRateLimit(testIp);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     // Check initial status
     let status = await getRateLimitStatus(testIp);
     expect(status.remaining).toBe(3);
 
     // Make one request
-    await checkRateLimit(testIp);
+    const firstResult = await checkRateLimit(testIp);
+    expect(firstResult.limited).toBe(false);
+    expect(firstResult.remaining).toBe(2);
+
+    // Verify status matches
     status = await getRateLimitStatus(testIp);
     expect(status.remaining).toBe(2);
 
     // Make another request
-    await checkRateLimit(testIp);
+    const secondResult = await checkRateLimit(testIp);
+    expect(secondResult.limited).toBe(false);
+    expect(secondResult.remaining).toBe(1);
+
+    // Verify status matches
     status = await getRateLimitStatus(testIp);
     expect(status.remaining).toBe(1);
 
     // Make final request (3rd request should be allowed)
-    await checkRateLimit(testIp);
+    const thirdResult = await checkRateLimit(testIp);
+    expect(thirdResult.limited).toBe(false);
+    expect(thirdResult.remaining).toBe(0);
+
+    // Small delay to ensure Redis operations complete
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Verify final status
     status = await getRateLimitStatus(testIp);
     expect(status.remaining).toBe(0);
     expect(status.limited).toBe(false); // 3rd request should be allowed
-    
+
     // Now make one more request - this should be limited
     const limitedResult = await checkRateLimit(testIp);
     expect(limitedResult.limited).toBe(true);
@@ -214,7 +256,7 @@ describe('Redis Rate Limiting Integration Tests', () => {
       console.log('⚠️  Redis not available, skipping test');
       return;
     }
-    
+
     // Use up all attempts
     await checkRateLimit(testIp);
     await checkRateLimit(testIp);
@@ -223,9 +265,9 @@ describe('Redis Rate Limiting Integration Tests', () => {
     // Check that reset time is in the future
     const status = await getRateLimitStatus(testIp);
     expect(status.resetTime).toBeGreaterThan(Date.now());
-    
+
     // Reset time should be approximately 1 hour from now
-    const expectedResetTime = Date.now() + (60 * 60 * 1000); // 1 hour
+    const expectedResetTime = Date.now() + 60 * 60 * 1000; // 1 hour
     const tolerance = 5 * 60 * 1000; // 5 minutes tolerance
     expect(Math.abs(status.resetTime - expectedResetTime)).toBeLessThan(tolerance);
   });
@@ -235,13 +277,13 @@ describe('Redis Rate Limiting Integration Tests', () => {
       console.log('⚠️  Redis not available, skipping test');
       return;
     }
-    
+
     // Make a request
     const checkResult = await checkRateLimit(testIp);
-    
+
     // Get status separately
     const statusResult = await getRateLimitStatus(testIp);
-    
+
     // Both should show the same remaining count
     expect(checkResult.remaining).toBe(statusResult.remaining);
     expect(checkResult.limited).toBe(statusResult.limited);
@@ -252,13 +294,30 @@ describe('Redis Rate Limiting Integration Tests', () => {
       console.log('⚠️  Redis not available, skipping test');
       return;
     }
-    
+
+    // Ensure clean state
+    await resetRateLimit(testIp);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     // Make exactly the maximum allowed requests
     for (let i = 0; i < MAX_SUBMISSIONS_PER_HOUR; i++) {
       const result = await checkRateLimit(testIp);
       expect(result.limited).toBe(false);
+      
+      // Add small delay between requests to ensure Redis operations complete
+      if (i < MAX_SUBMISSIONS_PER_HOUR - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
     }
-    
+
+    // Longer delay to ensure Redis operations complete in CI environment
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Verify we're at the limit
+    let status = await getRateLimitStatus(testIp);
+    expect(status.remaining).toBe(0);
+    expect(status.limited).toBe(false); // 3rd request should be allowed
+
     // The next request should be blocked
     const blockedResult = await checkRateLimit(testIp);
     expect(blockedResult.limited).toBe(true);
@@ -270,19 +329,19 @@ describe('Redis Rate Limiting Integration Tests', () => {
       console.log('⚠️  Redis not available, skipping test');
       return;
     }
-    
+
     const result = await checkRateLimit(testIp);
-    
+
     // Check required properties exist
     expect(result).toHaveProperty('limited');
     expect(result).toHaveProperty('remaining');
     expect(result).toHaveProperty('resetTime');
-    
+
     // Check property types
     expect(typeof result.limited).toBe('boolean');
     expect(typeof result.remaining).toBe('number');
     expect(typeof result.resetTime).toBe('number');
-    
+
     // Check value constraints
     expect(result.remaining).toBeGreaterThanOrEqual(0);
     expect(result.remaining).toBeLessThanOrEqual(MAX_SUBMISSIONS_PER_HOUR);

@@ -12,6 +12,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "tsc:check": "tsc --noEmit",
+    "test:watch": "bun test --watch",
+    "test:coverage": "bun test --coverage",
     "inspect": "NODE_OPTIONS='--inspect' next dev",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",

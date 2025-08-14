@@ -28,7 +28,7 @@ describe('Rate Limiter Unit Tests', () => {
     it('should handle valid IP address formats', () => {
       const testIps = ['192.168.1.1', '10.0.0.1', '172.16.0.1'];
       const validIpFormat = /^(\d{1,3}\.){3}\d{1,3}$/;
-      
+
       for (const ip of testIps) {
         expect(validIpFormat.test(ip)).toBe(true);
       }
@@ -36,30 +36,32 @@ describe('Rate Limiter Unit Tests', () => {
 
     it('should reject invalid IP address formats', () => {
       const invalidIps = ['192.168.1', '256.1.2.3', '192.168.1.256', 'abc.def.ghi.jkl'];
-      
+
       for (const ip of invalidIps) {
         // Check that each IP has exactly 4 octets and each octet is valid
         const octets = ip.split('.');
-        const isValid = octets.length === 4 && 
-                       octets.every(octet => {
-                         const num = parseInt(octet, 10);
-                         return !isNaN(num) && num >= 0 && num <= 255;
-                       });
+        const isValid =
+          octets.length === 4 &&
+          octets.every((octet) => {
+            const num = parseInt(octet, 10);
+            return !isNaN(num) && num >= 0 && num <= 255;
+          });
         expect(isValid).toBe(false);
       }
     });
 
     it('should reject IP addresses with invalid octet values', () => {
       const invalidIps = ['192.168.1.256', '1.2.3.300', '0.0.0.256'];
-      
+
       for (const ip of invalidIps) {
         // Check that each octet is between 0-255
         const octets = ip.split('.');
-        const isValid = octets.length === 4 && 
-                       octets.every(octet => {
-                         const num = parseInt(octet, 10);
-                         return !isNaN(num) && num >= 0 && num <= 255;
-                       });
+        const isValid =
+          octets.length === 4 &&
+          octets.every((octet) => {
+            const num = parseInt(octet, 10);
+            return !isNaN(num) && num >= 0 && num <= 255;
+          });
         expect(isValid).toBe(false);
       }
     });
@@ -77,9 +79,9 @@ describe('Rate Limiter Unit Tests', () => {
       const mockResult = {
         limited: false,
         remaining: 3,
-        resetTime: Date.now() + 3600000
+        resetTime: Date.now() + 3600000,
       };
-      
+
       expect(mockResult).toHaveProperty('limited');
       expect(mockResult).toHaveProperty('remaining');
       expect(mockResult).toHaveProperty('resetTime');

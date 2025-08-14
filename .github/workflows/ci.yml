@@ -4,6 +4,11 @@ on:
   pull_request:
     branches: [main, prod]
 
+# Add concurrency to cancel outdated runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   checks: write
   contents: read
@@ -22,16 +27,19 @@ jobs:
           bun-version: latest
 
       - name: Cache dependencies
+        id: cache-deps
         uses: actions/cache@v4
         with:
           path: |
             ~/.bun/install/cache
             node_modules
+            .bun
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
       - name: Install dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: bun install
 
       - name: Format check
@@ -46,7 +54,18 @@ jobs:
   test:
     name: Test Suite
     runs-on: ubuntu-latest
-    # Removed dependency to enable parallel execution with code-quality
+    # Runs in parallel with code-quality for faster CI
+
+    services:
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 3
+        ports:
+          - 6380:6379
 
     steps:
       - uses: actions/checkout@v4
@@ -57,36 +76,38 @@ jobs:
           bun-version: latest
 
       - name: Cache dependencies
+        id: cache-deps
         uses: actions/cache@v4
         with:
           path: |
             ~/.bun/install/cache
             node_modules
+            .bun
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
       - name: Cache test results
+        id: cache-test
         uses: actions/cache@v4
         with:
           path: |
             coverage/
             .nyc_output/
-            .bun/install/cache
+            test-results.xml
           key: ${{ runner.os }}-test-cache-${{ hashFiles('**/bun.lock') }}-${{ hashFiles('**/*.test.ts') }}-${{ hashFiles('**/*.test.tsx') }}
           restore-keys: |
             ${{ runner.os }}-test-cache-${{ hashFiles('**/bun.lock') }}-
 
       - name: Install dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: bun install
 
       - name: Run Tests with Coverage
         run: bun test --coverage --bail --reporter=junit --reporter-outfile=./test-results.xml
         env:
           NODE_ENV: test
-          REDIS_URL: redis://localhost:6379
-          DATABASE_URL: postgres://docker:docker@localhost:5432/slickage-website-test
-        # Add timeout to prevent hanging tests
+          REDIS_URL: redis://localhost:6380
         timeout-minutes: 10
 
       - name: Upload Test Results

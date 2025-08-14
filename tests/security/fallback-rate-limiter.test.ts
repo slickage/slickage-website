@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
-import { checkRateLimit, getRateLimitStatus, resetRateLimit, RateLimitResult } from '../../src/lib/security/rate-limiter';
+import {
+  checkRateLimit,
+  getRateLimitStatus,
+  resetRateLimit,
+  RateLimitResult,
+} from '../../src/lib/security/rate-limiter';
 
 // Mock Redis utilities to simulate Redis unavailability
 const mockRedis = {
@@ -52,7 +57,7 @@ describe('Fallback Rate Limiter Tests', () => {
     it('should handle fallback data structure correctly', () => {
       const fallbackData = new Map<string, number[]>();
       fallbackData.set('test-ip', [Date.now()]);
-      
+
       expect(fallbackData.has('test-ip')).toBe(true);
       expect(fallbackData.get('test-ip')?.length).toBe(1);
     });
@@ -61,8 +66,8 @@ describe('Fallback Rate Limiter Tests', () => {
       const now = Date.now();
       const windowMs = 3600 * 1000;
       const recentTimes = [now - 1000, now - 2000, now - 3000];
-      
-      const validTimes = recentTimes.filter(time => now - time < windowMs);
+
+      const validTimes = recentTimes.filter((time) => now - time < windowMs);
       expect(validTimes.length).toBe(3);
     });
   });
@@ -72,9 +77,9 @@ describe('Fallback Rate Limiter Tests', () => {
       const testMap = new Map<string, number[]>();
       testMap.set('ip1', [Date.now()]);
       testMap.set('ip2', [Date.now()]);
-      
+
       testMap.delete('ip1');
-      
+
       expect(testMap.has('ip1')).toBe(false);
       expect(testMap.has('ip2')).toBe(true);
     });
@@ -83,7 +88,7 @@ describe('Fallback Rate Limiter Tests', () => {
   describe('Rate Limit Enforcement', () => {
     it('should enforce rate limits in fallback mode', async () => {
       const testIp = 'test-ip-1';
-      
+
       // Make multiple requests to test rate limiting
       const results: RateLimitResult[] = [];
       for (let i = 0; i < 5; i++) {
@@ -95,7 +100,7 @@ describe('Fallback Rate Limiter Tests', () => {
           break;
         }
       }
-      
+
       // At minimum, we should have some results or errors
       expect(results.length).toBeGreaterThan(0);
     });
@@ -105,12 +110,12 @@ describe('Fallback Rate Limiter Tests', () => {
     it('should handle multiple IPs independently in fallback mode', async () => {
       const ip1 = 'test-ip-1';
       const ip2 = 'test-ip-2';
-      
+
       try {
         await checkRateLimit(ip1);
         const status1 = await getRateLimitStatus(ip1);
         const status2 = await getRateLimitStatus(ip2);
-        
+
         // In fallback mode, these might be the same or different
         // We just verify the function calls don't crash
         expect(status1).toBeDefined();
@@ -125,7 +130,7 @@ describe('Fallback Rate Limiter Tests', () => {
   describe('Reset Functionality', () => {
     it('should handle reset operations in fallback mode', async () => {
       const testIp = 'test-ip-1';
-      
+
       try {
         const resetResult = await resetRateLimit(testIp);
         // Reset might succeed or fail in fallback mode
@@ -140,7 +145,7 @@ describe('Fallback Rate Limiter Tests', () => {
   describe('Error Handling', () => {
     it('should handle errors gracefully in fallback mode', async () => {
       const testIp = 'invalid-ip-format';
-      
+
       try {
         await checkRateLimit(testIp);
         // If it doesn't throw, that's fine
@@ -155,15 +160,15 @@ describe('Fallback Rate Limiter Tests', () => {
     it('should handle concurrent requests in fallback mode', async () => {
       const testIp = 'test-ip-1';
       const promises: Promise<RateLimitResult>[] = [];
-      
+
       for (let i = 0; i < 3; i++) {
         promises.push(checkRateLimit(testIp));
       }
-      
+
       try {
         const results = await Promise.all(promises);
         expect(results.length).toBe(3);
-        
+
         for (const result of results) {
           expect(result).toHaveProperty('limited');
           expect(result).toHaveProperty('remaining');
