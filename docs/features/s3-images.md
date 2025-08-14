@@ -9,24 +9,29 @@ The S3 image integration system provides secure, optimized access to private ima
 ### Core Components
 
 #### S3 URL API Route
+
 Located at `src/app/api/s3-url/route.ts`, this generates secure presigned URLs for S3 objects.
 
 **Key Features:**
+
 - Secure presigned URL generation with 1-hour expiration
 - Automatic bucket name extraction from S3_BUCKET_URL
 - Error handling and fallback responses
 - AWS SDK v3 integration
 
 #### Image Loading Hook
+
 Located at `src/lib/hooks/useImageLoader.ts`, this manages image loading states and S3 URL processing.
 
 **Functionality:**
+
 - Automatic S3 URL generation for private images
 - Loading states and error handling
 - Fallback image support
 - Caching of processed URLs
 
 #### Utility Functions
+
 Located at `src/lib/utils.ts`, this provides the core S3 image URL generation logic.
 
 ### Architecture
@@ -64,9 +69,7 @@ The AWS credentials must have the following S3 permissions:
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": [
-        "s3:GetObject"
-      ],
+      "Action": ["s3:GetObject"],
       "Resource": "arn:aws:s3:::your-bucket-name/*"
     }
   ]
@@ -108,10 +111,10 @@ import { useImageLoader } from '@/lib/hooks/useImageLoader';
 
 export default function MyComponent() {
   const { imageUrl, isLoading, hasError } = useImageLoader('/images/hero.jpg');
-  
+
   if (isLoading) return <div>Loading...</div>;
   if (hasError) return <div>Error loading image</div>;
-  
+
   return <img src={imageUrl} alt="Hero image" />;
 }
 ```
@@ -130,7 +133,7 @@ export default function ImageComponent() {
       height={300}
       className="rounded-lg"
       showLoadingSpinner={true}
-      fallbackImage="/placeholder.svg"
+      placeholderImage="/placeholder.svg"
     />
   );
 }
@@ -162,7 +165,7 @@ import { getS3ImageUrl } from '@/lib/utils';
 
 export default async function ServerComponent() {
   const imageUrl = await getS3ImageUrl('/images/hero.jpg', '/fallback.jpg');
-  
+
   return <img src={imageUrl} alt="Hero image" />;
 }
 ```
@@ -174,9 +177,11 @@ export default async function ServerComponent() {
 **Endpoint:** `GET /api/s3-url?key={image_path}`
 
 **Parameters:**
+
 - `key` (required): The path to the image within the S3 bucket
 
 **Response:**
+
 ```json
 {
   "url": "https://your-bucket.s3.amazonaws.com/images/hero.jpg?X-Amz-Algorithm=...&X-Amz-Expires=3600&..."
@@ -184,6 +189,7 @@ export default async function ServerComponent() {
 ```
 
 **Error Response:**
+
 ```json
 {
   "error": "Failed to generate URL"
@@ -194,27 +200,24 @@ export default async function ServerComponent() {
 
 ```typescript
 interface UseImageLoaderOptions {
-  defaultImage?: string;    // Default image to show initially
-  fallbackImage?: string;   // Image to show on error
+  placeholderImage?: string; // Image to show initially and on error
 }
 
 interface UseImageLoaderReturn {
-  imageUrl: string;         // Current image URL (processed or fallback)
-  isLoading: boolean;       // Loading state
-  hasError: boolean;        // Error state
+  imageUrl: string; // Current image URL (processed or fallback)
+  isLoading: boolean; // Loading state
+  hasError: boolean; // Error state
 }
 ```
 
 ### getS3ImageUrl Function
 
 ```typescript
-async function getS3ImageUrl(
-  path: string,
-  fallbackUrl?: string
-): Promise<string>
+async function getS3ImageUrl(path: string, fallbackUrl?: string): Promise<string>;
 ```
 
 **Parameters:**
+
 - `path`: The image path within the S3 bucket
 - `fallbackUrl`: Optional fallback URL (defaults to '/placeholder.svg')
 
@@ -223,16 +226,19 @@ async function getS3ImageUrl(
 ## Security Features
 
 ### 1. Presigned URLs
+
 - URLs expire after 1 hour for security
 - No permanent access to private S3 objects
 - Automatic URL regeneration for each request
 
 ### 2. Access Control
+
 - Server-side only S3 credentials
 - Client never sees AWS credentials
 - IAM policies control access to specific buckets
 
 ### 3. Input Validation
+
 - Path sanitization and validation
 - Bucket name extraction from configured URL
 - Error handling prevents information leakage
@@ -240,17 +246,20 @@ async function getS3ImageUrl(
 ## Performance Optimization
 
 ### 1. Caching Strategy
+
 - Presigned URLs cached for 1 hour
 - Automatic fallback to placeholder images
 - Loading states prevent layout shifts
 
 ### 2. Image Optimization
+
 - Next.js automatic image optimization
 - WebP/AVIF format conversion
 - Responsive image generation
 - Lazy loading for below-the-fold images
 
 ### 3. Error Handling
+
 - Graceful fallback to placeholder images
 - User-friendly error states
 - Logging for debugging and monitoring
@@ -258,6 +267,7 @@ async function getS3ImageUrl(
 ## Best Practices
 
 ### 1. Image Organization
+
 ```
 S3 Bucket Structure:
 /images/
@@ -273,18 +283,21 @@ S3 Bucket Structure:
 ```
 
 ### 2. Naming Conventions
+
 - Use descriptive, lowercase names
 - Separate words with hyphens
 - Include dimensions or purpose in filename
 - Avoid special characters
 
 ### 3. Performance Considerations
+
 - Optimize images before upload (compress, resize)
 - Use appropriate formats (JPEG for photos, PNG for graphics)
 - Consider implementing image CDN for global distribution
 - Monitor S3 costs and usage
 
 ### 4. Security Considerations
+
 - Regularly rotate AWS access keys
 - Use least-privilege IAM policies
 - Monitor S3 access logs
@@ -297,7 +310,11 @@ S3 Bucket Structure:
 ```tsx
 import { LazyImage } from '@/components/ui';
 
-export default function CaseStudyImage({ imagePath, alt, caption }: {
+export default function CaseStudyImage({
+  imagePath,
+  alt,
+  caption,
+}: {
   imagePath: string;
   alt: string;
   caption?: string;
@@ -311,12 +328,10 @@ export default function CaseStudyImage({ imagePath, alt, caption }: {
         height={600}
         className="w-full h-auto rounded-lg shadow-lg"
         showLoadingSpinner={true}
-        fallbackImage="/placeholder.svg"
+        placeholderImage="/placeholder.svg"
       />
       {caption && (
-        <figcaption className="mt-2 text-sm text-gray-600 text-center">
-          {caption}
-        </figcaption>
+        <figcaption className="mt-2 text-sm text-gray-600 text-center">{caption}</figcaption>
       )}
     </figure>
   );
@@ -328,7 +343,11 @@ export default function CaseStudyImage({ imagePath, alt, caption }: {
 ```tsx
 import { LazyImage } from '@/components/ui';
 
-export default function TeamMember({ name, role, imagePath }: {
+export default function TeamMember({
+  name,
+  role,
+  imagePath,
+}: {
   name: string;
   role: string;
   imagePath: string;
@@ -342,7 +361,7 @@ export default function TeamMember({ name, role, imagePath }: {
           fill
           className="object-cover"
           showLoadingSpinner={false}
-          fallbackImage="/placeholder-user.jpg"
+          placeholderImage="/placeholder-user.jpg"
         />
       </div>
       <h3 className="text-lg font-semibold">{name}</h3>
@@ -368,7 +387,7 @@ export default function ImageGallery({ images }: { images: Array<{ src: string; 
             fill
             className="object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
             showLoadingSpinner={true}
-            fallbackImage="/placeholder.svg"
+            placeholderImage="/placeholder.svg"
           />
         </div>
       ))}
@@ -411,6 +430,7 @@ Enable debug logging by setting `NODE_ENV=development` and checking browser cons
 ### Monitoring
 
 Monitor the following metrics:
+
 - S3 API request counts and latency
 - Presigned URL generation success rate
 - Image loading performance
@@ -420,6 +440,7 @@ Monitor the following metrics:
 ## Integration with Other Systems
 
 ### Database Integration
+
 Images are referenced by path in the database, and the S3 integration automatically handles URL generation:
 
 ```typescript
@@ -436,9 +457,11 @@ const { imageUrl } = useImageLoader(caseStudy.heroImage);
 ```
 
 ### Content Management
+
 The system supports easy image updates by simply changing the S3 path in the database, without requiring code changes.
 
 ### Deployment Considerations
+
 - Ensure S3 bucket is in the same region as your application for optimal performance
 - Consider using CloudFront for global image distribution
 - Implement proper backup and disaster recovery for S3 assets

@@ -5,6 +5,7 @@
 ## ✨ Current Features
 
 ### 🎯 **Core Functionality**
+
 - **Case Studies**: Detailed project showcases with technical insights ✅
 - **Services Overview**: Comprehensive service offerings and expertise areas ✅
 - **Contact System**: Contact form with anti-spam protection and Slack notifications ✅
@@ -15,6 +16,7 @@
 - **Resource Library**: Whitepapers, guides, and templates 🚧 Coming Soon
 
 ### ⚙️ **Technical Implementation**
+
 - **Frontend Framework**: Next.js 15 with App Router and React 19
 - **Language**: TypeScript 5 for type safety and developer experience
 - **Styling**: Tailwind CSS 4 with shadcn based component library
@@ -43,4 +45,4 @@ For comprehensive technical documentation, development guidelines, and setup ins
 
 ---
 
-*Built by Slickage*
+_Built by Slickage_

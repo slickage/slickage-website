@@ -27,7 +27,7 @@ export default function LazyImage({
   ...imageProps
 }: LazyImageProps) {
   const { imageUrl, isLoading, hasError } = useImageLoader(src, {
-    fallbackImage: '/placeholder.svg',
+    placeholderImage: '/placeholder.svg',
   });
 
   const handleImageLoad = () => {

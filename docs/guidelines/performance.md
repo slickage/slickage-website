@@ -7,16 +7,19 @@ This document outlines performance optimization practices and guidelines for the
 ## Core Performance Principles
 
 ### 1. Core Web Vitals
+
 - **LCP (Largest Contentful Paint)**: Optimize above-the-fold content loading
 - **FID (First Input Delay)**: Ensure interactive elements respond quickly
 - **CLS (Cumulative Layout Shift)**: Prevent layout shifts during page load
 
 ### 2. Progressive Enhancement
+
 - Load critical content first
 - Enhance with non-essential features progressively
 - Graceful degradation for slower connections
 
 ### 3. Resource Optimization
+
 - Minimize bundle sizes
 - Optimize images and assets
 - Implement efficient caching strategies
@@ -45,6 +48,7 @@ export default function OptimizedImage() {
 ```
 
 **Key Benefits:**
+
 - Automatic WebP/AVIF conversion
 - Responsive image generation
 - Lazy loading for below-the-fold images
@@ -60,13 +64,13 @@ import dynamic from 'next/dynamic';
 
 const HeavyComponent = dynamic(() => import('./HeavyComponent'), {
   loading: () => <LoadingSpinner />,
-  ssr: false // Disable SSR for client-only components
+  ssr: false, // Disable SSR for client-only components
 });
 
 // Preload critical components
 const CriticalComponent = dynamic(() => import('./CriticalComponent'), {
   loading: () => <LoadingSpinner />,
-  ssr: true // Enable SSR for SEO-critical components
+  ssr: true, // Enable SSR for SEO-critical components
 });
 ```
 
@@ -103,7 +107,7 @@ export default function LazyImage({
   ...imageProps
 }: LazyImageProps) {
   const { imageUrl, isLoading, hasError } = useImageLoader(src, {
-    fallbackImage: '/placeholder.svg',
+    placeholderImage: '/placeholder.svg',
   });
 
   // Auto-set priority for placeholder images to fix LCP warning
@@ -117,7 +121,7 @@ export default function LazyImage({
           <LoadingSpinner size="md" />
         </div>
       )}
-      
+
       <Image
         src={imageUrl}
         alt={alt}
@@ -139,7 +143,7 @@ Efficient S3 image loading with presigned URLs:
 // Optimized S3 image loading
 export async function getS3ImageUrl(
   path: string,
-  fallbackUrl: string = '/placeholder.svg'
+  fallbackUrl: string = '/placeholder.svg',
 ): Promise<string> {
   if (!path || path === '/placeholder.svg' || path === fallbackUrl) {
     return fallbackUrl;
@@ -148,11 +152,11 @@ export async function getS3ImageUrl(
   try {
     const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
     const response = await fetch(`/api/s3-url?key=${encodeURIComponent(normalizedPath)}`);
-    
+
     if (!response.ok) {
       return fallbackUrl;
     }
-    
+
     const { url } = await response.json();
     return url;
   } catch (error) {
@@ -165,34 +169,36 @@ export async function getS3ImageUrl(
 
 ```typescript
 // useImageLoader hook for optimized image loading
-export function useImageLoader(
-  imageUrl: string | undefined,
-  options: UseImageLoaderOptions = {}
-) {
-  const [imageUrlState, setImageUrlState] = useState<string>(options.defaultImage || '/placeholder.svg');
+export function useImageLoader(imageUrl: string | undefined, options: UseImageLoaderOptions = {}) {
+  const [imageUrlState, setImageUrlState] = useState<string>(
+    options.placeholderImage || '/placeholder.svg',
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const loadImage = useCallback(async (url: string) => {
-    if (!url || url === '/placeholder.svg') {
-      setImageUrlState('/placeholder.svg');
-      setIsLoading(false);
-      return;
-    }
+  const loadImage = useCallback(
+    async (url: string) => {
+      if (!url || url === '/placeholder.svg') {
+        setImageUrlState('/placeholder.svg');
+        setIsLoading(false);
+        return;
+      }
 
-    setIsLoading(true);
-    setHasError(false);
+      setIsLoading(true);
+      setHasError(false);
 
-    try {
-      const processedUrl = await getS3ImageUrl(url);
-      setImageUrlState(processedUrl);
-    } catch (error) {
-      setImageUrlState(options.fallbackImage || '/placeholder.svg');
-      setHasError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [options.fallbackImage]);
+      try {
+        const processedUrl = await getS3ImageUrl(url);
+        setImageUrlState(processedUrl);
+      } catch (error) {
+        setImageUrlState(options.placeholderImage || '/placeholder.svg');
+        setHasError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [options.placeholderImage],
+  );
 
   useEffect(() => {
     if (imageUrl !== undefined) {
@@ -243,7 +249,7 @@ export function useRecaptcha(options?: UseRecaptchaOptions) {
 
   const loadRecaptcha = useCallback(() => {
     if (isLoaded) return; // Prevent duplicate loads
-    
+
     const script = document.createElement('script');
     script.src = `https://www.google.com/recaptcha/api.js?render=${config.siteKey}`;
     script.async = true;
@@ -261,7 +267,7 @@ export function useRecaptcha(options?: UseRecaptchaOptions) {
   // Strategy-based loading
   useEffect(() => {
     const strategy: RecaptchaLoadStrategy = options?.strategy || 'immediate';
-    
+
     if (strategy === 'in-viewport' && options?.triggerRef?.current) {
       const observer = new IntersectionObserver(
         (entries) => {
@@ -273,7 +279,7 @@ export function useRecaptcha(options?: UseRecaptchaOptions) {
             }
           }
         },
-        { threshold: 0.1 }
+        { threshold: 0.1 },
       );
 
       observer.observe(options.triggerRef.current);
@@ -306,21 +312,27 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
   });
 
   // Memoized handlers
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    
-    if (name === 'phone') {
-      const formattedPhone = formatPhoneNumber(value);
-      setFormData(prev => ({ ...prev, [name]: formattedPhone }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
-  }, []);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    // ... submission logic
-  }, [formData, startTime, isEnabled, siteKey, recaptchaLoaded]);
+      if (name === 'phone') {
+        const formattedPhone = formatPhoneNumber(value);
+        setFormData((prev) => ({ ...prev, [name]: formattedPhone }));
+      } else {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      }
+    },
+    [],
+  );
+
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      // ... submission logic
+    },
+    [formData, startTime, isEnabled, siteKey, recaptchaLoaded],
+  );
 
   return (
     <form onSubmit={handleSubmit} onChange={handleChange}>
@@ -355,12 +367,12 @@ Use dynamic imports for code splitting:
 // Dynamic imports for heavy components
 const ImageLightbox = dynamic(() => import('./ImageLightbox'), {
   loading: () => <LoadingSpinner size="sm" />,
-  ssr: false
+  ssr: false,
 });
 
 const ProjectCarousel = dynamic(() => import('./ProjectCarousel'), {
   loading: () => <LoadingSpinner />,
-  ssr: true
+  ssr: true,
 });
 ```
 
@@ -386,7 +398,7 @@ Leverage Next.js static generation for performance:
 // Static generation for case studies
 export async function generateStaticParams() {
   const caseStudies = getAllCaseStudies();
-  
+
   return caseStudies.map((study) => ({
     id: study.id,
   }));
@@ -476,7 +488,7 @@ export function usePerformanceMonitoring() {
         const lastEntry = entries[entries.length - 1];
         console.log('LCP:', lastEntry.startTime);
       });
-      
+
       lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
 
       // Monitor FID
@@ -486,7 +498,7 @@ export function usePerformanceMonitoring() {
           console.log('FID:', entry.processingStart - entry.startTime);
         });
       });
-      
+
       fidObserver.observe({ entryTypes: ['first-input'] });
 
       return () => {
@@ -514,30 +526,35 @@ Regular bundle analysis to identify optimization opportunities:
 ## Best Practices Summary
 
 ### 1. Image Optimization
+
 - Use Next.js Image component for automatic optimization
 - Implement lazy loading for below-the-fold images
 - Set priority for above-the-fold images
 - Use appropriate image formats (WebP, AVIF)
 
 ### 2. Component Optimization
+
 - Use React.memo for stable components
 - Optimize event handlers with useCallback
 - Implement proper loading states
 - Avoid unnecessary re-renders
 
 ### 3. Bundle Optimization
+
 - Leverage Next.js automatic code splitting
 - Use dynamic imports for heavy components
 - Implement proper tree shaking
 - Monitor bundle sizes regularly
 
 ### 4. Caching Strategy
+
 - Use static generation where possible
 - Implement appropriate cache headers
 - Cache API responses when appropriate
 - Use CDN for static assets
 
 ### 5. Performance Monitoring
+
 - Monitor Core Web Vitals
 - Track bundle sizes
 - Analyze performance regressions
@@ -546,6 +563,7 @@ Regular bundle analysis to identify optimization opportunities:
 ## Performance Checklist
 
 ### Development
+
 - [ ] Use Next.js Image component for all images
 - [ ] Implement lazy loading for below-the-fold content
 - [ ] Use React.memo for stable components
@@ -553,18 +571,21 @@ Regular bundle analysis to identify optimization opportunities:
 - [ ] Implement proper loading states
 
 ### Build
+
 - [ ] Enable tree shaking
 - [ ] Use dynamic imports for heavy components
 - [ ] Optimize bundle splitting
 - [ ] Implement proper caching headers
 
 ### Monitoring
+
 - [ ] Track Core Web Vitals
 - [ ] Monitor bundle sizes
 - [ ] Analyze performance regressions
 - [ ] Set performance budgets
 
 ### Optimization
+
 - [ ] Optimize images and assets
 - [ ] Implement efficient caching
 - [ ] Use CDN for static content

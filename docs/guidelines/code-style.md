@@ -7,17 +7,20 @@ This document outlines the coding standards and best practices for the Slickage 
 ## General Principles
 
 ### 1. Clarity and Readability
+
 - Write code that is self-documenting
 - Use descriptive variable and function names
 - Prefer clarity over cleverness
 - Add comments for complex logic
 
 ### 2. Consistency
+
 - Follow established patterns in the codebase
 - Use consistent formatting and naming conventions
 - Maintain uniform file and folder structures
 
 ### 3. Maintainability
+
 - Write code that is easy to modify and extend
 - Avoid premature optimization
 - Keep functions small and focused
@@ -26,6 +29,7 @@ This document outlines the coding standards and best practices for the Slickage 
 ## TypeScript Guidelines
 
 ### Type Definitions
+
 ```typescript
 // ✅ Good - Clear interface definition
 interface UserProfile {
@@ -40,6 +44,7 @@ const user: any = getUser();
 ```
 
 ### Function Signatures
+
 ```typescript
 // ✅ Good - Clear parameter types and return type
 function formatUserName(user: UserProfile): string {
@@ -47,16 +52,13 @@ function formatUserName(user: UserProfile): string {
 }
 
 // ✅ Good - Optional parameters with defaults
-function createUser(
-  name: string,
-  email: string,
-  avatar?: string
-): UserProfile {
+function createUser(name: string, email: string, avatar?: string): UserProfile {
   return { id: generateId(), name, email, avatar };
 }
 ```
 
 ### Component Props
+
 ```typescript
 // ✅ Good - Clear interface with optional props
 interface ButtonProps {
@@ -72,6 +74,7 @@ interface ButtonProps {
 ## React Component Guidelines
 
 ### Component Structure
+
 ```typescript
 // ✅ Good - Standard component structure
 'use client';
@@ -86,10 +89,10 @@ interface MyComponentProps {
   onAction?: () => void;
 }
 
-export default function MyComponent({ 
-  title, 
-  description, 
-  onAction 
+export default function MyComponent({
+  title,
+  description,
+  onAction
 }: MyComponentProps) {
   return (
     <motion.div
@@ -112,6 +115,7 @@ export default function MyComponent({
 ```
 
 ### Hook Usage
+
 ```typescript
 // ✅ Good - Custom hooks with clear naming
 export function useImageLoader(imageUrl: string | undefined, options: UseImageLoaderOptions = {}) {
@@ -122,18 +126,20 @@ export function useImageLoader(imageUrl: string | undefined, options: UseImageLo
 const { imageUrl, isLoading, hasError } = useImageLoader(src, {
   lazy: true,
   threshold: 0.1,
-  fallbackImage: '/placeholder.svg'
+  placeholderImage: '/placeholder.svg',
 });
 ```
 
 ## File Organization
 
 ### File Naming
+
 - Use kebab-case for file names: `lazy-image.tsx`
 - Use PascalCase for component names: `LazyImage`
 - Use camelCase for function and variable names: `useImageLoader`
 
 ### Folder Structure
+
 ```
 src/
 ├── components/
@@ -150,6 +156,7 @@ src/
 ## Styling Guidelines
 
 ### Tailwind CSS
+
 ```typescript
 // ✅ Good - Logical class grouping
 className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
@@ -163,6 +170,7 @@ className={cn(
 ```
 
 ### CSS Custom Properties
+
 ```css
 /* ✅ Good - Use CSS custom properties for theming */
 :root {
@@ -180,6 +188,7 @@ className={cn(
 ## Error Handling
 
 ### Try-Catch Blocks
+
 ```typescript
 // ✅ Good - Specific error handling
 try {
@@ -192,6 +201,7 @@ try {
 ```
 
 ### Error Boundaries
+
 ```typescript
 // ✅ Good - Component error boundaries
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -213,6 +223,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 ## Performance Guidelines
 
 ### Memoization
+
 ```typescript
 // ✅ Good - Memoize expensive calculations
 const expensiveValue = useMemo(() => {
@@ -226,6 +237,7 @@ export default React.memo(function MyComponent({ data }: MyComponentProps) {
 ```
 
 ### Lazy Loading
+
 ```typescript
 // ✅ Good - Lazy load components
 const LazyComponent = dynamic(() => import('./LazyComponent'), {
@@ -237,6 +249,7 @@ const LazyComponent = dynamic(() => import('./LazyComponent'), {
 ## Testing Guidelines
 
 ### Component Testing
+
 ```typescript
 // ✅ Good - Test component behavior
 describe('MyComponent', () => {
@@ -248,7 +261,7 @@ describe('MyComponent', () => {
   it('calls onAction when button is clicked', () => {
     const mockAction = jest.fn();
     render(<MyComponent title="Test" onAction={mockAction} />);
-    
+
     fireEvent.click(screen.getByRole('button'));
     expect(mockAction).toHaveBeenCalled();
   });
@@ -258,13 +271,14 @@ describe('MyComponent', () => {
 ## Documentation Standards
 
 ### Inline Comments
+
 ```typescript
 // ✅ Good - Explain complex logic
 const processedData = rawData
-  .filter(item => item.isActive) // Only process active items
-  .map(item => ({
+  .filter((item) => item.isActive) // Only process active items
+  .map((item) => ({
     ...item,
-    processedAt: new Date().toISOString() // Add timestamp
+    processedAt: new Date().toISOString(), // Add timestamp
   }));
 
 // ✅ Good - JSDoc for functions
@@ -282,6 +296,7 @@ function formatDisplayName(user: User, includeEmail = false): string {
 ## Common Patterns
 
 ### Event Handlers
+
 ```typescript
 // ✅ Good - Proper event typing
 const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -301,6 +316,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 ```
 
 ### State Management
+
 ```typescript
 // ✅ Good - Use appropriate state types
 const [isLoading, setIsLoading] = useState(false);
@@ -314,7 +330,7 @@ interface State {
   error: string | null;
 }
 
-type Action = 
+type Action =
   | { type: 'FETCH_START' }
   | { type: 'FETCH_SUCCESS'; payload: User[] }
   | { type: 'FETCH_ERROR'; payload: string };
@@ -336,16 +352,19 @@ type Action =
 ## Tools and Configuration
 
 ### ESLint Configuration
+
 - Use the provided `.eslintrc.js` configuration
 - Run `bun lint` to check code quality
 - Run `bun lint:fix` to auto-fix issues
 
 ### Prettier Configuration
+
 - Use the provided `.prettierrc` configuration
 - Run `bun format` to format code
 - Run `bun format:check` to verify formatting
 
 ### TypeScript Configuration
+
 - Use strict mode in `tsconfig.json`
 - Run `bun run tsc --noEmit` to check types
 - Avoid using `any` type unless absolutely necessary

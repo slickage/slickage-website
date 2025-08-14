@@ -7,6 +7,7 @@ This document outlines the component architecture patterns and design principles
 ## Component Hierarchy
 
 ### 1. Page Components
+
 Located in `src/app/` - Next.js App Router pages that define routes and layouts.
 
 ```typescript
@@ -24,6 +25,7 @@ export default function AboutPage() {
 ```
 
 ### 2. Feature Components
+
 Located in `src/components/[feature]/` - Feature-specific components that combine UI components.
 
 ```typescript
@@ -41,6 +43,7 @@ export default function AboutHero() {
 ```
 
 ### 3. UI Components
+
 Located in `src/components/ui/` - Reusable, atomic components that form the design system.
 
 ```typescript
@@ -57,6 +60,7 @@ export function Button({ variant, size, children, ...props }) {
 ## Component Design Patterns
 
 ### 1. Composition Pattern
+
 Use composition to build complex components from simpler ones.
 
 ```typescript
@@ -74,6 +78,7 @@ export default function ContactForm() {
 ```
 
 ### 2. Container/Presentational Pattern
+
 Separate data logic from presentation logic.
 
 ```typescript
@@ -92,7 +97,7 @@ export default function CaseStudyList() {
 // Presentational Component - Handles rendering
 function CaseStudyGrid({ caseStudies, isLoading }: CaseStudyGridProps) {
   if (isLoading) return <LoadingSpinner />;
-  
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {caseStudies.map(study => (
@@ -104,6 +109,7 @@ function CaseStudyGrid({ caseStudies, isLoading }: CaseStudyGridProps) {
 ```
 
 ### 3. Custom Hook Pattern
+
 Extract reusable logic into custom hooks.
 
 ```typescript
@@ -123,7 +129,7 @@ export function useImageLoader(imageUrl: string | undefined, options = {}) {
 // Component using the hook
 export default function LazyImage({ src, alt, ...props }) {
   const { imageUrl, isLoading, hasError } = useImageLoader(src);
-  
+
   return (
     <div>
       {isLoading && <LoadingSpinner />}
@@ -136,6 +142,7 @@ export default function LazyImage({ src, alt, ...props }) {
 ## Component Structure Guidelines
 
 ### 1. File Organization
+
 ```
 src/components/
 ├── ui/                    # Reusable UI components
@@ -154,6 +161,7 @@ src/components/
 ```
 
 ### 2. Component File Structure
+
 ```typescript
 // 1. Imports
 'use client';
@@ -200,6 +208,7 @@ export default function Component({ title, description, onAction }: ComponentPro
 ## State Management Patterns
 
 ### 1. Local State
+
 Use `useState` for component-specific state.
 
 ```typescript
@@ -207,12 +216,12 @@ export default function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: ''
+    message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -228,6 +237,7 @@ export default function ContactForm() {
 ```
 
 ### 2. Shared State
+
 Use context for state that needs to be shared across components.
 
 ```typescript
@@ -263,6 +273,7 @@ export function useApp() {
 ## Performance Optimization Patterns
 
 ### 1. Memoization
+
 Use `React.memo` for components that receive stable props.
 
 ```typescript
@@ -278,6 +289,7 @@ export default React.memo(function TeamMember({ name, role, image }: TeamMemberP
 ```
 
 ### 2. Lazy Loading
+
 Use dynamic imports for code splitting.
 
 ```typescript
@@ -295,6 +307,7 @@ const PreloadedComponent = dynamic(() => import('./PreloadedComponent'), {
 ```
 
 ### 3. Virtual Scrolling
+
 For large lists, consider virtual scrolling.
 
 ```typescript
@@ -323,6 +336,7 @@ export default function VirtualizedList({ items }: { items: Item[] }) {
 ## Error Handling Patterns
 
 ### 1. Error Boundaries
+
 Wrap components with error boundaries for graceful error handling.
 
 ```typescript
@@ -358,6 +372,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 ```
 
 ### 2. Try-Catch in Async Functions
+
 Handle errors in async operations.
 
 ```typescript
@@ -389,6 +404,7 @@ export default function DataFetcher() {
 ## Accessibility Patterns
 
 ### 1. Semantic HTML
+
 Use proper HTML elements for accessibility.
 
 ```typescript
@@ -409,6 +425,7 @@ export default function Navigation() {
 ```
 
 ### 2. Keyboard Navigation
+
 Ensure components are keyboard accessible.
 
 ```typescript
@@ -445,6 +462,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
 ## Testing Patterns
 
 ### 1. Component Testing
+
 Test component behavior and user interactions.
 
 ```typescript
@@ -472,6 +490,7 @@ describe('ContactForm', () => {
 ```
 
 ### 2. Hook Testing
+
 Test custom hooks in isolation.
 
 ```typescript

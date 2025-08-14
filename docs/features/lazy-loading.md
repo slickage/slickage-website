@@ -18,8 +18,7 @@ The simplified `useImageLoader` hook now focuses on S3 URL processing and error 
 
 ```typescript
 interface UseImageLoaderOptions {
-  defaultImage?: string;
-  fallbackImage?: string;
+  placeholderImage?: string;
 }
 ```
 
@@ -42,7 +41,7 @@ import { LazyImage } from '@/components/ui';
   width={400}
   height={300}
   showLoadingSpinner={true}
-  fallbackImage="/placeholder.svg"
+  placeholderImage="/placeholder.svg"
   className="rounded-lg"
   containerClassName="relative"
   onLoad={() => console.log('Image loaded')}
@@ -55,7 +54,7 @@ import { LazyImage } from '@/components/ui';
 - `src` - Image source URL
 - `alt` - Alt text (required)
 - `showLoadingSpinner` - Show loading spinner (default: true)
-- `fallbackImage` - Fallback image URL (default: "/placeholder.svg")
+- `placeholderImage` - Placeholder image URL (default: "/placeholder.svg")
 - `className` - CSS classes for the image
 - `containerClassName` - CSS classes for the container
 - `onLoad` - Callback when image loads
@@ -82,7 +81,7 @@ import { LazyImageLightbox } from '@/components/ui';
   width={900}
   height={500}
   showLoadingSpinner={true}
-  fallbackImage="/placeholder.svg"
+  placeholderImage="/placeholder.svg"
   className="rounded-lg"
   containerClassName="relative"
   modalClassName="backdrop-blur-sm"
@@ -138,7 +137,7 @@ function MyComponent() {
   width={400}
   height={300}
   showLoadingSpinner={true}
-  fallbackImage="/custom-placeholder.svg"
+  placeholderImage="/custom-placeholder.svg"
   onLoad={() => console.log('Image loaded successfully')}
   onError={() => console.log('Image failed to load')}
 />
@@ -263,13 +262,7 @@ The lazy loading components automatically optimize for LCP performance:
 **Before (Custom Implementation):**
 
 ```tsx
-<LazyImage
-  src={src}
-  alt={alt}
-  lazy={true}
-  threshold={0.1}
-  rootMargin="50px"
-/>
+<LazyImage src={src} alt={alt} lazy={true} threshold={0.1} rootMargin="50px" />
 ```
 
 **After (Next.js Built-in):**

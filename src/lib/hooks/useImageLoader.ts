@@ -6,9 +6,7 @@ interface UseImageLoaderOptions {
 }
 
 export function useImageLoader(imageUrl: string | undefined, options: UseImageLoaderOptions = {}) {
-  const {
-    placeholderImage = '/placeholder.svg',
-  } = options;
+  const { placeholderImage = '/placeholder.svg' } = options;
 
   const [imageUrlState, setImageUrlState] = useState<string>(placeholderImage);
   const [isLoading, setIsLoading] = useState(false);

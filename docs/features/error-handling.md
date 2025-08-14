@@ -9,24 +9,29 @@ The error handling system provides comprehensive error management throughout the
 ### Core Components
 
 #### ErrorBoundary Component
+
 Located at `src/components/ui/ErrorBoundary.tsx`, this is a reusable React Error Boundary that catches JavaScript errors in component trees.
 
 **Key Features:**
+
 - Catches JavaScript errors in child components
 - Provides fallback UI with reset functionality
 - Logs errors in development mode
 - Prevents entire app crashes
 
 #### Global Error Page
+
 Located at `src/app/error.tsx`, this handles Next.js app-level errors with a user-friendly interface.
 
 **Functionality:**
+
 - Catches unhandled errors in the app
 - Provides reset functionality
 - Maintains consistent UI during errors
 - Logs errors for debugging
 
 #### Error Handling in API Routes
+
 Various API routes implement comprehensive error handling with proper HTTP status codes and user-friendly messages.
 
 ### Architecture
@@ -87,11 +92,11 @@ export default function Dashboard() {
       <ErrorBoundary>
         <UserProfile />
       </ErrorBoundary>
-      
+
       <ErrorBoundary>
         <Analytics />
       </ErrorBoundary>
-      
+
       <ErrorBoundary>
         <RecentActivity />
       </ErrorBoundary>
@@ -130,12 +135,8 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       return (
         this.props.fallback || (
           <div className="p-8 text-center">
-            <h2 className="text-2xl font-bold mb-4 text-red-600">
-              Something went wrong.
-            </h2>
-            <p className="mb-4 text-gray-400">
-              An unexpected error occurred. Please try again.
-            </p>
+            <h2 className="text-2xl font-bold mb-4 text-red-600">Something went wrong.</h2>
+            <p className="mb-4 text-gray-400">An unexpected error occurred. Please try again.</p>
             <button
               onClick={this.handleReset}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
@@ -184,11 +185,10 @@ export default function Error({
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500/10 to-violet-500/10">
       <div className="max-w-md w-full bg-white/5 backdrop-blur-sm rounded-xl p-8 text-center border border-white/10">
-        <h2 className="text-2xl font-bold text-white mb-4">
-          Something went wrong!
-        </h2>
+        <h2 className="text-2xl font-bold text-white mb-4">Something went wrong!</h2>
         <p className="text-gray-400 mb-6">
-          We apologize for the inconvenience. Please try again or contact support if the problem persists.
+          We apologize for the inconvenience. Please try again or contact support if the problem
+          persists.
         </p>
         <button
           onClick={reset}
@@ -216,7 +216,7 @@ export async function POST(request: NextRequest) {
     // ... form processing logic
   } catch (error) {
     const processingTime = Date.now() - startTime;
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         {
@@ -226,29 +226,23 @@ export async function POST(request: NextRequest) {
             message: err.message,
           })),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (error instanceof SyntaxError) {
-      return NextResponse.json(
-        { error: 'Invalid JSON in request body' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
     }
 
     if (error instanceof Error) {
       logger.error('Database error:', error.message);
       return NextResponse.json(
         { error: 'Service temporarily unavailable. Please try again later.' },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 ```
@@ -262,19 +256,13 @@ export async function GET(request: Request) {
     const key = searchParams.get('key');
 
     if (!key) {
-      return NextResponse.json(
-        { error: 'No key provided' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No key provided' }, { status: 400 });
     }
 
     // ... S3 logic
   } catch (error) {
     console.error('Error generating presigned URL:', error);
-    return NextResponse.json(
-      { error: 'Failed to generate URL' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to generate URL' }, { status: 500 });
   }
 }
 ```
@@ -282,21 +270,25 @@ export async function GET(request: Request) {
 ## Error Types and Handling
 
 ### 1. Validation Errors
+
 - **Zod Schema Errors**: Field-specific validation failures
 - **Input Validation**: Malformed or missing required data
 - **Security Validation**: Honeypot, timing, or rate limit violations
 
 ### 2. Network Errors
+
 - **Fetch Failures**: Network connectivity issues
 - **Timeout Errors**: Request timeouts
 - **CORS Errors**: Cross-origin request failures
 
 ### 3. Database Errors
+
 - **Connection Failures**: Database connectivity issues
 - **Query Errors**: SQL syntax or constraint violations
 - **Transaction Failures**: Rollback scenarios
 
 ### 4. External Service Errors
+
 - **AWS S3 Errors**: Authentication or permission failures
 - **reCAPTCHA Errors**: Verification failures
 - **Slack API Errors**: Webhook delivery failures
@@ -304,21 +296,25 @@ export async function GET(request: Request) {
 ## Best Practices
 
 ### 1. Error Boundary Placement
+
 - Wrap critical components that could fail
 - Don't wrap the entire app (use Next.js error.tsx instead)
 - Place boundaries at logical component boundaries
 
 ### 2. Error Logging
+
 - Log errors with sufficient context
 - Include user information when safe
 - Use appropriate log levels (error, warn, info)
 
 ### 3. User Experience
+
 - Provide clear, actionable error messages
 - Offer recovery options when possible
 - Maintain consistent error UI patterns
 
 ### 4. Security
+
 - Don't expose sensitive information in error messages
 - Log security-related errors appropriately
 - Implement rate limiting for error-prone endpoints
@@ -366,11 +362,9 @@ export default function ContactForm() {
   return (
     <form onSubmit={handleSubmit}>
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700">
-          {error}
-        </div>
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700">{error}</div>
       )}
-      
+
       {/* Form fields with field-specific errors */}
       <div className="mb-4">
         <label htmlFor="name">Name</label>
@@ -381,11 +375,9 @@ export default function ContactForm() {
             fieldErrors.name ? 'border-red-500' : 'border-gray-300'
           }`}
         />
-        {fieldErrors.name && (
-          <p className="text-red-500 text-sm mt-1">{fieldErrors.name}</p>
-        )}
+        {fieldErrors.name && <p className="text-red-500 text-sm mt-1">{fieldErrors.name}</p>}
       </div>
-      
+
       {/* ... other fields */}
     </form>
   );
@@ -403,14 +395,14 @@ export default function DataFetcher() {
   const fetchData = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch('/api/data');
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const result = await response.json();
       setData(result);
     } catch (err) {
@@ -454,7 +446,7 @@ export default function ResilientComponent() {
   };
 
   const handleRetry = () => {
-    setRetryCount(prev => prev + 1);
+    setRetryCount((prev) => prev + 1);
     setError(null);
     loadData();
   };
@@ -512,6 +504,7 @@ Enable debug logging by setting `NODE_ENV=development` and checking browser cons
 ### Error Monitoring
 
 Consider implementing error monitoring services like:
+
 - Sentry for error tracking and performance monitoring
 - LogRocket for session replay and error context
 - Custom error reporting to your backend
@@ -519,6 +512,7 @@ Consider implementing error monitoring services like:
 ## Integration with Other Systems
 
 ### Logging Integration
+
 Errors are logged using the application's logging system for monitoring and debugging:
 
 ```typescript
@@ -533,13 +527,17 @@ try {
 ```
 
 ### Monitoring Integration
+
 Error rates and types can be monitored through:
+
 - Application performance monitoring (APM) tools
 - Error tracking services
 - Custom metrics and dashboards
 
 ### User Feedback Integration
+
 Errors are communicated to users through:
+
 - Toast notifications for non-critical errors
 - Modal dialogs for critical errors
 - Inline error messages for form validation

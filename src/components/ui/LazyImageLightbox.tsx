@@ -33,7 +33,7 @@ export default function LazyImageLightbox({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const { imageUrl, isLoading, hasError } = useImageLoader(src, {
-    fallbackImage: '/placeholder.svg',
+    placeholderImage: '/placeholder.svg',
   });
 
   // Check if fill prop is being used
