@@ -16,9 +16,6 @@ export default React.memo(function TeamMember({ name, role, image }: TeamMemberP
           alt={name}
           fill
           priority={false}
-          lazy={true}
-          threshold={0.1}
-          rootMargin="50px"
           showLoadingSpinner={false}
           containerClassName="w-full h-full"
           className="object-cover"

@@ -37,7 +37,6 @@ export default function CaseStudyHero({
           height={0}
           sizes="100vw"
           priority={true}
-          lazy={false}
           showLoadingSpinner={false}
           containerClassName="w-full h-full"
         />

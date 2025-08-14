@@ -9,10 +9,6 @@ import LoadingSpinner from './LoadingSpinner';
 interface LazyImageProps extends Omit<ImageProps, 'src'> {
   src: string | undefined;
   alt: string;
-  lazy?: boolean;
-  threshold?: number;
-  rootMargin?: string;
-  fallbackImage?: string;
   showLoadingSpinner?: boolean;
   className?: string;
   containerClassName?: string;
@@ -23,10 +19,6 @@ interface LazyImageProps extends Omit<ImageProps, 'src'> {
 export default function LazyImage({
   src,
   alt,
-  lazy = true,
-  threshold = 0.1,
-  rootMargin = '50px',
-  fallbackImage = '/placeholder.svg',
   showLoadingSpinner = true,
   className = '',
   containerClassName = '',
@@ -34,17 +26,8 @@ export default function LazyImage({
   onError,
   ...imageProps
 }: LazyImageProps) {
-  const {
-    imageUrl,
-    isLoading,
-    isInView,
-    hasError,
-    imageRef,
-  } = useImageLoader(src, {
-    lazy,
-    threshold,
-    rootMargin,
-    fallbackImage,
+  const { imageUrl, isLoading, hasError } = useImageLoader(src, {
+    fallbackImage: '/placeholder.svg',
   });
 
   const handleImageLoad = () => {
@@ -57,21 +40,19 @@ export default function LazyImage({
 
   // Check if fill prop is being used
   const isFillImage = 'fill' in imageProps;
-  
+
   // Check if we're using a placeholder image (which should be prioritized)
-  const isPlaceholderImage = imageUrl === '/placeholder.svg' || imageUrl === fallbackImage;
-  
+  const isPlaceholderImage = imageUrl === '/placeholder.svg';
+
   // Auto-set priority for placeholder images to fix LCP warning
   const finalPriority = isPlaceholderImage ? true : imageProps.priority;
 
   return (
     <div
-      ref={imageRef}
       className={`relative ${containerClassName}`}
-      style={{ 
-        minHeight: lazy && !isInView ? '200px' : 'auto',
+      style={{
         // Ensure container has height when using fill
-        ...(isFillImage && { height: '100%' })
+        ...(isFillImage && { height: '100%' }),
       }}
     >
       {/* Loading state */}
@@ -81,30 +62,24 @@ export default function LazyImage({
         </div>
       )}
 
-      {/* Placeholder for lazy loading */}
-      {lazy && !isInView && !isLoading && (
-        <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
-      )}
-
-      {/* Actual image */}
-      {(isInView || !lazy) && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isLoading ? 0 : 1 }}
-          transition={{ duration: 0.3 }}
-          className={`relative ${isFillImage ? 'w-full h-full' : ''}`}
-        >
-          <Image
-            src={imageUrl}
-            alt={alt}
-            className={`transition-opacity duration-300 ${className}`}
-            onLoad={handleImageLoad}
-            onError={handleImageError}
-            priority={finalPriority}
-            {...imageProps}
-          />
-        </motion.div>
-      )}
+      {/* Actual image with Next.js built-in lazy loading */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isLoading ? 0 : 1 }}
+        transition={{ duration: 0.3 }}
+        className={`relative ${isFillImage ? 'w-full h-full' : ''}`}
+      >
+        <Image
+          src={imageUrl}
+          alt={alt}
+          className={`transition-opacity duration-300 ${className}`}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+          priority={finalPriority}
+          loading={finalPriority ? 'eager' : 'lazy'}
+          {...imageProps}
+        />
+      </motion.div>
 
       {/* Error state */}
       {hasError && (

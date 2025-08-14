@@ -2,7 +2,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
-import { LazyImageLightbox } from '@/components/ui';
 
 const LazyImageLightboxComponent = dynamic(() => import('../ui/LazyImageLightbox'));
 
@@ -35,9 +34,6 @@ export default function CaseStudyImage({
             height={500}
             className="object-fill w-full h-auto"
             priority={false}
-            lazy={true}
-            threshold={0.1}
-            rootMargin="100px"
             showLoadingSpinner={true}
             containerClassName="w-full h-full"
           />

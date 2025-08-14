@@ -13,10 +13,6 @@ interface LazyImageLightboxProps extends Omit<ImageProps, 'ref' | 'src'> {
   priority?: boolean;
   className?: string;
   modalClassName?: string;
-  lazy?: boolean;
-  threshold?: number;
-  rootMargin?: string;
-  fallbackImage?: string;
   showLoadingSpinner?: boolean;
   containerClassName?: string;
 }
@@ -27,10 +23,6 @@ export default function LazyImageLightbox({
   priority = false,
   className = '',
   modalClassName = '',
-  lazy = true,
-  threshold = 0.1,
-  rootMargin = '50px',
-  fallbackImage = '/placeholder.svg',
   showLoadingSpinner = true,
   containerClassName = '',
   ...props
@@ -40,25 +32,16 @@ export default function LazyImageLightbox({
   const triggerRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const {
-    imageUrl,
-    isLoading,
-    isInView,
-    hasError,
-    imageRef,
-  } = useImageLoader(src, {
-    lazy,
-    threshold,
-    rootMargin,
-    fallbackImage,
+  const { imageUrl, isLoading, hasError } = useImageLoader(src, {
+    fallbackImage: '/placeholder.svg',
   });
 
   // Check if fill prop is being used
   const isFillImage = 'fill' in props;
-  
+
   // Check if we're using a placeholder image (which should be prioritized)
-  const isPlaceholderImage = imageUrl === '/placeholder.svg' || imageUrl === fallbackImage;
-  
+  const isPlaceholderImage = imageUrl === '/placeholder.svg';
+
   // Auto-set priority for placeholder images to fix LCP warning
   const finalPriority = isPlaceholderImage ? true : priority;
 
@@ -112,12 +95,10 @@ export default function LazyImageLightbox({
   return (
     <>
       <div
-        ref={imageRef}
         className={`cursor-pointer relative w-full h-full ${containerClassName}`}
-        style={{ 
-          minHeight: lazy && !isInView ? '200px' : 'auto',
+        style={{
           // Ensure container has height when using fill
-          ...(isFillImage && { height: '100%' })
+          ...(isFillImage && { height: '100%' }),
         }}
         onClick={() => setExpanded(true)}
         tabIndex={0}
@@ -134,29 +115,23 @@ export default function LazyImageLightbox({
           </div>
         )}
 
-        {/* Placeholder for lazy loading */}
-        {lazy && !isInView && !isLoading && (
-          <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse z-10" />
-        )}
-
-        {/* Actual image */}
-        {(isInView || !lazy) && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isLoading ? 0 : 1 }}
-            transition={{ duration: 0.3 }}
-            className={`relative ${isFillImage ? 'w-full h-full' : ''}`}
-          >
-            <Image
-              className={className}
-              src={imageUrl}
-              alt={alt}
-              priority={finalPriority}
-              onLoad={handleImageLoad}
-              {...props}
-            />
-          </motion.div>
-        )}
+        {/* Actual image with Next.js built-in lazy loading */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isLoading ? 0 : 1 }}
+          transition={{ duration: 0.3 }}
+          className={`relative ${isFillImage ? 'w-full h-full' : ''}`}
+        >
+          <Image
+            className={className}
+            src={imageUrl}
+            alt={alt}
+            priority={finalPriority}
+            loading={finalPriority ? 'eager' : 'lazy'}
+            onLoad={handleImageLoad}
+            {...props}
+          />
+        </motion.div>
 
         {/* Error state */}
         {hasError && (
@@ -213,6 +188,7 @@ export default function LazyImageLightbox({
                     className={`object-contain rounded-lg cursor-zoom-out
                       ${isPortrait ? 'w-3xl h-auto' : 'w-6xl h-auto'}`}
                     priority={finalPriority}
+                    loading={finalPriority ? 'eager' : 'lazy'}
                     onClick={() => setExpanded(false)}
                     onLoad={handleImageLoad}
                   />

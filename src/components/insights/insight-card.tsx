@@ -75,9 +75,6 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
                 alt={insight.title}
                 fill
                 priority={isAboveTheFold}
-                lazy={!isAboveTheFold} // Disable lazy loading for above-the-fold cards
-                threshold={0.1}
-                rootMargin="50px"
                 showLoadingSpinner={false}
                 containerClassName="w-full h-full"
                 className="object-cover transition-opacity duration-300"
