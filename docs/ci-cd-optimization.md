@@ -22,12 +22,12 @@ This document outlines the optimization strategies implemented for the Slickage 
 
 ```yaml
 jobs:
-  code-quality:          # Code quality checks (format, lint, type check)
+  code-quality: # Code quality checks (format, lint, type check)
     outputs:
       cache-hit: ${{ steps.cache-deps.outputs.cache-hit }}
-  
-  test:                  # Parallel test execution
-    needs: code-quality  # Job dependency
+
+  test: # Parallel test execution
+    needs: code-quality # Job dependency
     strategy:
       matrix:
         - integration tests (Redis service, port 6380)
@@ -51,9 +51,9 @@ jobs:
 jobs:
   code-quality:
     # Code quality checks (format, lint, type check)
-  
+
   test:
-    needs: code-quality  # Job dependency
+    needs: code-quality # Job dependency
     # Test execution only after code quality passes
 ```
 
@@ -80,7 +80,7 @@ test:
     uses: actions/cache@v4
     with:
       key: ${{ runner.os }}-deps-latest-${{ hashFiles('**/bun.lock') }}
-  
+
   - name: Install dependencies
     if: needs.code-quality.outputs.cache-hit != 'true'
     run: bun install
@@ -162,9 +162,9 @@ strategy:
 jobs:
   code-quality:
     # Fast code quality checks (format, lint, type check)
-  
+
   test:
-    needs: code-quality  # Sequential dependency
+    needs: code-quality # Sequential dependency
     strategy:
       matrix:
         - integration tests (Redis service, port 6380)

@@ -26,27 +26,25 @@ export async function checkRateLimit(ip: string): Promise<RateLimitResult> {
     }
 
     const redis = getRedisClient();
-
-    // Use Redis pipeline for atomic operations and optimal performance
-    // This reduces network round-trips from 4 to 1 and ensures atomicity
     const windowStart = now - RATE_LIMIT_WINDOW;
 
     try {
-      // Create pipeline for atomic execution
-      const pipeline = redis.pipeline();
+      // Use Redis MULTI for atomic operations (not pipeline)
+      // This ensures all operations execute together without race conditions
+      const multi = redis.multi();
 
-      // Add operations to pipeline in correct order:
+      // Add operations to multi in correct order:
       // 1. Remove old entries (cleanup)
       // 2. Count existing requests BEFORE adding current request
       // 3. Add current request
       // 4. Set expiration
-      pipeline.zremrangebyscore(key, 0, windowStart);
-      pipeline.zcount(key, windowStart, now);
-      pipeline.zadd(key, now, requestId);
-      pipeline.expire(key, RATE_LIMIT_WINDOW);
+      multi.zremrangebyscore(key, 0, windowStart);
+      multi.zcount(key, windowStart, now);
+      multi.zadd(key, now, requestId);
+      multi.expire(key, RATE_LIMIT_WINDOW);
 
       // Execute all operations atomically
-      const results = await pipeline.exec();
+      const results = await multi.exec();
 
       // Validate pipeline results
       if (!results || results.length !== 4) {
@@ -107,9 +105,16 @@ export async function checkRateLimit(ip: string): Promise<RateLimitResult> {
       logger.warn('Falling back to sequential operations due to pipeline error');
 
       try {
-        // Sequential fallback for reliability
-        await redis.zremrangebyscore(key, 0, windowStart);
-        const existingRequestCount = await redis.zcount(key, windowStart, now);
+        // Sequential fallback for reliability - also use multi for consistency
+        const multi = redis.multi();
+        multi.zremrangebyscore(key, 0, windowStart);
+        multi.zcount(key, windowStart, now);
+
+        const results = await multi.exec();
+        if (!results) {
+          throw new Error('Redis multi execution failed');
+        }
+        const existingRequestCount = (results[1]?.[1] as number) || 0;
 
         if (existingRequestCount >= MAX_SUBMISSIONS_PER_HOUR) {
           const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
@@ -127,8 +132,11 @@ export async function checkRateLimit(ip: string): Promise<RateLimitResult> {
           };
         }
 
-        await redis.zadd(key, now, requestId);
-        await redis.expire(key, RATE_LIMIT_WINDOW);
+        // Add current request and set expiration atomically
+        const addMulti = redis.multi();
+        addMulti.zadd(key, now, requestId);
+        addMulti.expire(key, RATE_LIMIT_WINDOW);
+        await addMulti.exec();
 
         const remaining = Math.max(0, MAX_SUBMISSIONS_PER_HOUR - (existingRequestCount + 1));
         const resetTime = (now + RATE_LIMIT_WINDOW) * 1000;
@@ -212,7 +220,7 @@ export async function getRateLimitStatus(ip: string): Promise<RateLimitResult> {
     // Count requests in the rolling 1-hour window
     const requestCount = await redis.zcount(key, windowStart, windowEnd);
 
-    if (requestCount > MAX_SUBMISSIONS_PER_HOUR) {
+    if (requestCount >= MAX_SUBMISSIONS_PER_HOUR) {
       // Find the oldest request to calculate reset time
       const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
       const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;

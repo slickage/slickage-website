@@ -16,18 +16,18 @@ The test suite is organized as follows:
 
 ```
 tests/
-├── security/           # Security-related unit tests
+├── core/                    # Core business logic tests
 │   ├── rate-limiter.test.ts
 │   └── fallback-rate-limiter.test.ts
-├── integration/        # Integration tests requiring external services
+├── integration/            # Integration tests requiring external services
 │   ├── redis-rate-limiting.test.ts
 │   └── sliding-window.test.ts
-└── README.md          # This file
+└── README.md              # This file
 ```
 
 ## Test Categories
 
-### Unit Tests (`tests/security/`)
+### Core Tests (`tests/core/`)
 
 - **Rate Limiter Tests**: Core rate limiting logic and constants
 - **Fallback Rate Limiter Tests**: In-memory fallback mechanism when Redis is unavailable
@@ -42,14 +42,14 @@ tests/
 Run all tests in a specific directory:
 
 ```bash
-bun test tests/security/
+bun test tests/core/
 bun test tests/integration/
 ```
 
 Run a specific test file:
 
 ```bash
-bun test tests/security/rate-limiter.test.ts
+bun test tests/core/rate-limiter.test.ts
 bun test tests/integration/redis-rate-limiting.test.ts
 ```
 
@@ -72,7 +72,7 @@ bun test tests/integration/
 Unit tests can run without external dependencies:
 
 ```bash
-bun test tests/security/
+bun test tests/core/
 ```
 
 ## Test Writing Guidelines
