@@ -18,6 +18,8 @@ jobs:
   code-quality:
     name: Code Quality Check
     runs-on: ubuntu-latest
+    outputs:
+      cache-hit: ${{ steps.cache-deps.outputs.cache-hit }}
     steps:
       - uses: actions/checkout@v4
 
@@ -26,17 +28,25 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Cache dependencies
+      - name: Cache Bun
+        id: cache-bun
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-latest-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-latest-
+
+      - name: Cache Dependencies
         id: cache-deps
         uses: actions/cache@v4
         with:
           path: |
-            ~/.bun/install/cache
             node_modules
             .bun
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          key: ${{ runner.os }}-deps-latest-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-bun-
+            ${{ runner.os }}-deps-latest-
 
       - name: Install dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
@@ -53,8 +63,21 @@ jobs:
 
   test:
     name: Test Suite
+    needs: code-quality
     runs-on: ubuntu-latest
-    # Runs in parallel with code-quality for faster CI
+    strategy:
+      matrix:
+        include:
+          - test-suite: integration
+            test-command: 'bun test tests/integration/ --coverage'
+            test-name: 'Integration Tests'
+            redis-port: 6380
+          - test-suite: security
+            test-command: 'bun test tests/security/ --coverage'
+            test-name: 'Security Tests'
+            redis-port: 6381
+      # Fail fast to stop on first failure
+      fail-fast: true
 
     services:
       redis:
@@ -65,7 +88,7 @@ jobs:
           --health-timeout 3s
           --health-retries 3
         ports:
-          - 6380:6379
+          - ${{ matrix.redis-port }}:6379
 
     steps:
       - uses: actions/checkout@v4
@@ -75,47 +98,33 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Cache dependencies
-        id: cache-deps
+      - name: Restore Dependencies
         uses: actions/cache@v4
         with:
           path: |
-            ~/.bun/install/cache
             node_modules
             .bun
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          key: ${{ runner.os }}-deps-latest-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
-            ${{ runner.os }}-bun-
-
-      - name: Cache test results
-        id: cache-test
-        uses: actions/cache@v4
-        with:
-          path: |
-            coverage/
-            .nyc_output/
-            test-results.xml
-          key: ${{ runner.os }}-test-cache-${{ hashFiles('**/bun.lock') }}-${{ hashFiles('**/*.test.ts') }}-${{ hashFiles('**/*.test.tsx') }}
-          restore-keys: |
-            ${{ runner.os }}-test-cache-${{ hashFiles('**/bun.lock') }}-
+            ${{ runner.os }}-deps-latest-
 
       - name: Install dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true'
+        if: needs.code-quality.outputs.cache-hit != 'true'
         run: bun install
 
-      - name: Run Tests with Coverage
-        run: bun test --coverage --bail --reporter=junit --reporter-outfile=./test-results.xml
+      - name: Run ${{ matrix.test-name }}
+        run: ${{ matrix.test-command }} --bail --reporter=junit --reporter-outfile=./test-results-${{ matrix.test-suite }}.xml
         env:
           NODE_ENV: test
-          REDIS_URL: redis://localhost:6380
+          REDIS_URL: redis://localhost:${{ matrix.redis-port }}
         timeout-minutes: 10
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results
+          name: test-results-${{ matrix.test-suite }}-latest
           path: |
-            test-results.xml
+            test-results-${{ matrix.test-suite }}.xml
             coverage/
           retention-days: 30
