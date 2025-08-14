@@ -2,17 +2,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { getS3ImageUrl } from '@/lib/utils';
 
 interface UseImageLoaderOptions {
-  defaultImage?: string;
-  fallbackImage?: string;
+  placeholderImage?: string;
 }
 
 export function useImageLoader(imageUrl: string | undefined, options: UseImageLoaderOptions = {}) {
   const {
-    defaultImage = '/placeholder.svg',
-    fallbackImage = '/placeholder.svg',
+    placeholderImage = '/placeholder.svg',
   } = options;
 
-  const [imageUrlState, setImageUrlState] = useState<string>(defaultImage);
+  const [imageUrlState, setImageUrlState] = useState<string>(placeholderImage);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 
@@ -32,13 +30,13 @@ export function useImageLoader(imageUrl: string | undefined, options: UseImageLo
         setImageUrlState(processedUrl);
       } catch (error) {
         console.error('Error loading image:', error);
-        setImageUrlState(fallbackImage);
+        setImageUrlState(placeholderImage);
         setHasError(true);
       } finally {
         setIsLoading(false);
       }
     },
-    [fallbackImage],
+    [placeholderImage],
   );
 
   // Load image when URL changes
