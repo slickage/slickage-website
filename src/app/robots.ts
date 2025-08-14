@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/(testing)/'],
+      disallow: ['/api/', '/(unused-routes)/'],
     },
     sitemap: 'https://beta.slickage.io/sitemap.xml',
   };
