@@ -18,14 +18,7 @@
     "db:push": "drizzle-kit push",
     "db:pull": "drizzle-kit pull",
     "db:studio": "drizzle-kit studio",
-    "db:test": "tsx src/db/example.ts",
-    "test": "bun run tests/run-tests.ts",
-    "test:watch": "bun run tests/run-tests.ts --watch",
-    "test:coverage": "bun run tests/run-tests.ts",
-    "test:security": "bun run tests/security/rate-limiter.test.ts",
-    "test:utils": "bun run tests/utils/redis.test.ts",
-    "test:integration": "bun run tests/integration/redis-rate-limiting.test.ts",
-    "test:unit": "bun run tests/security/rate-limiter.test.ts"
+    "db:test": "tsx src/db/example.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.859.0",

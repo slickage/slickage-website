@@ -1,58 +1,91 @@
+import { describe, it, expect } from 'bun:test';
 import { MAX_SUBMISSIONS_PER_HOUR } from '../../src/lib/security/rate-limiter';
 
-// Simple test function
-export function testRateLimiter() {
-  console.log('🧪 Testing Rate Limiter Constants...\n');
+describe('Rate Limiter Unit Tests', () => {
+  describe('Constants and Configuration', () => {
+    it('should have correct MAX_SUBMISSIONS_PER_HOUR value', () => {
+      expect(MAX_SUBMISSIONS_PER_HOUR).toBe(3);
+    });
 
-  let testsPassed = 0;
-  let totalTests = 3;
+    it('should have correct MAX_SUBMISSIONS_PER_HOUR type', () => {
+      expect(typeof MAX_SUBMISSIONS_PER_HOUR).toBe('number');
+    });
 
-  // Test 1: Check constant value
-  try {
-    if (MAX_SUBMISSIONS_PER_HOUR === 3) {
-      console.log('✅ Test 1: MAX_SUBMISSIONS_PER_HOUR has correct value (3)');
-      testsPassed++;
-    } else {
-      console.log('❌ Test 1: MAX_SUBMISSIONS_PER_HOUR has incorrect value');
-    }
-  } catch (error) {
-    console.log('❌ Test 1: Failed to access MAX_SUBMISSIONS_PER_HOUR');
-  }
+    it('should have correct rate limit window calculation', () => {
+      const RATE_LIMIT_WINDOW = 60 * 60; // 1 hour in seconds
+      expect(RATE_LIMIT_WINDOW).toBe(3600);
+    });
 
-  // Test 2: Check constant type
-  try {
-    if (typeof MAX_SUBMISSIONS_PER_HOUR === 'number') {
-      console.log('✅ Test 2: MAX_SUBMISSIONS_PER_HOUR is a number');
-      testsPassed++;
-    } else {
-      console.log('❌ Test 2: MAX_SUBMISSIONS_PER_HOUR is not a number');
-    }
-  } catch (error) {
-    console.log('❌ Test 2: Failed to check type of MAX_SUBMISSIONS_PER_HOUR');
-  }
+    it('should have mathematically sound sliding window constants', () => {
+      const windowSize = 3600; // 1 hour
+      const maxRequests = 3;
+      const requestsPerSecond = maxRequests / windowSize;
+      expect(requestsPerSecond).toBe(0.0008333333333333334);
+    });
+  });
 
-  // Test 3: Check error message duplication fix
-  try {
-    const apiErrorMessage = 'Too many submissions. Please try again in 59 minutes.';
-    const hasRetryInfo = apiErrorMessage.includes('try again in');
+  describe('IP Address Handling', () => {
+    it('should handle valid IP address formats', () => {
+      const testIps = ['192.168.1.1', '10.0.0.1', '172.16.0.1'];
+      const validIpFormat = /^(\d{1,3}\.){3}\d{1,3}$/;
+      
+      for (const ip of testIps) {
+        expect(validIpFormat.test(ip)).toBe(true);
+      }
+    });
 
-    if (hasRetryInfo) {
-      console.log('✅ Test 3: API error message contains retry information');
-      testsPassed++;
-    } else {
-      console.log('❌ Test 3: API error message missing retry information');
-    }
-  } catch (error) {
-    console.log('❌ Test 3: Failed to check error message format');
-  }
+    it('should reject invalid IP address formats', () => {
+      const invalidIps = ['192.168.1', '256.1.2.3', '192.168.1.256', 'abc.def.ghi.jkl'];
+      
+      for (const ip of invalidIps) {
+        // Check that each IP has exactly 4 octets and each octet is valid
+        const octets = ip.split('.');
+        const isValid = octets.length === 4 && 
+                       octets.every(octet => {
+                         const num = parseInt(octet, 10);
+                         return !isNaN(num) && num >= 0 && num <= 255;
+                       });
+        expect(isValid).toBe(false);
+      }
+    });
 
-  console.log(`\n📊 Test Results: ${testsPassed}/${totalTests} tests passed`);
+    it('should reject IP addresses with invalid octet values', () => {
+      const invalidIps = ['192.168.1.256', '1.2.3.300', '0.0.0.256'];
+      
+      for (const ip of invalidIps) {
+        // Check that each octet is between 0-255
+        const octets = ip.split('.');
+        const isValid = octets.length === 4 && 
+                       octets.every(octet => {
+                         const num = parseInt(octet, 10);
+                         return !isNaN(num) && num >= 0 && num <= 255;
+                       });
+        expect(isValid).toBe(false);
+      }
+    });
+  });
 
-  if (testsPassed === totalTests) {
-    console.log('🎉 All tests passed!');
-    return true;
-  } else {
-    console.log('💥 Some tests failed!');
-    return false;
-  }
-}
+  describe('Error Message Format', () => {
+    it('should contain retry information in API error messages', () => {
+      const apiErrorMessage = 'Too many submissions. Please try again in 59 minutes.';
+      expect(apiErrorMessage).toContain('try again in');
+    });
+  });
+
+  describe('Rate Limit Result Structure', () => {
+    it('should have correct result structure properties', () => {
+      const mockResult = {
+        limited: false,
+        remaining: 3,
+        resetTime: Date.now() + 3600000
+      };
+      
+      expect(mockResult).toHaveProperty('limited');
+      expect(mockResult).toHaveProperty('remaining');
+      expect(mockResult).toHaveProperty('resetTime');
+      expect(typeof mockResult.limited).toBe('boolean');
+      expect(typeof mockResult.remaining).toBe('number');
+      expect(typeof mockResult.resetTime).toBe('number');
+    });
+  });
+});

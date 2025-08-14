@@ -1,171 +1,179 @@
-# Testing Structure
+# Testing Guide
 
-This directory contains all test files for the Slickage Website project, organized following testing best practices.
+This project uses **Bun's built-in test runner** for all testing needs. The test suite is organized by feature and test type to provide comprehensive coverage of the application.
 
-## Directory Structure
+## Quick Start
+
+Run all tests:
+```bash
+bun test
+```
+
+## Testing Structure
+
+The test suite is organized as follows:
 
 ```
 tests/
-├── README.md                    # This file - testing documentation
-├── run-tests.ts                 # Main test runner script
-├── setup.ts                     # Test environment setup
-├── security/                    # Security-related tests
-│   └── rate-limiter.test.ts    # Rate limiting unit tests
-├── utils/                       # Utility function tests
-│   └── redis.test.ts           # Redis connection tests (placeholder)
-└── integration/                 # Integration tests
-    └── redis-rate-limiting.test.ts  # Redis rate limiting integration tests
+├── security/           # Security-related unit tests
+│   ├── rate-limiter.test.ts
+│   └── fallback-rate-limiter.test.ts
+├── integration/        # Integration tests requiring external services
+│   ├── redis-rate-limiting.test.ts
+│   └── sliding-window.test.ts
+├── utils/             # Utility function tests
+│   └── redis.test.ts
+└── README.md          # This file
 ```
 
-## Test File Naming Conventions
+## Test Categories
 
-- **Unit Tests**: `*.test.ts` - Test individual functions/components
-- **Integration Tests**: `*.integration.test.ts` - Test component interactions
-- **Test Runner**: `run-tests.ts` - Main script to run all tests
+### Unit Tests (`tests/security/`)
+- **Rate Limiter Tests**: Core rate limiting logic and constants
+- **Fallback Rate Limiter Tests**: In-memory fallback mechanism when Redis is unavailable
 
-## Running Tests
+### Integration Tests (`tests/integration/`)
+- **Redis Rate Limiting**: Tests requiring a running Redis instance
+- **Sliding Window Algorithm**: Comprehensive testing of the sliding window implementation
 
-### Run All Tests (Recommended)
+### Utility Tests (`tests/utils/`)
+- **Redis Utilities**: Mocked Redis functionality tests
+
+## Running Specific Test Categories
+
+Run all tests in a specific directory:
+```bash
+bun test tests/security/
+bun test tests/integration/
+bun test tests/utils/
+```
+
+Run a specific test file:
+```bash
+bun test tests/security/rate-limiter.test.ts
+bun test tests/integration/redis-rate-limiting.test.ts
+```
+
+## Prerequisites
+
+### For Integration Tests
+Some tests require external services to be running:
 
 ```bash
-bun run test
+# Start Redis for integration tests
+docker-compose up -d redis
+
+# Wait for Redis to be ready, then run tests
+bun test tests/integration/
 ```
 
-### Run Specific Test Categories
-
+### For Unit Tests
+Unit tests can run without external dependencies:
 ```bash
-# Run only security tests
-bun run test:security
-
-# Run only integration tests
-bun run test:integration
-
-# Run only unit tests
-bun run test:unit
-
-# Run specific test file
-bun run tests/integration/redis-rate-limiting.test.ts
+bun test tests/security/
+bun test tests/utils/
 ```
-
-### Test Runner Features
-
-The main test runner (`run-tests.ts`) provides:
-
-- **Sequential Execution**: Tests run in the proper order
-- **Clear Output**: Easy-to-read test results
-- **Summary Report**: Total tests, passed, and failed counts
-- **Integration Check**: Verifies Redis availability for integration tests
-
-## Test Types
-
-### 1. Unit Tests (`tests/security/`)
-
-- **Purpose**: Test individual functions in isolation
-- **Dependencies**: Minimal, no external services
-- **Speed**: Fast execution
-- **Example**: Testing rate limiter constants and basic functionality
-
-### 2. Integration Tests (`tests/integration/`)
-
-- **Purpose**: Test component interactions and external services
-- **Dependencies**: Redis, PostgreSQL, Docker
-- **Speed**: Slower due to external dependencies
-- **Example**: Testing Redis rate limiting with actual Redis instance
-
-### 3. Test Runner (`tests/run-tests.ts`)
-
-- **Purpose**: Orchestrate and run all tests
-- **Features**: Sequential execution, clear reporting, error handling
-- **Output**: Formatted test results with pass/fail counts
 
 ## Test Writing Guidelines
 
-1. **Simple Structure**: Use basic JavaScript/TypeScript without complex testing frameworks
-2. **Clear Output**: Provide readable console output with emojis and formatting
-3. **Error Handling**: Catch and report errors gracefully
-4. **Modular Design**: Each test file exports a test function
-5. **Easy Maintenance**: Keep tests simple and focused
-
-## Example Test Structure
+### Using Bun's Test Framework
+All tests use Bun's built-in test framework:
 
 ```typescript
-// tests/example.test.ts
-export function testExample() {
-  console.log('🧪 Testing Example...\n');
+import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
 
-  let testsPassed = 0;
-  let totalTests = 1;
+describe('Feature Name', () => {
+  beforeEach(() => {
+    // Setup before each test
+  });
 
-  // Test logic here
-  try {
-    if (/* test condition */) {
-      console.log('✅ Test passed');
-      testsPassed++;
-    } else {
-      console.log('❌ Test failed');
-    }
-  } catch (error) {
-    console.log('❌ Test error:', error);
-  }
+  afterEach(() => {
+    // Cleanup after each test
+  });
 
-  // Report results
-  console.log(`\n📊 Results: ${testsPassed}/${totalTests} tests passed`);
-  return testsPassed === totalTests;
-}
+  it('should do something specific', () => {
+    expect(actual).toBe(expected);
+  });
+});
 ```
 
-## Test Dependencies
+### Test Organization
+- Group related tests using `describe` blocks
+- Use descriptive test names that explain the expected behavior
+- Include setup and cleanup in `beforeEach` and `afterEach` hooks
+- Mock external dependencies when appropriate
 
-- **Bun**: Runtime and package manager
-- **Redis**: For integration tests (requires Docker)
-- **PostgreSQL**: For database tests (requires Docker)
-
-## Running Integration Tests
-
-Integration tests require external services to be running:
-
-```bash
-# Start required services
-docker-compose up -d redis postgres
-
-# Run integration tests
-bun run test:integration
-
-# Or run specific integration test
-bun run tests/integration/redis-rate-limiting.test.ts
+### Assertions
+Use Bun's `expect` function for assertions:
+```typescript
+expect(value).toBe(expected);
+expect(value).toEqual(expected);
+expect(value).toContain(expected);
+expect(value).toBeGreaterThan(expected);
+expect(value).toHaveProperty('propertyName');
 ```
-
-## Adding New Tests
-
-1. **Create Test File**: Add to appropriate directory (`security/`, `utils/`, `integration/`)
-2. **Export Test Function**: Export a function that returns boolean success/failure
-3. **Add to Runner**: Import and add to `tests/run-tests.ts`
-4. **Update Scripts**: Add new npm scripts if needed
 
 ## Continuous Integration
 
-Tests can be integrated into CI/CD pipelines by running:
+The test suite is designed to work in CI environments:
 
-```bash
-bun run test
-```
-
-The test runner will exit with appropriate exit codes (0 for success, 1 for failure).
+1. **Unit tests** run without external dependencies
+2. **Integration tests** are skipped when services aren't available
+3. **Mock-based tests** provide reliable coverage
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Redis Not Available**: Start Redis with `docker-compose up -d redis`
-2. **Test Import Errors**: Check file paths and import statements
-3. **Permission Issues**: Ensure test files are executable
+**Tests fail with Redis connection errors:**
+- Ensure Redis is running: `docker-compose up -d redis`
+- Check Redis connection in `docker-compose.yml`
+- Integration tests will be skipped if Redis is unavailable
+
+**TypeScript errors in tests:**
+- Ensure all imports are correct
+- Check that test files use proper Bun test syntax
+- Verify type definitions are available
+
+**Tests run but show no output:**
+- Ensure you're using `bun test`
+- Check that test files export test functions properly
+- Verify test file naming follows the `.test.ts` pattern
 
 ### Debug Mode
-
-For debugging, run individual test files:
-
+Run tests with verbose output:
 ```bash
-bun run tests/security/rate-limiter.test.ts
+bun test --verbose
 ```
 
-This provides detailed output for troubleshooting specific tests.
+## Adding New Tests
+
+### For New Features
+1. Create a new test file in the appropriate directory
+2. Use Bun's test framework syntax
+3. Follow the existing naming conventions
+4. Add comprehensive test coverage
+
+### For New Test Categories
+1. Create a new directory under `tests/`
+2. Add appropriate test files
+3. Update this README with new category information
+
+## Performance Testing
+
+The test suite is optimized for fast execution:
+- Unit tests run in parallel
+- Integration tests are isolated
+- Mock-based tests provide fast feedback
+- External service tests are clearly marked
+
+## Conclusion
+
+This testing setup provides:
+- **Fast execution** with Bun's optimized test runner
+- **Comprehensive coverage** across all application features
+- **Clear organization** by feature and test type
+- **CI-friendly** design with proper fallbacks
+- **Easy maintenance** with standard Bun test syntax
+
+Run `bun test` to execute the full test suite and ensure your application is working correctly.

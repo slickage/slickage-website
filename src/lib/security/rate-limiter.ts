@@ -3,7 +3,6 @@ import { getRedisClient, isRedisAvailable } from '../utils/redis';
 
 const MAX_SUBMISSIONS_PER_HOUR = 3;
 const RATE_LIMIT_WINDOW = 60 * 60; // 1 hour in seconds
-const SLIDING_WINDOW_SIZE = 60; // 1 minute sliding window size in seconds
 
 export interface RateLimitResult {
   limited: boolean;
@@ -13,7 +12,7 @@ export interface RateLimitResult {
 
 /**
  * Check if IP is rate limited using Redis true sliding window algorithm
- * This provides more accurate rate limiting by checking multiple time windows
+ * This provides accurate rate limiting by checking a rolling time window
  */
 export async function checkRateLimit(ip: string): Promise<RateLimitResult> {
   const now = Math.floor(Date.now() / 1000); // Current time in seconds
@@ -32,27 +31,31 @@ export async function checkRateLimit(ip: string): Promise<RateLimitResult> {
     // Add current timestamp with unique request ID
     await redis.zadd(key, now, requestId);
 
-    // Remove timestamps older than the rate limit window
-    await redis.zremrangebyscore(key, 0, now - RATE_LIMIT_WINDOW);
+    // Use true sliding window algorithm: check rolling 1-hour window ending at current time
+    const windowStart = now - RATE_LIMIT_WINDOW; // 1 hour ago
+    const windowEnd = now; // current time
 
-    // Get current count after cleanup
-    const currentCount = await redis.zcard(key);
+    // Count requests in the rolling 1-hour window
+    const requestCount = await redis.zcount(key, windowStart, windowEnd);
+
+    // Remove timestamps older than the rate limit window for cleanup
+    await redis.zremrangebyscore(key, 0, windowStart);
 
     // Set expiration on the key to auto-cleanup
     await redis.expire(key, RATE_LIMIT_WINDOW);
 
     // Check if rate limit exceeded
     logger.debug(
-      `Rate limit check: IP ${ip}, currentCount: ${currentCount}, MAX_SUBMISSIONS: ${MAX_SUBMISSIONS_PER_HOUR}`,
+      `Rate limit check: IP ${ip}, requestCount: ${requestCount}, MAX_SUBMISSIONS: ${MAX_SUBMISSIONS_PER_HOUR}`,
     );
 
-    if (currentCount > MAX_SUBMISSIONS_PER_HOUR) {
+    if (requestCount > MAX_SUBMISSIONS_PER_HOUR) {
       // Calculate reset time based on oldest request in window
       const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
       const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;
       const resetTime = oldestTime + RATE_LIMIT_WINDOW;
 
-      logger.security(`Rate limit exceeded: IP ${ip}, count: ${currentCount}`);
+      logger.security(`Rate limit exceeded: IP ${ip}, requestCount: ${requestCount}`);
 
       return {
         limited: true,
@@ -62,11 +65,11 @@ export async function checkRateLimit(ip: string): Promise<RateLimitResult> {
     }
 
     // Calculate remaining requests and reset time
-    const remaining = Math.max(0, MAX_SUBMISSIONS_PER_HOUR - currentCount);
+    const remaining = Math.max(0, MAX_SUBMISSIONS_PER_HOUR - requestCount);
     const resetTime = (now + RATE_LIMIT_WINDOW) * 1000; // Convert to milliseconds
 
     logger.debug(
-      `Rate limit check: IP ${ip}, count: ${currentCount}, remaining: ${remaining}, limited: false`,
+      `Rate limit check: IP ${ip}, requestCount: ${requestCount}, remaining: ${remaining}, limited: false`,
     );
 
     return {
@@ -123,7 +126,7 @@ function fallbackRateLimit(ip: string): RateLimitResult {
 
 /**
  * Get current rate limit status for an IP without incrementing the counter
- * Uses true sliding window algorithm for more accurate counting
+ * Uses true sliding window algorithm for accurate counting
  */
 export async function getRateLimitStatus(ip: string): Promise<RateLimitResult> {
   const now = Math.floor(Date.now() / 1000);
@@ -136,24 +139,14 @@ export async function getRateLimitStatus(ip: string): Promise<RateLimitResult> {
 
     const redis = getRedisClient();
 
-    // Use sliding window algorithm: check multiple time windows
-    // This provides more accurate rate limiting than just checking the full hour
-    const slidingWindows = [];
+    // Use true sliding window algorithm: check rolling 1-hour window ending at current time
+    const windowStart = now - RATE_LIMIT_WINDOW; // 1 hour ago
+    const windowEnd = now; // current time
 
-    // Check multiple sliding windows within the rate limit period
-    for (let i = 0; i < RATE_LIMIT_WINDOW; i += SLIDING_WINDOW_SIZE) {
-      const windowStart = now - i;
-      const windowEnd = windowStart + SLIDING_WINDOW_SIZE;
+    // Count requests in the rolling 1-hour window
+    const requestCount = await redis.zcount(key, windowStart, windowEnd);
 
-      // Count requests in this specific window
-      const windowCount = await redis.zcount(key, windowStart, windowEnd);
-      slidingWindows.push(windowCount);
-    }
-
-    // Find the window with the highest request count
-    const maxRequestsInAnyWindow = Math.max(...slidingWindows);
-
-    if (maxRequestsInAnyWindow >= MAX_SUBMISSIONS_PER_HOUR) {
+    if (requestCount > MAX_SUBMISSIONS_PER_HOUR) {
       // Find the oldest request to calculate reset time
       const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
       const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;
@@ -166,7 +159,7 @@ export async function getRateLimitStatus(ip: string): Promise<RateLimitResult> {
       };
     }
 
-    const remaining = Math.max(0, MAX_SUBMISSIONS_PER_HOUR - maxRequestsInAnyWindow);
+    const remaining = Math.max(0, MAX_SUBMISSIONS_PER_HOUR - requestCount);
     const resetTime = (now + RATE_LIMIT_WINDOW) * 1000;
 
     return {
