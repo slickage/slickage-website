@@ -66,7 +66,7 @@ export async function checkRateLimit(ip: string): Promise<RateLimitResult> {
       const existingRequestCount = (countResult[1] as number) || 0;
 
       // Check if adding this request would exceed the limit
-      if (existingRequestCount >= MAX_SUBMISSIONS_PER_HOUR) {
+      if (existingRequestCount > MAX_SUBMISSIONS_PER_HOUR - 1) {
         // Calculate reset time based on oldest request in window
         const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
         const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;
@@ -116,7 +116,7 @@ export async function checkRateLimit(ip: string): Promise<RateLimitResult> {
         }
         const existingRequestCount = (results[1]?.[1] as number) || 0;
 
-        if (existingRequestCount >= MAX_SUBMISSIONS_PER_HOUR) {
+        if (existingRequestCount > MAX_SUBMISSIONS_PER_HOUR - 1) {
           const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
           const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;
           const resetTime = oldestTime + RATE_LIMIT_WINDOW;

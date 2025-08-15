@@ -205,12 +205,21 @@ describe('Redis Rate Limiting Integration Tests', () => {
 
     // Ensure clean state
     await resetRateLimit(ip);
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Use up all attempts
     for (let i = 0; i < MAX_SUBMISSIONS_PER_HOUR; i++) {
       const status = await checkRateLimit(ip);
       expect(status.limited).toBe(false);
+
+      // Add small delay between requests to ensure Redis operations complete
+      if (i < MAX_SUBMISSIONS_PER_HOUR - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
     }
+
+    // Longer delay to ensure Redis operations complete in CI environment
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Check status function should show we're at the limit
     const statusCheck = await getRateLimitStatus(ip);
@@ -220,10 +229,22 @@ describe('Redis Rate Limiting Integration Tests', () => {
   it('should handle reset time calculation correctly', async () => {
     const ip = '192.168.1.100';
 
+    // Ensure clean state
+    await resetRateLimit(ip);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     // Use up all attempts
     for (let i = 0; i < MAX_SUBMISSIONS_PER_HOUR; i++) {
       await checkRateLimit(ip);
+
+      // Add small delay between requests to ensure Redis operations complete
+      if (i < MAX_SUBMISSIONS_PER_HOUR - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
     }
+
+    // Longer delay to ensure Redis operations complete in CI environment
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Check status to get reset time
     const status = await getRateLimitStatus(ip);

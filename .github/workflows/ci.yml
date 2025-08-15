@@ -40,7 +40,6 @@ jobs:
 
   test:
     name: Test Suite
-    needs: code-quality
     runs-on: ubuntu-latest
     strategy:
       matrix:
