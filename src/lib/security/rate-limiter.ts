@@ -138,23 +138,25 @@ export async function checkRateLimit(identifier: string): Promise<RateLimitResul
     // 2. Count current requests in the window
     pipeline.zcount(key, windowStart, now);
 
-    // 3. Add current request timestamp
-    pipeline.zadd(key, now, `${now}-${Date.now()}`);
+    // Execute pipeline to get the count first
+    const countResults = await pipeline.exec();
 
-    // 4. Set expiration to prevent memory leaks
-    pipeline.expire(key, WINDOW_SIZE_SECONDS);
-
-    // Execute all operations atomically
-    const results = await pipeline.exec();
-
-    if (!results) {
+    if (!countResults) {
       throw new Error('Redis pipeline execution failed');
     }
 
     // Extract the count result (index 1 from zcount)
-    const requestCount = (results[1]?.[1] as number) || 0;
+    const requestCount = (countResults[1]?.[1] as number) || 0;
 
-    if (requestCount >= MAX_REQUESTS_PER_WINDOW) {
+    logger.debug(
+      `Redis rate limit check: ${identifier}, existing count: ${requestCount}, limit: ${MAX_REQUESTS_PER_WINDOW}`,
+    );
+
+    // Check if adding the current request would exceed the limit
+    if (requestCount + 1 > MAX_REQUESTS_PER_WINDOW) {
+      logger.debug(
+        `Rate limit would be exceeded: ${requestCount} + 1 > ${MAX_REQUESTS_PER_WINDOW}`,
+      );
       // Calculate reset time based on oldest request in window
       const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
       const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;
@@ -169,6 +171,15 @@ export async function checkRateLimit(identifier: string): Promise<RateLimitResul
       };
     }
 
+    // If we're not limited, add the current request and set expiration
+    const addPipeline = redis.pipeline();
+    // Use a unique score within the current window to ensure proper counting
+    const uniqueScore = now - Math.random() * 0.1; // Small random offset within current second
+    addPipeline.zadd(key, uniqueScore, `${uniqueScore}-${Date.now()}`);
+    addPipeline.expire(key, WINDOW_SIZE_SECONDS);
+    await addPipeline.exec();
+
+    logger.debug(`Rate limit check passed: ${requestCount} + 1 <= ${MAX_REQUESTS_PER_WINDOW}`);
     const remaining = Math.max(0, MAX_REQUESTS_PER_WINDOW - (requestCount + 1));
     const resetTime = (now + WINDOW_SIZE_SECONDS) * 1000;
 

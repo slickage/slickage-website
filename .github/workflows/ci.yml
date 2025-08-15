@@ -38,8 +38,27 @@ jobs:
       - name: Type Check
         run: bun run tsc:check
 
-  test:
-    name: Test Suite
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run Unit Tests
+        run: bun test tests/unit/
+        env:
+          NODE_ENV: test
+
+  integration-tests:
+    name: Integration Tests
     runs-on: ubuntu-latest
     services:
       redis:
@@ -63,8 +82,8 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Run Tests
-        run: bun test
+      - name: Run Integration Tests
+        run: bun test tests/integration/
         env:
           NODE_ENV: test
           REDIS_URL: redis://localhost:6380

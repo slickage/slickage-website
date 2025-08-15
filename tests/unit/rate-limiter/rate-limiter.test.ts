@@ -7,7 +7,7 @@ import {
   MAX_REQUESTS_PER_WINDOW,
   WINDOW_SIZE_SECONDS,
   type RateLimitResult,
-} from '../../src/lib/security/rate-limiter';
+} from '../../../src/lib/security/rate-limiter';
 
 describe('Rate Limiter - Comprehensive Test Suite', () => {
   const testIdentifier = 'test-user-123';
