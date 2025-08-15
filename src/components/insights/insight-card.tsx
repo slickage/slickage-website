@@ -44,11 +44,6 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 },
-    hover: { scale: 1.02, y: -8 },
-  };
-
-  const tagVariants = {
-    hover: { scale: 1.05, y: -2 },
   };
 
   return (
@@ -57,11 +52,10 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
       className="block focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
     >
       <motion.div
-        className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-xl hover:shadow-2xl transition-all duration-150"
+        className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-xl hover:shadow-2xl transition-all duration-150 hover:scale-105 hover:-translate-y-1 hover:border-blue-500/50"
         variants={cardVariants}
         initial="hidden"
         animate="visible"
-        whileHover="hover"
         tabIndex={0}
       >
         <div className="relative w-full h-full">
@@ -98,9 +92,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
               {insight.tags.map((tech: string, index: number) => (
                 <motion.span
                   key={index}
-                  className="px-2 py-0.5 text-xs font-medium rounded-md bg-blue-900/20 backdrop-blur-sm text-blue-100 tracking-wide border border-blue-400/50"
-                  whileHover="hover"
-                  variants={tagVariants}
+                  className="px-2 py-0.5 text-xs font-medium rounded-md bg-blue-900/20 backdrop-blur-sm text-blue-100 tracking-wide border border-blue-400/50 transition-transform duration-150 hover:scale-105 hover:-translate-y-1"
                 >
                   {tech}
                 </motion.span>
