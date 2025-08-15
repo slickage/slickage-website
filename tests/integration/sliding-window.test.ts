@@ -95,8 +95,10 @@ describe('Sliding Window Algorithm Tests', () => {
     const thirdResult = await checkRateLimit(testIp);
     expect(thirdResult.limited).toBe(false); // Third request is allowed (exactly at limit)
 
-    // Longer delay to ensure Redis operations complete in CI environment
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Environment-aware delay: longer in CI environments
+    const isCI = process.env.CI === 'true';
+    const delay = isCI ? 2000 : 1000; // 2 seconds in CI, 1 second locally
+    await new Promise((resolve) => setTimeout(resolve, delay));
 
     // Check final status after 3 requests
     status = await getRateLimitStatus(testIp);
@@ -370,8 +372,10 @@ describe('Sliding Window Algorithm Tests', () => {
       }
     }
 
-    // Longer delay to ensure Redis operations complete in CI environment
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Environment-aware delay: longer in CI environments
+    const isCI = process.env.CI === 'true';
+    const delay = isCI ? 2000 : 1000; // 2 seconds in CI, 1 second locally
+    await new Promise((resolve) => setTimeout(resolve, delay));
 
     // Verify we're at the limit (3rd request should be allowed)
     let status = await getRateLimitStatus(testIp);

@@ -159,6 +159,11 @@ describe('Redis Rate Limiting Integration Tests', () => {
     await checkRateLimit(testIp);
     await checkRateLimit(testIp);
 
+    // Environment-aware delay: longer in CI environments
+    const isCI = process.env.CI === 'true';
+    const delay = isCI ? 1000 : 100; // 1 second in CI, 100ms locally
+    await new Promise((resolve) => setTimeout(resolve, delay));
+
     const status = await getRateLimitStatus(testIp);
     expect(status.remaining).toBe(1);
     expect(status.limited).toBe(false);
