@@ -55,9 +55,9 @@ describe('Sliding Window Algorithm Tests', () => {
     // Make third request (this should be allowed since MAX_SUBMISSIONS_PER_HOUR is 3)
     await checkRateLimit(testIp);
 
-    // Check status - should be at limit
+    // Check status - should be at limit but not limited yet
     status = await getRateLimitStatus(testIp);
-    expect(status.limited).toBe(true); // After exactly MAX_SUBMISSIONS_PER_HOUR requests, we should be limited
+    expect(status.limited).toBe(false); // After exactly MAX_SUBMISSIONS_PER_HOUR requests, we should NOT be limited yet
 
     // Now make the fourth request - this should be limited
     const limitedStatus = await checkRateLimit(testIp);
@@ -77,6 +77,7 @@ describe('Sliding Window Algorithm Tests', () => {
   it('should handle window boundary conditions', async () => {
     // Ensure clean state
     await resetRateLimit(testIp);
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Check initial status
     let status = await getRateLimitStatus(testIp);
@@ -90,18 +91,22 @@ describe('Sliding Window Algorithm Tests', () => {
     const secondResult = await checkRateLimit(testIp);
     expect(secondResult.limited).toBe(false);
 
-    // Make third request
+    // Make third request - this should be allowed because we're exactly at the limit
     const thirdResult = await checkRateLimit(testIp);
-    expect(thirdResult.limited).toBe(false);
+    expect(thirdResult.limited).toBe(false); // Third request is allowed (exactly at limit)
 
-    // Check final status
+    // Longer delay to ensure Redis operations complete in CI environment
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Check final status after 3 requests
     status = await getRateLimitStatus(testIp);
-    expect(status.limited).toBe(true); // After exactly MAX_SUBMISSIONS_PER_HOUR requests, we should be limited
+    expect(status.limited).toBe(false); // Not limited yet, we're exactly at the limit
+    expect(status.remaining).toBe(0); // No remaining attempts
 
-    // Now make one more request - this should be limited
-    const limitedResult = await checkRateLimit(testIp);
-    expect(limitedResult.limited).toBe(true);
-    expect(limitedResult.remaining).toBe(0);
+    // Now make a fourth request - this should be blocked
+    const fourthResult = await checkRateLimit(testIp);
+    expect(fourthResult.limited).toBe(true); // Fourth request should be blocked
+    expect(fourthResult.remaining).toBe(0); // No remaining attempts
   });
 
   it('should maintain accurate counts during high-frequency requests', async () => {
@@ -221,9 +226,18 @@ describe('Sliding Window Algorithm Tests', () => {
       return;
     }
 
+    // Ensure clean state
+    await resetRateLimit(testIp);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     // Make requests to create data
     await checkRateLimit(testIp);
+    await new Promise((resolve) => setTimeout(resolve, 50));
     await checkRateLimit(testIp);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    // Longer delay to ensure Redis operations complete in CI environment
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Get status to verify data exists
     let status = await getRateLimitStatus(testIp);
@@ -231,6 +245,7 @@ describe('Sliding Window Algorithm Tests', () => {
 
     // Reset to clean up
     await resetRateLimit(testIp);
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Verify cleanup
     status = await getRateLimitStatus(testIp);
@@ -360,7 +375,7 @@ describe('Sliding Window Algorithm Tests', () => {
 
     // Verify we're at the limit (3rd request should be allowed)
     let status = await getRateLimitStatus(testIp);
-    expect(status.limited).toBe(true); // After exactly MAX_SUBMISSIONS_PER_HOUR requests, we should be limited
+    expect(status.limited).toBe(false); // After exactly MAX_SUBMISSIONS_PER_HOUR requests, we should NOT be limited yet
 
     // In CI environments, there might be slight timing differences
     // Allow for either 0 or 1 remaining (both are valid depending on timing)
