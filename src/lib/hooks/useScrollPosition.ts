@@ -13,16 +13,16 @@ export function useScrollPosition(options: UseScrollPositionOptions = {}) {
   // Memoize the scroll handler to prevent recreation on every render
   const handleScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
-    
+
     // Only update state if values actually changed
-    setScrollY(prev => {
+    setScrollY((prev) => {
       if (Math.abs(prev - currentScrollY) > 1) {
         return currentScrollY;
       }
       return prev;
     });
-    
-    setIsScrolled(prev => {
+
+    setIsScrolled((prev) => {
       const newIsScrolled = currentScrollY > threshold;
       return prev !== newIsScrolled ? newIsScrolled : prev;
     });

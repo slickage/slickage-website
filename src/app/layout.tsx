@@ -33,7 +33,8 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://beta.slickage.io',
     title: 'Slickage - Software Development Company',
-    description: 'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
+    description:
+      'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
     siteName: 'Slickage',
     images: [
       {
@@ -47,7 +48,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Slickage - Software Development Company',
-    description: 'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
+    description:
+      'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
     images: ['/logo-slickage-lines-blue-light.svg'],
   },
   robots: {
@@ -64,7 +66,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" data-scroll-behavior="smooth">
       <head>
         {/* Preload critical resources for better LCP performance */}
-        <link rel="preload" href="/logo-slickage-lines-blue-light.svg" as="image" type="image/svg+xml" />
+        <link
+          rel="preload"
+          href="/logo-slickage-lines-blue-light.svg"
+          as="image"
+          type="image/svg+xml"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>

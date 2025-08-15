@@ -19,8 +19,8 @@ export default function Footer() {
                   href: 'https://www.linkedin.com/company/slickage-studios',
                   label: 'Visit Slickage on LinkedIn',
                 },
-                { 
-                  icon: <FaGithub className="h-5 w-5" />, 
+                {
+                  icon: <FaGithub className="h-5 w-5" />,
                   href: 'https://github.com/slickage',
                   label: 'Visit Slickage on GitHub',
                 },
