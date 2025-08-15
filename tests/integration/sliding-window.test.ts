@@ -101,7 +101,7 @@ describe('Sliding Window Algorithm Tests', () => {
     // Check final status after 3 requests
     status = await getRateLimitStatus(testIp);
     expect(status.limited).toBe(false); // Not limited yet, we're exactly at the limit
-    expect(status.remaining).toBe(0); // No remaining attempts
+    expect(status.remaining).toBe(0); // No remaining attempts (used all 3)
 
     // Now make a fourth request - this should be blocked
     const fourthResult = await checkRateLimit(testIp);
@@ -376,10 +376,7 @@ describe('Sliding Window Algorithm Tests', () => {
     // Verify we're at the limit (3rd request should be allowed)
     let status = await getRateLimitStatus(testIp);
     expect(status.limited).toBe(false); // After exactly MAX_SUBMISSIONS_PER_HOUR requests, we should NOT be limited yet
-
-    // In CI environments, there might be slight timing differences
-    // Allow for either 0 or 1 remaining (both are valid depending on timing)
-    expect([0, 1]).toContain(status.remaining);
+    expect(status.remaining).toBe(0); // No remaining attempts (used all 3)
 
     // Reset and test the sliding behavior
     await resetRateLimit(testIp);
