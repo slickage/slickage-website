@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { env } from '@/lib/env';
+import { logger } from '@/lib/utils/logger';
 
 const s3 = new S3Client({
   region: env.AWS_REGION,
@@ -35,7 +36,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ url });
   } catch (error) {
-    console.error('Error generating presigned URL:', error);
+    logger.error('Error generating presigned URL:', error);
     return NextResponse.json({ error: 'Failed to generate URL' }, { status: 500 });
   }
 }

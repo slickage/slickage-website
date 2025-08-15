@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { logger } from './utils/logger';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -25,14 +26,14 @@ export async function getS3ImageUrl(
     const response = await fetch(`/api/s3-url?key=${encodeURIComponent(normalizedPath)}`);
 
     if (!response.ok) {
-      console.warn(`Failed to generate presigned URL for ${path}. Using fallback URL.`);
+      logger.warn(`Failed to generate presigned URL for ${path}. Using fallback URL.`);
       return fallbackUrl;
     }
 
     const { url } = await response.json();
     return url;
   } catch (error) {
-    console.error('Error generating presigned URL:', error);
+    logger.error('Error generating presigned URL:', error);
     return fallbackUrl;
   }
 }

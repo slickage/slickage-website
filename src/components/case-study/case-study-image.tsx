@@ -1,9 +1,12 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
+import { getS3ImageUrl } from '@/lib/utils';
+import { logger } from '@/lib/utils/logger';
+import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
 
-const LazyImageLightboxComponent = dynamic(() => import('../ui/LazyImageLightbox'));
+const ImageLightboxComponent = dynamic(() => import('../ui/ImageLightbox'));
 
 export default function CaseStudyImage({
   src,
@@ -14,6 +17,30 @@ export default function CaseStudyImage({
   alt: string;
   caption?: string;
 }) {
+  const [s3Url, setS3Url] = useState<string>('/placeholder.svg');
+  const [isLoadingS3, setIsLoadingS3] = useState(false);
+
+  useEffect(() => {
+    if (src && src !== '/placeholder.svg') {
+      setIsLoadingS3(true);
+      getS3ImageUrl(src)
+        .then((url) => {
+          setS3Url(url);
+          setIsLoadingS3(false);
+        })
+        .catch((error) => {
+          logger.error('Error loading S3 image:', error);
+          setS3Url('/placeholder.svg');
+          setIsLoadingS3(false);
+        });
+    } else {
+      setS3Url('/placeholder.svg');
+      setIsLoadingS3(false);
+    }
+  }, [src]);
+
+  const imageSrc = isLoadingS3 ? '/placeholder.svg' : s3Url;
+
   return (
     <div className="container mx-auto px-4 py-8">
       <motion.div
@@ -26,16 +53,13 @@ export default function CaseStudyImage({
         }}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       >
-        <div className="relative min-h-[400px]">
-          <LazyImageLightboxComponent
-            src={src}
+        <div className="relative group cursor-pointer overflow-hidden rounded-lg">
+          {isLoadingS3 && <LoadingSpinnerOverlay />}
+          <ImageLightboxComponent
+            src={imageSrc}
             alt={alt}
-            width={900}
-            height={500}
-            className="object-fill w-full h-auto"
-            priority={false}
-            showLoadingSpinner={true}
-            containerClassName="w-full h-full"
+            className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
+            unoptimized={src?.toLowerCase().includes('.gif')}
           />
         </div>
         {caption && (
