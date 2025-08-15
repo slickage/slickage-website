@@ -4,6 +4,7 @@ import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useScrollPosition } from '@/lib/hooks/useScrollPosition';
+import Link from 'next/link';
 
 export default function HeroSection() {
   const { scrollY } = useScrollPosition();
@@ -30,10 +31,12 @@ export default function HeroSection() {
             in Honolulu, Hawaii, creating exceptional digital products for partners worldwide.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
-              View Our Work
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </Button>
+            <Link href="/#insights">
+              <Button className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
+                View Our Work
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

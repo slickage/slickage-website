@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { env } from '@/lib/env';
+import { logger } from '@/lib/utils/logger';
 
 const s3 = new S3Client({
   region: env.AWS_REGION,
@@ -10,6 +11,9 @@ const s3 = new S3Client({
     secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
   },
 });
+
+// Cache presigned URLs for 30 minutes (less than the 1-hour expiration)
+export const revalidate = 1800; // 30 minutes in seconds
 
 export async function GET(request: Request) {
   try {
@@ -33,9 +37,13 @@ export async function GET(request: Request) {
 
     const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
 
-    return NextResponse.json({ url });
+    // Add cache headers for the response
+    const response = NextResponse.json({ url });
+    response.headers.set('Cache-Control', 'public, s-maxage=1800, stale-while-revalidate=300');
+
+    return response;
   } catch (error) {
-    console.error('Error generating presigned URL:', error);
+    logger.error('Error generating presigned URL:', error);
     return NextResponse.json({ error: 'Failed to generate URL' }, { status: 500 });
   }
 }

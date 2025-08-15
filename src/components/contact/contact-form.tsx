@@ -1,13 +1,10 @@
 'use client';
 
-import type React from 'react';
-
-import { useRef, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import React, { useState, useRef } from 'react';
 import { Send } from 'lucide-react';
 import { useRecaptcha } from '@/lib/hooks/useRecaptcha';
+import { Button, Input, Textarea } from '@/components/ui';
+import { logger } from '@/lib/utils/logger';
 
 declare global {
   interface Window {
@@ -107,7 +104,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
         try {
           recaptchaToken = await window.grecaptcha.execute(siteKey, { action: 'contact_form' });
         } catch (recaptchaError) {
-          console.warn('reCAPTCHA execution failed:', recaptchaError);
+          logger.warn('reCAPTCHA execution failed:', recaptchaError);
         }
       }
 
@@ -154,7 +151,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
         }
       }
     } catch (err) {
-      console.error('Form submission error:', err);
+      logger.error('Form submission error:', err);
       setError('Network error. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);

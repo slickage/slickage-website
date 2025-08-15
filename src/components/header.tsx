@@ -69,7 +69,6 @@ export default function Header() {
         <div
           id="mobile-menu"
           className="md:hidden absolute top-full left-0 right-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10 border-b border-gray-800"
-          // className="md:hidden absolute top-full left-0 right-0 border-b border-gray-800"
           role="menu"
           aria-label="Mobile navigation"
         >

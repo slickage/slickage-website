@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logger } from '@/lib/utils/logger';
 
 interface RecaptchaConfig {
   siteKey: string;
@@ -26,7 +27,7 @@ export function useClientConfig<T extends keyof ClientConfig>(configKey: T) {
         const data: ClientConfig = await response.json();
         setConfig(data[configKey]);
       } catch (err) {
-        console.error(`useClientConfig: Failed to fetch ${configKey} config:`, err);
+        logger.error(`useClientConfig: Failed to fetch ${configKey} config:`, err);
         setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {
         setIsLoading(false);

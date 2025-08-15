@@ -55,7 +55,7 @@ export default function TeamGrid() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {teamMembers.map((member, index) => (
-            <TeamMember key={index} name={member.name} role={member.role} image={member.image} />
+            <TeamMember key={index} member={member} />
           ))}
         </div>
       </div>
