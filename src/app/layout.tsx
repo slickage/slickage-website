@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     template: '%s | Slickage',
   },
   description:
-    'A boutique software company based in Honolulu, Hawaii building big things. We specialize in web applications, iOS development, and product design.',
+    'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
   keywords: [
     'software development',
     'web applications',
@@ -21,6 +21,10 @@ export const metadata: Metadata = {
     'product design',
     'Hawaii',
     'Honolulu',
+    'digital solutions',
+    'custom software',
+    'web development',
+    'mobile apps',
   ],
   authors: [{ name: 'Slickage' }],
   creator: 'Slickage',
@@ -29,23 +33,41 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://beta.slickage.io',
     title: 'Slickage - Software Development Company',
-    description: 'A boutique software company based in Honolulu, Hawaii building big things.',
+    description: 'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
     siteName: 'Slickage',
+    images: [
+      {
+        url: '/logo-slickage-lines-blue-light.svg',
+        width: 1200,
+        height: 630,
+        alt: 'Slickage Logo',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Slickage - Software Development Company',
-    description: 'A boutique software company based in Honolulu, Hawaii building big things.',
+    description: 'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
+    images: ['/logo-slickage-lines-blue-light.svg'],
   },
   robots: {
     index: true,
     follow: true,
+  },
+  alternates: {
+    canonical: 'https://beta.slickage.io',
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
+      <head>
+        {/* Preload critical resources for better LCP performance */}
+        <link rel="preload" href="/logo-slickage-lines-blue-light.svg" as="image" type="image/svg+xml" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body className={`${inter.className} bg-gradient-to-r from-blue-500/10 to-violet-500/10`}>
         <Header />
         {children}

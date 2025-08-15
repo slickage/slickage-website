@@ -1,22 +1,28 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useScrollPosition } from '@/lib/hooks/useScrollPosition';
 import Link from 'next/link';
 
 export default function HeroSection() {
-  const { scrollY } = useScrollPosition();
+  const { scrollY } = useScrollPosition({ debounceMs: 16 }); // Optimize scroll performance
+
+  // Memoize the transform calculation to prevent unnecessary recalculations
+  const backgroundTransform = useMemo(() => {
+    return `translateY(${scrollY * 0.1}px)`; // Reduce transform intensity
+  }, [scrollY]);
 
   return (
     <section id="hero" className="relative min-h-screen flex items-center">
       <div className="absolute inset-0">
-        <div className="absolute inset-0" />
+        {/* Simplified background - removed external image dependency */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-950/20 via-gray-900/30 to-violet-950/20" />
         <div
-          className="absolute inset-0 bg-[url('https://images.pexels.com/photos/7130555/pexels-photo-7130555.jpeg')] opacity-5 bg-cover bg-center bg-no-repeat mix-blend-overlay"
+          className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-violet-500/5"
           style={{
-            transform: `translateY(${scrollY * 0.2}px)`,
+            transform: backgroundTransform,
           }}
         />
       </div>
@@ -32,7 +38,7 @@ export default function HeroSection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href="/#insights">
-              <Button className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
+              <Button className="px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all duration-300 flex items-center justify-center group">
                 View Our Work
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
