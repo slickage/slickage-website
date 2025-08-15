@@ -17,8 +17,13 @@ export default function Footer() {
                 {
                   icon: <FaLinkedin className="h-5 w-5" />,
                   href: 'https://www.linkedin.com/company/slickage-studios',
+                  label: 'Visit Slickage on LinkedIn',
                 },
-                { icon: <FaGithub className="h-5 w-5" />, href: 'https://github.com/slickage' },
+                {
+                  icon: <FaGithub className="h-5 w-5" />,
+                  href: 'https://github.com/slickage',
+                  label: 'Visit Slickage on GitHub',
+                },
               ].map((social, index) => (
                 <a
                   key={index}
@@ -26,6 +31,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center h-10 w-10 rounded-full bg-gray-800 text-gray-400 hover:bg-blue-500 hover:text-white transition-colors"
+                  aria-label={social.label}
                 >
                   {social.icon}
                 </a>
@@ -104,14 +110,14 @@ export default function Footer() {
 
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-500 text-sm mb-4 md:mb-0">
+            <p className="text-gray-300 text-sm mb-4 md:mb-0">
               © {new Date().getFullYear()} Slickage. All rights reserved.
             </p>
             <div className="flex space-x-6">
-              <Link href="/privacy-policy" className="text-gray-500 hover:text-blue-400 text-sm">
+              <Link href="/privacy-policy" className="text-gray-300 hover:text-blue-400 text-sm">
                 Privacy Policy
               </Link>
-              <Link href="/cookie-policy" className="text-gray-500 hover:text-blue-400 text-sm">
+              <Link href="/cookie-policy" className="text-gray-300 hover:text-blue-400 text-sm">
                 Cookie Policy
               </Link>
             </div>
