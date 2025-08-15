@@ -51,7 +51,6 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
     hover: { scale: 1.05, y: -2 },
   };
 
-
   return (
     <Link
       href={`/case-studies/${insight.id}`}
@@ -85,7 +84,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
           </div>
 
           <div className="absolute left-0 right-0 bottom-0 h-4/5 bg-gradient-to-t from-gray-900/95 via-gray-800/80 to-transparent opacity-95 group-hover:opacity-100 transition-opacity duration-300"></div>
-          
+
           <div className="absolute left-0 right-0 bottom-0 h-2/3 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
           <div className="absolute bottom-0 left-0 right-0 p-6">
