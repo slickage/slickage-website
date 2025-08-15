@@ -43,20 +43,13 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
 
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-    hover: {
-      scale: 1.03,
-      boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
-      transition: { duration: 0.25 },
-    },
+    visible: { opacity: 1, y: 0 },
+    hover: { scale: 1.02, y: -8 },
   };
 
   const tagVariants = {
-    hover: { scale: 1.1, transition: { duration: 0.15 } },
+    hover: { scale: 1.05, y: -2 },
   };
-
-  // Set priority for first 3 cards (likely above the fold)
-  const isAboveTheFold = index < 3;
 
   return (
     <Link
@@ -64,7 +57,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
       className="block focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
     >
       <motion.div
-        className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128"
+        className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-xl hover:shadow-2xl transition-all duration-150"
         variants={cardVariants}
         initial="hidden"
         animate="visible"
@@ -79,9 +72,9 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
               src={imageSrc}
               alt={insight.title}
               fill
-              priority={isAboveTheFold}
-              loading={isAboveTheFold ? 'eager' : 'lazy'}
-              className="object-cover transition-opacity duration-300"
+              priority={true}
+              loading="eager"
+              className="object-cover transition-all group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               unoptimized={insight.imageSrc?.toLowerCase().includes('.gif')}
               quality={85}
@@ -90,20 +83,22 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
             />
           </div>
 
-          <div className="absolute left-0 right-0 bottom-0 h-4/5 bg-gradient-to-t from-blue-900/95 to-transparent opacity-95 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute left-0 right-0 bottom-0 h-4/5 bg-gradient-to-t from-gray-900/95 via-gray-800/80 to-transparent opacity-95 group-hover:opacity-100 transition-opacity duration-150"></div>
+
+          <div className="absolute left-0 right-0 bottom-0 h-2/3 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
           <div className="absolute bottom-0 left-0 right-0 p-6">
-            <h3 className="text-3xl font-bold mb-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-tight leading-tight">
+            <h3 className="text-xl md:text-2xl lg:text-2xl font-bold mb-3 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] tracking-tight leading-tight">
               {insight.title}
             </h3>
-            <p className="text-gray-100 mb-4 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+            <p className="text-gray-200 mb-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-relaxed text-xs md:text-sm lg:text-base">
               {insight.description}
             </p>
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-1 mb-4">
               {insight.tags.map((tech: string, index: number) => (
                 <motion.span
                   key={index}
-                  className="px-3 py-1 text-xs font-semibold rounded-full bg-violet-800/50 backdrop-blur-sm text-white tracking-wide transition-all duration-150 shadow-lg border border-violet-400/40"
+                  className="px-2 py-0.5 text-xs font-medium rounded-md bg-blue-900/20 backdrop-blur-sm text-blue-100 tracking-wide border border-blue-400/50"
                   whileHover="hover"
                   variants={tagVariants}
                 >

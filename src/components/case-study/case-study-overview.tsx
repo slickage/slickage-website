@@ -15,7 +15,7 @@ export default function CaseStudyOverview({
               {tags?.map((tag) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-medium"
+                  className="px-2 py-0.5 text-xs font-medium rounded-md bg-blue-900/20 backdrop-blur-sm text-blue-100 tracking-wide border border-blue-400/50"
                 >
                   {tag}
                 </span>
