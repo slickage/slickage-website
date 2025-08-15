@@ -1,19 +1,45 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import type { Insight } from '@/types/insight';
+import { getS3ImageUrl } from '@/lib/utils';
+import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
-import { useImageLoader } from '@/lib/hooks/useImageLoader';
 
 interface InsightCardProps {
   insight: Insight;
+  index?: number; // Add index prop to determine if card is above the fold
 }
 
-export default function InsightCard({ insight }: InsightCardProps) {
-  const { imageUrl, isLoading } = useImageLoader(insight.imageSrc);
+export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
+  const [s3Url, setS3Url] = useState<string>('/placeholder.svg');
+  const [isLoadingS3, setIsLoadingS3] = useState(false);
+
+  useEffect(() => {
+    if (insight.imageSrc && insight.imageSrc !== '/placeholder.svg') {
+      setIsLoadingS3(true);
+      logger.info('Generating S3 URL for:', insight.imageSrc);
+      getS3ImageUrl(insight.imageSrc)
+        .then((url) => {
+          logger.info('S3 URL generated:', url);
+          setS3Url(url);
+          setIsLoadingS3(false);
+        })
+        .catch((error) => {
+          logger.error('Error loading S3 image:', error);
+          setS3Url('/placeholder.svg');
+          setIsLoadingS3(false);
+        });
+    } else {
+      setS3Url('/placeholder.svg');
+      setIsLoadingS3(false);
+    }
+  }, [insight.imageSrc, index]);
+
+  const imageSrc = isLoadingS3 ? '/placeholder.svg' : s3Url;
 
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -29,9 +55,8 @@ export default function InsightCard({ insight }: InsightCardProps) {
     hover: { scale: 1.1, transition: { duration: 0.15 } },
   };
 
-  const imageVariants = {
-    hover: { scale: 1.07, transition: { duration: 0.5 } },
-  };
+  // Set priority for first 3 cards (likely above the fold)
+  const isAboveTheFold = index < 3;
 
   return (
     <Link
@@ -39,22 +64,46 @@ export default function InsightCard({ insight }: InsightCardProps) {
       className="block focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
     >
       <motion.div
-        className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer"
+        className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128"
         variants={cardVariants}
         initial="hidden"
         animate="visible"
         whileHover="hover"
         tabIndex={0}
       >
-        <div className="relative h-128 overflow-hidden">
-          <div className="p-6 absolute z-1000 flex flex-col justify-end h-full">
-            <h3 className="text-3xl font-semibold text-white mb-2">{insight.title}</h3>
-            <p className="text-gray-400 mb-4">{insight.description}</p>
+        <div className="relative w-full h-full">
+          {isLoadingS3 && <LoadingSpinnerOverlay />}
+
+          <div className="relative w-full h-full">
+            <Image
+              src={imageSrc}
+              alt={insight.title}
+              fill
+              priority={isAboveTheFold}
+              loading={isAboveTheFold ? 'eager' : 'lazy'}
+              className="object-cover transition-opacity duration-300"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              unoptimized={insight.imageSrc?.toLowerCase().includes('.gif')}
+              quality={85}
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+            />
+          </div>
+
+          <div className="absolute left-0 right-0 bottom-0 h-4/5 bg-gradient-to-t from-blue-900/95 to-transparent opacity-95 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            <h3 className="text-3xl font-bold mb-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-tight leading-tight">
+              {insight.title}
+            </h3>
+            <p className="text-gray-100 mb-4 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+              {insight.description}
+            </p>
             <div className="flex flex-wrap gap-2 mb-4">
               {insight.tags.map((tech: string, index: number) => (
                 <motion.span
                   key={index}
-                  className="px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-blue-400/30 via-blue-500/20 to-violet-400/20 text-blue-100 tracking-wide transition-all duration-150 shadow-none"
+                  className="px-3 py-1 text-xs font-semibold rounded-full bg-violet-800/50 backdrop-blur-sm text-white tracking-wide transition-all duration-150 shadow-lg border border-violet-400/40"
                   whileHover="hover"
                   variants={tagVariants}
                 >
@@ -63,27 +112,6 @@ export default function InsightCard({ insight }: InsightCardProps) {
               ))}
             </div>
           </div>
-          <div className="absolute left-0 right-0 bottom-0 h-4/5 bg-gradient-to-t from-gray-950/95 via-gray-950/80 to-transparent opacity-95 group-hover:opacity-100 transition-opacity duration-300 z-900"></div>
-          <motion.div
-            className="w-full h-full absolute inset-0"
-            variants={imageVariants}
-            whileHover="hover"
-          >
-            <div className="relative w-full h-full">
-              {isLoading && <LoadingSpinnerOverlay />}
-              {!isLoading && (
-                <Image
-                  src={imageUrl}
-                  alt={insight.title}
-                  fill
-                  priority
-                  unoptimized
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
-                  className="object-cover transition-opacity duration-300"
-                />
-              )}
-            </div>
-          </motion.div>
         </div>
       </motion.div>
     </Link>
