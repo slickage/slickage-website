@@ -3,6 +3,9 @@ import type { Insight } from '@/types/insight';
 import { getFeaturedInsights } from '@/data/insights';
 import { InsightCard } from '@/components/insights';
 
+// Enable caching for this component
+export const revalidate = 3600; // Revalidate every hour
+
 export default async function Insights() {
   const insights: Insight[] = await getFeaturedInsights();
 
@@ -17,9 +20,9 @@ export default async function Insights() {
             Read about how we built successful products with our partners.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {insights.map((insight: Insight) => (
-            <InsightCard key={insight.id} insight={insight} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          {insights.map((insight: Insight, index: number) => (
+            <InsightCard key={insight.id} insight={insight} index={index} />
           ))}
         </div>
       </div>

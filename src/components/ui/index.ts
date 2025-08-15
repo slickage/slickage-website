@@ -1,7 +1,11 @@
+export * from './AnimatedSection';
 export * from './button';
 export * from './card';
+export * from './ErrorBoundary';
+export { default as ImageLightbox } from './ImageLightbox';
 export * from './input';
 export * from './label';
+export * from './LoadingSpinner';
 export * from './select';
 export * from './tabs';
 export * from './textarea';

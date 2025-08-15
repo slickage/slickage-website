@@ -42,12 +42,13 @@ export default function Header() {
                 key={item}
                 href={`/${item.toLowerCase()}`}
                 className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                aria-label={item || 'Navigation link'}
               >
                 {item}
               </Link>
             ))}
             <Link href="/contact">
-              <Button className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors">
+              <Button className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors">
                 Get in Touch
               </Button>
             </Link>
@@ -69,7 +70,6 @@ export default function Header() {
         <div
           id="mobile-menu"
           className="md:hidden absolute top-full left-0 right-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10 border-b border-gray-800"
-          // className="md:hidden absolute top-full left-0 right-0 border-b border-gray-800"
           role="menu"
           aria-label="Mobile navigation"
         >

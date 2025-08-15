@@ -1,12 +1,13 @@
-import { useState, useEffect, RefObject } from 'react';
+import { useState, useEffect } from 'react';
 import { useClientConfig } from './useClientConfig';
+import { logger } from '@/lib/utils/logger';
 
 type RecaptchaLoadStrategy = 'immediate' | 'in-viewport' | 'interaction';
 
 interface UseRecaptchaOptions {
   strategy?: RecaptchaLoadStrategy;
   // Allow null to match common React refs like useRef<HTMLDivElement | null>(null)
-  triggerRef?: RefObject<Element | null>;
+  triggerRef?: React.RefObject<Element | null>;
 }
 
 export function useRecaptcha(options?: UseRecaptchaOptions) {
@@ -37,7 +38,7 @@ export function useRecaptcha(options?: UseRecaptchaOptions) {
       };
 
       script.onerror = (error) => {
-        console.error('useRecaptcha: Failed to load reCAPTCHA script:', error);
+        logger.error('useRecaptcha: Failed to load reCAPTCHA script:', error);
         setError('Failed to load reCAPTCHA');
       };
 

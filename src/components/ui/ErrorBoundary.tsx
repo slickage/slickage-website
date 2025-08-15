@@ -1,21 +1,22 @@
 'use client';
-import React from 'react';
-import { env } from '@/lib/env';
 
-interface ErrorBoundaryProps {
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
+import React, { Component, type ReactNode } from 'react';
+import { logger } from '@/lib/utils/logger';
+
+interface Props {
+  children: ReactNode;
+  fallback?: ReactNode;
 }
 
-interface ErrorBoundaryState {
+interface State {
   hasError: boolean;
-  error: Error | null;
+  error?: Error;
 }
 
-export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
+export class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: undefined };
   }
 
   static getDerivedStateFromError(error: Error) {
@@ -23,13 +24,11 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    if (env.NODE_ENV !== 'production') {
-      console.error('ErrorBoundary caught an error:', error, errorInfo);
-    }
+    logger.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
   handleReset = () => {
-    this.setState({ hasError: false, error: null });
+    this.setState({ hasError: false, error: undefined });
   };
 
   render() {

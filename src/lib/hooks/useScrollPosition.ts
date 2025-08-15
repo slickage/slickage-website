@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface UseScrollPositionOptions {
   threshold?: number;
@@ -6,31 +6,52 @@ interface UseScrollPositionOptions {
 }
 
 export function useScrollPosition(options: UseScrollPositionOptions = {}) {
-  const { threshold = 0, debounceMs = 10 } = options;
+  const { threshold = 0, debounceMs = 16 } = options;
   const [scrollY, setScrollY] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // Memoize the scroll handler to prevent recreation on every render
+  const handleScroll = useCallback(() => {
+    const currentScrollY = window.scrollY;
+
+    // Only update state if values actually changed
+    setScrollY((prev) => {
+      if (Math.abs(prev - currentScrollY) > 1) {
+        return currentScrollY;
+      }
+      return prev;
+    });
+
+    setIsScrolled((prev) => {
+      const newIsScrolled = currentScrollY > threshold;
+      return prev !== newIsScrolled ? newIsScrolled : prev;
+    });
+  }, [threshold]);
+
   useEffect(() => {
+    let rafId: number;
     let timeoutId: NodeJS.Timeout;
 
-    const handleScroll = () => {
+    const throttledScrollHandler = () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
-        const currentScrollY = window.scrollY;
-        setScrollY(currentScrollY);
-        setIsScrolled(currentScrollY > threshold);
+        rafId = requestAnimationFrame(handleScroll);
       }, debounceMs);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', throttledScrollHandler, { passive: true });
 
+    // Initial call
     handleScroll();
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', throttledScrollHandler);
       clearTimeout(timeoutId);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
     };
-  }, [threshold, debounceMs]);
+  }, [handleScroll, debounceMs]);
 
   return {
     scrollY,

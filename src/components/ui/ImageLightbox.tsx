@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import Image, { ImageProps } from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
+import { LoadingSpinnerOverlay } from './LoadingSpinner';
 
 interface ImageLightboxProps extends Omit<ImageProps, 'ref'> {
   src: string;
@@ -11,6 +12,7 @@ interface ImageLightboxProps extends Omit<ImageProps, 'ref'> {
   priority?: boolean;
   className?: string;
   modalClassName?: string;
+  unoptimized?: boolean;
 }
 
 export default function ImageLightbox({
@@ -23,8 +25,16 @@ export default function ImageLightbox({
 }: ImageLightboxProps) {
   const [expanded, setExpanded] = useState<boolean | null>(false);
   const [isPortrait, setIsPortrait] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isModalLoading, setIsModalLoading] = useState(true);
   const triggerRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const defaultProps = {
+    width: 800,
+    height: 600,
+    ...props,
+  };
 
   useEffect(() => {
     if (!expanded) return;
@@ -71,6 +81,11 @@ export default function ImageLightbox({
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const { naturalWidth, naturalHeight } = e.currentTarget;
     setIsPortrait(naturalHeight > naturalWidth);
+    setIsLoading(false);
+  };
+
+  const handleModalImageLoad = () => {
+    setIsModalLoading(false);
   };
 
   return (
@@ -86,12 +101,20 @@ export default function ImageLightbox({
           if (e.key === 'Enter' || e.key === ' ') setExpanded(true);
         }}
       >
+        {isLoading && <LoadingSpinnerOverlay />}
         <Image
+          key={src}
           className={className}
           src={src || '/placeholder.svg'}
           alt={alt}
           priority={priority}
-          {...props}
+          unoptimized={props.unoptimized}
+          onLoad={handleImageLoad}
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+          quality={85}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          {...defaultProps}
         />
       </div>
       {typeof window !== 'undefined' &&
@@ -117,16 +140,22 @@ export default function ImageLightbox({
                   transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   className="relative flex items-center justify-center p-4 rounded-xl"
                 >
+                  {isModalLoading && <LoadingSpinnerOverlay />}
                   <Image
                     src={src || '/placeholder.svg'}
                     alt={alt}
-                    width={900}
-                    height={600}
+                    width={defaultProps.width}
+                    height={defaultProps.height}
                     className={`object-contain rounded-lg cursor-zoom-out
                       ${isPortrait ? 'w-3xl h-auto' : 'w-6xl h-auto'}`}
-                    priority={priority}
+                    priority={true}
+                    unoptimized={props.unoptimized}
                     onClick={() => setExpanded(false)}
-                    onLoad={handleImageLoad}
+                    onLoad={handleModalImageLoad}
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                    quality={85}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
                   />
                 </motion.div>
               </motion.div>
