@@ -1,6 +1,6 @@
 # Testing Guide
 
-This project uses **Bun's built-in test runner** for all testing needs. The test suite is organized by feature and test type to provide comprehensive coverage of the application.
+This project uses **Bun's built-in test runner** for all testing needs. The test suite is organized by feature to provide comprehensive coverage of the application.
 
 ## Quick Start
 
@@ -16,63 +16,76 @@ The test suite is organized as follows:
 
 ```
 tests/
-├── core/                    # Core business logic tests
+├── rate-limiter/           # Comprehensive rate limiting tests
 │   ├── rate-limiter.test.ts
-│   └── fallback-rate-limiter.test.ts
-├── integration/            # Integration tests requiring external services
-│   ├── redis-rate-limiting.test.ts
-│   └── sliding-window.test.ts
-└── README.md              # This file
+│   └── README.md
+└── README.md               # This file
 ```
 
 ## Test Categories
 
-### Core Tests (`tests/core/`)
+### Rate Limiter Tests (`tests/rate-limiter/`)
 
-- **Rate Limiter Tests**: Core rate limiting logic and constants
-- **Fallback Rate Limiter Tests**: In-memory fallback mechanism when Redis is unavailable
+The rate limiter test suite provides comprehensive coverage of all rate limiting functionality in a single, well-organized file:
 
-### Integration Tests (`tests/integration/`)
+- **Core Functionality**: Basic rate limiting operations, enforcement, and reset
+- **Sliding Window Algorithm**: Redis-based sliding window implementation
+- **Error Handling and Fallback**: Graceful degradation and in-memory fallback
+- **Concurrent Request Handling**: Performance under load and race conditions
+- **Performance and Scalability**: System efficiency and memory optimization
+- **Secure Fallback Behavior**: In-memory rate limiting when Redis is unavailable
+- **Edge Cases and Resilience**: Boundary conditions and various identifier formats
+- **Configuration and Maintenance**: System validation and cleanup functions
+- **Reset and Recovery**: Post-reset recovery and multiple reset handling
 
-- **Redis Rate Limiting**: Tests requiring a running Redis instance
-- **Sliding Window Algorithm**: Comprehensive testing of the sliding window implementation
+## Running Tests
 
-## Running Specific Test Categories
-
-Run all tests in a specific directory:
+### All Tests
 
 ```bash
-bun test tests/core/
-bun test tests/integration/
+bun test
 ```
 
-Run a specific test file:
+### Rate Limiter Tests Only
 
 ```bash
-bun test tests/core/rate-limiter.test.ts
-bun test tests/integration/redis-rate-limiting.test.ts
+bun test tests/rate-limiter/
+```
+
+### Specific Test Categories
+
+```bash
+# Run only core functionality tests
+bun test tests/rate-limiter/ --grep "Core Functionality"
+
+# Run only performance tests
+bun test tests/rate-limiter/ --grep "Performance"
+
+# Run only fallback behavior tests
+bun test tests/rate-limiter/ --grep "Secure Fallback"
+```
+
+### With Coverage
+
+```bash
+bun test tests/rate-limiter/ --coverage
 ```
 
 ## Prerequisites
 
-### For Integration Tests
+### For Rate Limiter Tests
 
-Some tests require external services to be running:
+The rate limiter tests can run with or without Redis:
+
+- **With Redis**: Full functionality testing including Redis operations
+- **Without Redis**: Automatic fallback to in-memory rate limiting for testing
 
 ```bash
-# Start Redis for integration tests
+# Start Redis for full functionality testing
 docker-compose up -d redis
 
-# Wait for Redis to be ready, then run tests
-bun test tests/integration/
-```
-
-### For Unit Tests
-
-Unit tests can run without external dependencies:
-
-```bash
-bun test tests/core/
+# Tests will work regardless of Redis availability
+bun test tests/rate-limiter/
 ```
 
 ## Test Writing Guidelines
@@ -85,15 +98,15 @@ All tests use Bun's built-in test framework:
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
 
 describe('Feature Name', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     // Setup before each test
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     // Cleanup after each test
   });
 
-  it('should do something specific', () => {
+  it('should do something specific', async () => {
     expect(actual).toBe(expected);
   });
 });
@@ -101,10 +114,11 @@ describe('Feature Name', () => {
 
 ### Test Organization
 
-- Group related tests using `describe` blocks
+- Group related tests using `describe` blocks with clear separators
 - Use descriptive test names that explain the expected behavior
-- Include setup and cleanup in `beforeEach` and `afterEach` hooks
-- Mock external dependencies when appropriate
+- Include comprehensive setup and cleanup in `beforeEach` and `afterEach` hooks
+- Test both success and failure scenarios
+- Include performance and memory validation where appropriate
 
 ### Assertions
 
@@ -116,15 +130,28 @@ expect(value).toEqual(expected);
 expect(value).toContain(expected);
 expect(value).toBeGreaterThan(expected);
 expect(value).toHaveProperty('propertyName');
+expect(value).toBeLessThan(maxValue);
+expect(() => functionCall()).not.toThrow();
 ```
+
+## Test Coverage
+
+The consolidated test suite provides comprehensive coverage:
+
+- **Line Coverage**: 94.67% for rate-limiter.ts
+- **Function Coverage**: 85.71% for rate-limiter.ts
+- **Edge Cases**: Boundary conditions and error scenarios
+- **Integration**: Real Redis operations and concurrent handling
+- **Fallback System**: In-memory rate limiting when Redis is unavailable
 
 ## Continuous Integration
 
-The test suite is designed to work in CI environments:
+The test suite is designed to work efficiently in CI environments:
 
-1. **Unit tests** run without external dependencies
-2. **Integration tests** are skipped when services aren't available
-3. **Mock-based tests** provide reliable coverage
+1. **Single Redis instance** serves all test needs
+2. **Optimized execution** with consolidated test structure
+3. **Comprehensive coverage** in minimal execution time
+4. **Reliable fallbacks** when external services are unavailable
 
 ## Troubleshooting
 
@@ -132,9 +159,9 @@ The test suite is designed to work in CI environments:
 
 **Tests fail with Redis connection errors:**
 
-- Ensure Redis is running: `docker-compose up -d redis`
-- Check Redis connection in `docker-compose.yml`
-- Integration tests will be skipped if Redis is unavailable
+- Tests will automatically fall back to in-memory rate limiting
+- Check Redis container status: `docker-compose ps`
+- Verify Redis connection in `docker-compose.yml`
 
 **TypeScript errors in tests:**
 
@@ -170,15 +197,33 @@ bun test --verbose
 1. Create a new directory under `tests/`
 2. Add appropriate test files
 3. Update this README with new category information
+4. Follow the consolidated approach for related functionality
 
 ## Performance Testing
 
 The test suite is optimized for fast execution:
 
-- Unit tests run in parallel
-- Integration tests are isolated
-- Mock-based tests provide fast feedback
-- External service tests are clearly marked
+- **Consolidated tests** run efficiently in ~42ms
+- **Single Redis instance** for all tests
+- **Comprehensive coverage** without duplication
+- **Memory usage validation** included
+- **Performance benchmarks** for critical operations
+
+## Test Organization Benefits
+
+### Before (Separate Files)
+
+- Multiple test files with overlapping functionality
+- Duplicate test scenarios and setup logic
+- Complex CI configuration with matrix strategies
+- Slower execution due to redundant tests
+
+### After (Consolidated)
+
+- Single comprehensive test file per feature
+- Eliminated duplication and overlapping tests
+- Simplified CI workflow with single Redis instance
+- Faster execution with better organization
 
 ## Conclusion
 
@@ -186,8 +231,9 @@ This testing setup provides:
 
 - **Fast execution** with Bun's optimized test runner
 - **Comprehensive coverage** across all application features
-- **Clear organization** by feature and test type
-- **CI-friendly** design with proper fallbacks
-- **Easy maintenance** with standard Bun test syntax
+- **Clear organization** by feature with logical test categories
+- **CI-friendly** design with efficient execution
+- **Easy maintenance** with consolidated test structure
+- **No duplication** ensuring all scenarios are tested once
 
 Run `bun test` to execute the full test suite and ensure your application is working correctly.

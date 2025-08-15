@@ -41,18 +41,6 @@ jobs:
   test:
     name: Test Suite
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - test-suite: integration
-            test-command: 'bun test tests/integration/'
-            test-name: 'Integration Tests'
-            redis-port: 6380
-          - test-suite: core
-            test-command: 'bun test tests/core/'
-            test-name: 'Core Tests'
-      fail-fast: true
-
     services:
       redis:
         image: redis:7-alpine
@@ -62,7 +50,7 @@ jobs:
           --health-timeout 3s
           --health-retries 3
         ports:
-          - ${{ matrix.redis-port }}:6379
+          - 6380:6379
 
     steps:
       - uses: actions/checkout@v4
@@ -75,8 +63,8 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Run ${{ matrix.test-name }}
-        run: ${{ matrix.test-command }}
+      - name: Run Tests
+        run: bun test
         env:
           NODE_ENV: test
-          REDIS_URL: redis://localhost:${{ matrix.redis-port }}
+          REDIS_URL: redis://localhost:6380

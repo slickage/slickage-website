@@ -9,7 +9,7 @@ import {
   validatePhoneNumber,
   validateLinkSpam,
 } from '@/lib/validation/security-validators';
-import { checkRateLimit, MAX_SUBMISSIONS_PER_HOUR } from '@/lib/security/rate-limiter';
+import { checkRateLimit, MAX_REQUESTS_PER_WINDOW } from '@/lib/security/rate-limiter';
 import { verifyRecaptcha, validateRecaptchaScore } from '@/lib/security/recaptcha';
 import { sanitizeContactData, saveContactSubmission } from '@/lib/services/contact-service';
 import { createSlackService } from '@/lib/services/slack-service';
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
           status: 429,
           headers: {
             'Retry-After': Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000).toString(),
-            'X-RateLimit-Limit': MAX_SUBMISSIONS_PER_HOUR.toString(),
+            'X-RateLimit-Limit': MAX_REQUESTS_PER_WINDOW.toString(),
             'X-RateLimit-Remaining': '0',
             'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toISOString(),
           },
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
       {
         status: 200,
         headers: {
-          'X-RateLimit-Limit': MAX_SUBMISSIONS_PER_HOUR.toString(),
+          'X-RateLimit-Limit': MAX_REQUESTS_PER_WINDOW.toString(),
           'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
           'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toISOString(),
         },

@@ -1,8 +1,8 @@
 import { logger } from '../utils/logger';
 import { getRedisClient, isRedisAvailable } from '../utils/redis';
 
-const MAX_SUBMISSIONS_PER_HOUR = 3;
-const RATE_LIMIT_WINDOW = 60 * 60; // 1 hour in seconds
+const MAX_REQUESTS_PER_WINDOW = 3;
+const WINDOW_SIZE_SECONDS = 60 * 60; // 1 hour in seconds
 
 export interface RateLimitResult {
   limited: boolean;
@@ -10,223 +10,157 @@ export interface RateLimitResult {
   resetTime: number;
 }
 
-/**
- * Check if IP is rate limited using Redis true sliding window algorithm
- * This provides accurate rate limiting by checking a rolling time window
- */
-export async function checkRateLimit(ip: string): Promise<RateLimitResult> {
-  const now = Math.floor(Date.now() / 1000);
-  const key = `rate_limit:${ip}`;
-  const requestId = `${now}-${Date.now()}`;
+// In-memory fallback rate limiting for when Redis is unavailable
+class InMemoryRateLimiter {
+  private store = new Map<string, { count: number; windowStart: number }>();
+  private cleanupInterval: NodeJS.Timeout;
 
-  try {
-    if (!isRedisAvailable()) {
-      logger.warn('Redis not available, falling back to in-memory rate limiting');
-      return fallbackRateLimit(ip);
+  constructor() {
+    // Clean up expired entries every 5 minutes
+    this.cleanupInterval = setInterval(
+      () => {
+        this.cleanup();
+      },
+      5 * 60 * 1000,
+    );
+  }
+
+  private cleanup() {
+    const now = Date.now();
+    const windowMs = WINDOW_SIZE_SECONDS * 1000;
+
+    for (const [key, value] of this.store.entries()) {
+      if (now - value.windowStart > windowMs) {
+        this.store.delete(key);
+      }
     }
+  }
 
-    const redis = getRedisClient();
-    const windowStart = now - RATE_LIMIT_WINDOW;
+  checkLimit(identifier: string): RateLimitResult {
+    const now = Date.now();
+    const windowMs = WINDOW_SIZE_SECONDS * 1000;
+    const entry = this.store.get(identifier);
 
-    try {
-      // Use Redis MULTI for atomic operations (not pipeline)
-      // This ensures all operations execute together without race conditions
-      const multi = redis.multi();
-
-      // Add operations to multi in correct order:
-      // 1. Remove old entries (cleanup)
-      // 2. Count existing requests BEFORE adding current request
-      // 3. Add current request
-      // 4. Set expiration
-      multi.zremrangebyscore(key, 0, windowStart);
-      multi.zcount(key, windowStart, now);
-      multi.zadd(key, now, requestId);
-      multi.expire(key, RATE_LIMIT_WINDOW);
-
-      // Execute all operations atomically
-      const results = await multi.exec();
-
-      // Validate pipeline results
-      if (!results || results.length !== 4) {
-        throw new Error(
-          `Pipeline execution failed: expected 4 results, got ${results?.length || 0}`,
-        );
-      }
-
-      // Extract the count result (index 1 in our pipeline)
-      // results[0] = zremrangebyscore result
-      // results[1] = zcount result (what we need)
-      // results[2] = zadd result
-      // results[3] = expire result
-      const countResult = results[1];
-      if (!countResult || countResult[0]) {
-        throw new Error(`Pipeline count operation failed: ${countResult?.[0] || 'unknown error'}`);
-      }
-
-      const existingRequestCount = (countResult[1] as number) || 0;
-
-      // Check if adding this request would exceed the limit
-      // FIXED: Changed to >= to properly enforce the limit when exactly MAX_SUBMISSIONS_PER_HOUR requests are made
-      if (existingRequestCount >= MAX_SUBMISSIONS_PER_HOUR) {
-        // Calculate reset time based on oldest request in window
-        const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
-        const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;
-        const resetTime = oldestTime + RATE_LIMIT_WINDOW;
-
-        logger.security(
-          `Rate limit exceeded: IP ${ip}, existingRequestCount: ${existingRequestCount}`,
-        );
-
-        return {
-          limited: true,
-          remaining: 0,
-          resetTime: resetTime * 1000, // Convert back to milliseconds
-        };
-      }
-
-      // Calculate remaining requests based on total count after adding current request
-      // After adding this request, we'll have (existingRequestCount + 1) requests
-      // So remaining = MAX_SUBMISSIONS_PER_HOUR - (existingRequestCount + 1)
-      const remaining = Math.max(0, MAX_SUBMISSIONS_PER_HOUR - (existingRequestCount + 1));
-      const resetTime = (now + RATE_LIMIT_WINDOW) * 1000; // Convert to milliseconds
-
-      logger.debug(
-        `Rate limit check: IP ${ip}, existingRequestCount: ${existingRequestCount}, remaining: ${remaining}, limited: false`,
-      );
-
+    if (!entry || now - entry.windowStart > windowMs) {
+      // New window or expired window
+      this.store.set(identifier, { count: 1, windowStart: now });
       return {
         limited: false,
-        remaining,
-        resetTime,
+        remaining: MAX_REQUESTS_PER_WINDOW - 1,
+        resetTime: now + windowMs,
       };
-    } catch (pipelineError) {
-      logger.error(`Pipeline execution failed for IP ${ip}:`, pipelineError);
-
-      // Fallback to sequential operations if pipeline fails
-      logger.warn('Falling back to sequential operations due to pipeline error');
-
-      try {
-        // Sequential fallback for reliability - also use multi for consistency
-        const multi = redis.multi();
-        multi.zremrangebyscore(key, 0, windowStart);
-        multi.zcount(key, windowStart, now);
-
-        const results = await multi.exec();
-        if (!results) {
-          throw new Error('Redis multi execution failed');
-        }
-        const existingRequestCount = (results[1]?.[1] as number) || 0;
-
-        // FIXED: Changed to >= to properly enforce the limit when exactly MAX_SUBMISSIONS_PER_HOUR requests are made
-        if (existingRequestCount >= MAX_SUBMISSIONS_PER_HOUR) {
-          const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
-          const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;
-          const resetTime = oldestTime + RATE_LIMIT_WINDOW;
-
-          logger.security(
-            `Rate limit exceeded (fallback): IP ${ip}, existingRequestCount: ${existingRequestCount}`,
-          );
-
-          return {
-            limited: true,
-            remaining: 0,
-            resetTime: resetTime * 1000,
-          };
-        }
-
-        // Add current request and set expiration atomically
-        const addMulti = redis.multi();
-        addMulti.zadd(key, now, requestId);
-        addMulti.expire(key, RATE_LIMIT_WINDOW);
-        await addMulti.exec();
-
-        const remaining = Math.max(0, MAX_SUBMISSIONS_PER_HOUR - (existingRequestCount + 1));
-        const resetTime = (now + RATE_LIMIT_WINDOW) * 1000;
-
-        return {
-          limited: false,
-          remaining,
-          resetTime,
-        };
-      } catch (fallbackError) {
-        logger.error(`Sequential fallback also failed for IP ${ip}:`, fallbackError);
-        throw fallbackError; // Re-throw to trigger in-memory fallback
-      }
     }
-  } catch (error) {
-    logger.error(`Redis rate limiting error for IP ${ip}:`, error);
 
-    // Fallback to in-memory rate limiting if Redis fails
-    logger.warn('Falling back to in-memory rate limiting due to Redis error');
-    return fallbackRateLimit(ip);
-  }
-}
+    if (entry.count >= MAX_REQUESTS_PER_WINDOW) {
+      // Rate limit exceeded
+      return {
+        limited: true,
+        remaining: 0,
+        resetTime: entry.windowStart + windowMs,
+      };
+    }
 
-/**
- * Fallback in-memory rate limiting when Redis is unavailable
- * This ensures the application continues to work even if Redis fails
- */
-const submissionTimes = new Map<string, number[]>();
-
-function fallbackRateLimit(ip: string): RateLimitResult {
-  const now = Date.now();
-  const times = submissionTimes.get(ip) || [];
-  const windowMs = RATE_LIMIT_WINDOW * 1000;
-
-  // Filter to recent submissions within the window
-  const recentTimes = times.filter((time) => now - time < windowMs);
-
-  if (recentTimes.length >= MAX_SUBMISSIONS_PER_HOUR) {
-    const oldestSubmission = Math.min(...recentTimes);
-    const resetTime = oldestSubmission + windowMs;
-
-    logger.security(`Fallback rate limit exceeded: IP ${ip}`);
-
+    // Increment count
+    entry.count++;
     return {
-      limited: true,
-      remaining: 0,
-      resetTime,
+      limited: false,
+      remaining: MAX_REQUESTS_PER_WINDOW - entry.count,
+      resetTime: entry.windowStart + windowMs,
     };
   }
 
-  // Add current submission
-  recentTimes.push(now);
-  submissionTimes.set(ip, recentTimes);
+  getStatus(identifier: string): RateLimitResult {
+    const now = Date.now();
+    const windowMs = WINDOW_SIZE_SECONDS * 1000;
+    const entry = this.store.get(identifier);
 
-  return {
-    limited: false,
-    remaining: MAX_SUBMISSIONS_PER_HOUR - recentTimes.length,
-    resetTime: now + windowMs,
-  };
+    if (!entry || now - entry.windowStart > windowMs) {
+      return {
+        limited: false,
+        remaining: MAX_REQUESTS_PER_WINDOW,
+        resetTime: now + windowMs,
+      };
+    }
+
+    if (entry.count >= MAX_REQUESTS_PER_WINDOW) {
+      return {
+        limited: true,
+        remaining: 0,
+        resetTime: entry.windowStart + windowMs,
+      };
+    }
+
+    return {
+      limited: false,
+      remaining: MAX_REQUESTS_PER_WINDOW - entry.count,
+      resetTime: entry.windowStart + windowMs,
+    };
+  }
+
+  reset(identifier: string): boolean {
+    return this.store.delete(identifier);
+  }
+
+  destroy() {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+    }
+    this.store.clear();
+  }
 }
 
+// Global in-memory fallback instance
+const inMemoryLimiter = new InMemoryRateLimiter();
+
 /**
- * Get current rate limit status for an IP without incrementing the counter
- * Uses true sliding window algorithm for accurate counting
+ * Sliding window rate limiter using Redis sorted sets
+ * Falls back to in-memory rate limiting when Redis is unavailable
  */
-export async function getRateLimitStatus(ip: string): Promise<RateLimitResult> {
+export async function checkRateLimit(identifier: string): Promise<RateLimitResult> {
   const now = Math.floor(Date.now() / 1000);
-  const key = `rate_limit:${ip}`;
+  const key = `rate_limit:${identifier}`;
+  const windowStart = now - WINDOW_SIZE_SECONDS;
 
   try {
     if (!isRedisAvailable()) {
-      return fallbackRateLimit(ip);
+      logger.debug('Redis not available, falling back to in-memory rate limiting');
+      return inMemoryLimiter.checkLimit(identifier);
     }
 
     const redis = getRedisClient();
 
-    // Use true sliding window algorithm: check rolling 1-hour window ending at current time
-    const windowStart = now - RATE_LIMIT_WINDOW; // 1 hour ago
-    const windowEnd = now; // current time
+    // Use Redis pipeline for atomic operations
+    const pipeline = redis.pipeline();
 
-    // Count requests in the rolling 1-hour window
-    const requestCount = await redis.zcount(key, windowStart, windowEnd);
+    // 1. Remove expired entries outside the sliding window
+    pipeline.zremrangebyscore(key, 0, windowStart);
 
-    if (requestCount > MAX_SUBMISSIONS_PER_HOUR) {
-      // Find the oldest request to calculate reset time
+    // 2. Count current requests in the window
+    pipeline.zcount(key, windowStart, now);
+
+    // 3. Add current request timestamp
+    pipeline.zadd(key, now, `${now}-${Date.now()}`);
+
+    // 4. Set expiration to prevent memory leaks
+    pipeline.expire(key, WINDOW_SIZE_SECONDS);
+
+    // Execute all operations atomically
+    const results = await pipeline.exec();
+
+    if (!results) {
+      throw new Error('Redis pipeline execution failed');
+    }
+
+    // Extract the count result (index 1 from zcount)
+    const requestCount = (results[1]?.[1] as number) || 0;
+
+    if (requestCount >= MAX_REQUESTS_PER_WINDOW) {
+      // Calculate reset time based on oldest request in window
       const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
       const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;
-      const resetTime = oldestTime + RATE_LIMIT_WINDOW;
+      const resetTime = oldestTime + WINDOW_SIZE_SECONDS;
+
+      logger.security(`Rate limit exceeded: ${identifier}, requestCount: ${requestCount}`);
 
       return {
         limited: true,
@@ -235,8 +169,12 @@ export async function getRateLimitStatus(ip: string): Promise<RateLimitResult> {
       };
     }
 
-    const remaining = Math.max(0, MAX_SUBMISSIONS_PER_HOUR - requestCount);
-    const resetTime = (now + RATE_LIMIT_WINDOW) * 1000;
+    const remaining = Math.max(0, MAX_REQUESTS_PER_WINDOW - (requestCount + 1));
+    const resetTime = (now + WINDOW_SIZE_SECONDS) * 1000;
+
+    logger.debug(
+      `Rate limit check: ${identifier}, requestCount: ${requestCount}, remaining: ${remaining}`,
+    );
 
     return {
       limited: false,
@@ -244,31 +182,92 @@ export async function getRateLimitStatus(ip: string): Promise<RateLimitResult> {
       resetTime,
     };
   } catch (error) {
-    logger.error(`Error getting rate limit status for IP ${ip}:`, error);
-    return fallbackRateLimit(ip);
+    logger.error(`Rate limiting error for ${identifier}:`, error);
+
+    // Fall back to in-memory rate limiting on Redis errors
+    logger.debug('Falling back to in-memory rate limiting due to Redis error');
+    return inMemoryLimiter.checkLimit(identifier);
   }
 }
 
 /**
- * Reset rate limit for a specific IP (useful for testing or admin purposes)
+ * Get current rate limit status without incrementing the counter
+ * Falls back to in-memory rate limiting when Redis is unavailable
  */
-export async function resetRateLimit(ip: string): Promise<boolean> {
+export async function getRateLimitStatus(identifier: string): Promise<RateLimitResult> {
+  const now = Math.floor(Date.now() / 1000);
+  const key = `rate_limit:${identifier}`;
+
   try {
     if (!isRedisAvailable()) {
-      submissionTimes.delete(ip);
+      return inMemoryLimiter.getStatus(identifier);
+    }
+
+    const redis = getRedisClient();
+    const windowStart = now - WINDOW_SIZE_SECONDS;
+
+    // Count requests in the current sliding window
+    const requestCount = await redis.zcount(key, windowStart, now);
+
+    if (requestCount >= MAX_REQUESTS_PER_WINDOW) {
+      // Find oldest request to calculate reset time
+      const oldestTimestamp = await redis.zrange(key, 0, 0, 'WITHSCORES');
+      const oldestTime = oldestTimestamp[1] ? parseInt(oldestTimestamp[1]) : now;
+      const resetTime = oldestTime + WINDOW_SIZE_SECONDS;
+
+      return {
+        limited: true,
+        remaining: 0,
+        resetTime: resetTime * 1000,
+      };
+    }
+
+    const remaining = Math.max(0, MAX_REQUESTS_PER_WINDOW - requestCount);
+    const resetTime = (now + WINDOW_SIZE_SECONDS) * 1000;
+
+    return {
+      limited: false,
+      remaining,
+      resetTime,
+    };
+  } catch (error) {
+    logger.error(`Error getting rate limit status for ${identifier}:`, error);
+
+    // Fall back to in-memory rate limiting on Redis errors
+    return inMemoryLimiter.getStatus(identifier);
+  }
+}
+
+/**
+ * Reset rate limit for a specific identifier
+ * Resets both Redis and in-memory rate limits
+ */
+export async function resetRateLimit(identifier: string): Promise<boolean> {
+  try {
+    // Always reset in-memory rate limit
+    inMemoryLimiter.reset(identifier);
+
+    if (!isRedisAvailable()) {
       return true;
     }
 
     const redis = getRedisClient();
-    const key = `rate_limit:${ip}`;
+    const key = `rate_limit:${identifier}`;
     await redis.del(key);
 
-    logger.info(`Rate limit reset for IP: ${ip}`);
+    logger.info(`Rate limit reset for: ${identifier}`);
     return true;
   } catch (error) {
-    logger.error(`Error resetting rate limit for IP ${ip}:`, error);
+    logger.error(`Error resetting rate limit for ${identifier}:`, error);
     return false;
   }
 }
 
-export { MAX_SUBMISSIONS_PER_HOUR };
+/**
+ * Cleanup function to be called when shutting down the application
+ */
+export function cleanupRateLimiter(): void {
+  inMemoryLimiter.destroy();
+}
+
+export { MAX_REQUESTS_PER_WINDOW, WINDOW_SIZE_SECONDS };
