@@ -57,7 +57,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
       className="block focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl"
     >
       <motion.div
-        className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-xl hover:shadow-2xl transition-all duration-300"
+        className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-xl hover:shadow-2xl transition-all duration-150"
         variants={cardVariants}
         initial="hidden"
         animate="visible"
@@ -74,7 +74,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
               fill
               priority={true}
               loading="eager"
-              className="object-cover transition-all duration-500 group-hover:scale-105"
+              className="object-cover transition-all group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               unoptimized={insight.imageSrc?.toLowerCase().includes('.gif')}
               quality={85}
@@ -83,7 +83,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
             />
           </div>
 
-          <div className="absolute left-0 right-0 bottom-0 h-4/5 bg-gradient-to-t from-gray-900/95 via-gray-800/80 to-transparent opacity-95 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute left-0 right-0 bottom-0 h-4/5 bg-gradient-to-t from-gray-900/95 via-gray-800/80 to-transparent opacity-95 group-hover:opacity-100 transition-opacity duration-150"></div>
 
           <div className="absolute left-0 right-0 bottom-0 h-2/3 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
