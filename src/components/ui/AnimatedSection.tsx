@@ -88,7 +88,7 @@ export default function AnimatedSection({
   const getSpringConfig = () => {
     // If user prefers reduced motion, use simple transitions
     if (prefersReducedMotion) {
-      return { type: 'tween' as const, duration: 0.3, ease: 'easeOut' as const };
+      return { type: 'tween' as const, ease: 'easeOut' as const };
     }
 
     // Simplified spring configuration for all variants
@@ -112,7 +112,7 @@ export default function AnimatedSection({
       transition={{
         ...getSpringConfig(),
         delay: prefersReducedMotion ? 0 : delay,
-        duration: prefersReducedMotion ? 0.3 : duration,
+        duration: prefersReducedMotion ? 0 : duration,
       }}
       className={className}
       style={{ willChange: 'transform, opacity' }}

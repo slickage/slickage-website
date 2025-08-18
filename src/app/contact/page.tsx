@@ -32,11 +32,11 @@ export const metadata = {
 export default function ContactPage() {
   return (
     <main className="flex-1 bg-gradient-to-r from-blue-500/10 to-violet-500/10">
-      <AnimatedSection variant="fadeInUp" delay={0}>
+      <AnimatedSection variant="fadeInUp">
         <ContactHero />
       </AnimatedSection>
 
-      <AnimatedSection variant="fadeInUp" delay={0.1}>
+      <AnimatedSection variant="fadeInUp">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
