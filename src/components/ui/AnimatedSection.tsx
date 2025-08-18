@@ -1,6 +1,6 @@
 'use client';
 
-import { m, useReducedMotion } from 'motion/react';
+import { m, useReducedMotion, usePageInView } from 'motion/react';
 import React from 'react';
 import { getTransitionConfig } from '@/lib/animations';
 import { LazyMotionWrapper } from './LazyMotionWrapper';
@@ -85,6 +85,7 @@ export default function AnimatedSection({
   className = '',
 }: AnimatedSectionProps) {
   const prefersReducedMotion = useReducedMotion();
+  const isPageVisible = usePageInView();
 
   const getSpringConfig = () => {
     if (prefersReducedMotion) {
@@ -96,12 +97,14 @@ export default function AnimatedSection({
 
   const animationVariants = prefersReducedMotion ? reducedMotionVariants : variants;
 
+  const shouldAnimate = isPageVisible && !prefersReducedMotion;
+
   return (
     <LazyMotionWrapper>
       <m.div
         variants={animationVariants[variant]}
         initial="offscreen"
-        whileInView="onscreen"
+        whileInView={shouldAnimate ? "onscreen" : undefined}
         exit="exit"
         viewport={{
           once: true,

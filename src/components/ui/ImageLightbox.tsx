@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import Image, { ImageProps } from 'next/image';
-import { m, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence, usePageInView } from 'motion/react';
 import { LoadingSpinnerOverlay } from './LoadingSpinner';
 import { getTransitionConfig, getTweenConfig } from '@/lib/animations';
 import { LazyMotionWrapper } from './LazyMotionWrapper';
@@ -31,6 +31,7 @@ export default function ImageLightbox({
   const [isModalLoading, setIsModalLoading] = useState(true);
   const triggerRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const isPageVisible = usePageInView();
 
   const defaultProps = {
     width: 800,
@@ -140,7 +141,7 @@ export default function ImageLightbox({
                 >
                   <m.div
                     initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
+                    animate={isPageVisible ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 }}
                     exit={{ scale: 0.9, opacity: 0 }}
                     transition={getTransitionConfig('modal')}
                     className="relative flex items-center justify-center p-4 rounded-xl"

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { m } from 'motion/react';
+import { m, usePageInView } from 'motion/react';
 import { getTransitionConfig } from '@/lib/animations';
 import type { Insight } from '@/types/insight';
 import { getS3ImageUrl } from '@/lib/utils';
@@ -19,6 +19,7 @@ interface InsightCardProps {
 export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
   const [s3Url, setS3Url] = useState<string>('/placeholder.svg');
   const [isLoadingS3, setIsLoadingS3] = useState(false);
+  const isPageVisible = usePageInView();
 
   useEffect(() => {
     if (insight.imageSrc && insight.imageSrc !== '/placeholder.svg') {
@@ -58,7 +59,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
           className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-xl hover:shadow-2xl transition-all duration-150 hover:scale-105 hover:-translate-y-1 hover:border-blue-500/50"
           variants={cardVariants}
           initial="hidden"
-          whileInView="visible"
+          whileInView={isPageVisible ? "visible" : undefined}
           viewport={{ once: true, margin: '-50px' }}
           transition={getTransitionConfig('card')}
           tabIndex={0}
