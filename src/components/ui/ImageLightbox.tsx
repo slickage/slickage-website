@@ -6,7 +6,7 @@ import Image, { ImageProps } from 'next/image';
 import { m, AnimatePresence, usePageInView, useReducedMotion } from 'motion/react';
 import { LoadingSpinnerOverlay } from './LoadingSpinner';
 import { getTransitionConfig, getTweenConfig } from '@/lib/animations';
-import { LazyMotionWrapper } from './LazyMotionWrapper';
+
 
 interface ImageLightboxProps extends Omit<ImageProps, 'ref'> {
   src: string;
@@ -152,7 +152,7 @@ export default function ImageLightbox({
       </div>
       {typeof window !== 'undefined' &&
         ReactDOM.createPortal(
-          <LazyMotionWrapper>
+
             <AnimatePresence>
               {expanded && (
                 <m.div
@@ -191,8 +191,7 @@ export default function ImageLightbox({
                   </m.div>
                 </m.div>
               )}
-            </AnimatePresence>
-          </LazyMotionWrapper>,
+            </AnimatePresence>,
           document.body,
         )}
     </>

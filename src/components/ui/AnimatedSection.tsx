@@ -3,7 +3,7 @@
 import { m, useReducedMotion, usePageInView } from 'motion/react';
 import React from 'react';
 import { getTransitionConfig } from '@/lib/animations';
-import { LazyMotionWrapper } from './LazyMotionWrapper';
+
 
 type AnimationVariant =
   | 'fadeIn' // Simple fade (original behavior)
@@ -100,27 +100,25 @@ export default function AnimatedSection({
   const shouldAnimate = isPageVisible && !prefersReducedMotion;
 
   return (
-    <LazyMotionWrapper>
-      <m.div
-        variants={animationVariants[variant]}
-        initial="offscreen"
-        whileInView={shouldAnimate ? 'onscreen' : undefined}
-        exit="exit"
-        viewport={{
-          once: true,
-          margin: '-50px',
-          amount: 0.3,
-        }}
-        transition={{
-          ...getSpringConfig(),
-          delay: prefersReducedMotion ? 0 : delay,
-          duration: prefersReducedMotion ? 0 : duration,
-        }}
-        className={className}
-        style={{ willChange: 'transform, opacity' }}
-      >
-        {children}
-      </m.div>
-    </LazyMotionWrapper>
+    <m.div
+      variants={animationVariants[variant]}
+      initial="offscreen"
+      whileInView={shouldAnimate ? 'onscreen' : undefined}
+      exit="exit"
+      viewport={{
+        once: true,
+        margin: '-50px',
+        amount: 0.3,
+      }}
+      transition={{
+        ...getSpringConfig(),
+        delay: prefersReducedMotion ? 0 : delay,
+        duration: prefersReducedMotion ? 0 : duration,
+      }}
+      className={className}
+      style={{ willChange: 'transform, opacity' }}
+    >
+      {children}
+    </m.div>
   );
 }

@@ -7,7 +7,7 @@ import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { getTransitionConfig } from '@/lib/animations';
-import { LazyMotionWrapper } from './LazyMotionWrapper';
+
 
 const Select = SelectPrimitive.Root;
 
@@ -19,7 +19,7 @@ const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
-  <LazyMotionWrapper>
+
     <m.div
       whileFocus={{ scale: 1.01 }}
       transition={getTransitionConfig('focus')}
@@ -39,7 +39,6 @@ const SelectTrigger = React.forwardRef<
         </SelectPrimitive.Icon>
       </SelectPrimitive.Trigger>
     </m.div>
-  </LazyMotionWrapper>
 ));
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 

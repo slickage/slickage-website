@@ -4,7 +4,7 @@ import React from 'react';
 import { m, useReducedMotion } from 'motion/react';
 import { cn } from '@/lib/utils';
 import { getTransitionConfig } from '@/lib/animations';
-import { LazyMotionWrapper } from './LazyMotionWrapper';
+
 
 export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -75,45 +75,39 @@ const IconButton = React.forwardRef<
 
   if (href) {
     return (
-      <LazyMotionWrapper>
-        <m.div {...motionProps} className="inline-block">
-          <a
-            ref={ref as React.Ref<HTMLAnchorElement>}
-            href={href}
-            className={baseClasses}
-            {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-          >
-            {iconContent}
-          </a>
-        </m.div>
-      </LazyMotionWrapper>
+      <m.div {...motionProps} className="inline-block">
+        <a
+          ref={ref as React.Ref<HTMLAnchorElement>}
+          href={href}
+          className={baseClasses}
+          {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+        >
+          {iconContent}
+        </a>
+      </m.div>
     );
   }
 
   if (asChild) {
     return (
-      <LazyMotionWrapper>
-        <m.div {...motionProps} className="inline-block">
-          <div
-            ref={ref as React.Ref<HTMLDivElement>}
-            className={baseClasses}
-            {...(props as React.HTMLAttributes<HTMLDivElement>)}
-          >
-            {iconContent}
-          </div>
-        </m.div>
-      </LazyMotionWrapper>
+      <m.div {...motionProps} className="inline-block">
+        <div
+          ref={ref as React.Ref<HTMLDivElement>}
+          className={baseClasses}
+          {...(props as React.HTMLAttributes<HTMLDivElement>)}
+        >
+          {iconContent}
+        </div>
+      </m.div>
     );
   }
 
   return (
-    <LazyMotionWrapper>
-      <m.div {...motionProps} className="inline-block">
-        <button ref={ref as React.Ref<HTMLButtonElement>} className={baseClasses} {...props}>
-          {iconContent}
-        </button>
-      </m.div>
-    </LazyMotionWrapper>
+    <m.div {...motionProps} className="inline-block">
+      <button ref={ref as React.Ref<HTMLButtonElement>} className={baseClasses} {...props}>
+        {iconContent}
+      </button>
+    </m.div>
   );
 });
 

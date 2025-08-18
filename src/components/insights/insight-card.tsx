@@ -9,7 +9,7 @@ import type { Insight } from '@/types/insight';
 import { getS3ImageUrl } from '@/lib/utils';
 import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
-import { LazyMotionWrapper } from '@/components/ui/LazyMotionWrapper';
+
 
 interface InsightCardProps {
   insight: Insight;
@@ -79,7 +79,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
       href={`/case-studies/${insight.id}`}
       className="block focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-500/50 rounded-xl"
     >
-      <LazyMotionWrapper>
+
         <m.div
           className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-lg hover:shadow-xl transition-shadow duration-200 hover:border-blue-500/50"
           {...motionProps}
@@ -128,7 +128,6 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
             </div>
           </div>
         </m.div>
-      </LazyMotionWrapper>
     </Link>
   );
 }

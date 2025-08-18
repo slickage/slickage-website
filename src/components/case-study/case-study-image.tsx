@@ -7,7 +7,7 @@ import { getS3ImageUrl } from '@/lib/utils';
 import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
 import { getTransitionConfig } from '@/lib/animations';
-import { LazyMotionWrapper } from '@/components/ui/LazyMotionWrapper';
+
 
 const ImageLightboxComponent = dynamic(() => import('../ui/ImageLightbox'));
 
@@ -66,27 +66,25 @@ export default function CaseStudyImage({
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <LazyMotionWrapper>
-        <m.div
-          className="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-blue-500/10 bg-white/5 cursor-pointer relative"
-          {...motionProps}
-        >
-          <div className="relative group cursor-pointer overflow-hidden rounded-lg">
-            {isLoadingS3 && <LoadingSpinnerOverlay />}
-            <ImageLightboxComponent
-              src={imageSrc}
-              alt={alt}
-              className={`w-full h-auto transition-transform duration-300 ${!prefersReducedMotion ? 'group-hover:scale-105' : ''}`}
-              unoptimized={src?.toLowerCase().includes('.gif')}
-            />
+      <m.div
+        className="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-blue-500/10 bg-white/5 cursor-pointer relative"
+        {...motionProps}
+      >
+        <div className="relative group cursor-pointer overflow-hidden rounded-lg">
+          {isLoadingS3 && <LoadingSpinnerOverlay />}
+          <ImageLightboxComponent
+            src={imageSrc}
+            alt={alt}
+            className={`w-full h-auto transition-transform duration-300 ${!prefersReducedMotion ? 'group-hover:scale-105' : ''}`}
+            unoptimized={src?.toLowerCase().includes('.gif')}
+          />
+        </div>
+        {caption && (
+          <div className="px-4 py-2 text-center text-gray-400 text-sm bg-opacity-80">
+            {caption}
           </div>
-          {caption && (
-            <div className="px-4 py-2 text-center text-gray-400 text-sm bg-opacity-80">
-              {caption}
-            </div>
-          )}
-        </m.div>
-      </LazyMotionWrapper>
+        )}
+      </m.div>
     </div>
   );
 }
