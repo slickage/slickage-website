@@ -1,11 +1,20 @@
-export * from './AnimatedSection';
-export * from './button';
-export * from './card';
-export * from './ErrorBoundary';
-export { default as ImageLightbox } from './ImageLightbox';
-export * from './input';
-export * from './label';
-export * from './LoadingSpinner';
-export * from './select';
-export * from './tabs';
-export * from './textarea';
+export { Button, buttonVariants } from './button';
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './card';
+export { Input } from './input';
+export { Label } from './label';
+export {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from './select';
+export { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
+export { Textarea } from './textarea';
+export { IconButton } from './icon-button';
+export { default as AnimatedSection } from './AnimatedSection';

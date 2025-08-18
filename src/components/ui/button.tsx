@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { motion } from 'motion/react';
 
 import { cn } from '@/lib/utils';
 
@@ -43,13 +44,27 @@ function Button({
     asChild?: boolean;
   }) {
   const Comp = asChild ? Slot : 'button';
+  const isFullWidth = className?.includes('w-full');
 
   return (
-    <Comp
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
-    />
+    <motion.div
+      whileHover={{
+        scale: 1.01,
+        y: -1,
+        transition: { type: 'spring', stiffness: 400, damping: 25 },
+      }}
+      whileTap={{
+        scale: 0.99,
+        transition: { type: 'spring', stiffness: 400, damping: 25 },
+      }}
+      className={isFullWidth ? 'w-full' : 'inline-block'}
+    >
+      <Comp
+        data-slot="button"
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...props}
+      />
+    </motion.div>
   );
 }
 
