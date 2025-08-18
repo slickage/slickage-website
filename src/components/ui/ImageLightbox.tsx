@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import Image, { ImageProps } from 'next/image';
-import { m, AnimatePresence, usePageInView } from 'motion/react';
+import { m, AnimatePresence, usePageInView, useReducedMotion } from 'motion/react';
 import { LoadingSpinnerOverlay } from './LoadingSpinner';
 import { getTransitionConfig, getTweenConfig } from '@/lib/animations';
 import { LazyMotionWrapper } from './LazyMotionWrapper';
@@ -32,6 +32,7 @@ export default function ImageLightbox({
   const triggerRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const isPageVisible = usePageInView();
+  const prefersReducedMotion = useReducedMotion();
 
   const defaultProps = {
     width: 800,
@@ -91,6 +92,31 @@ export default function ImageLightbox({
     setIsModalLoading(false);
   };
 
+  // Conditional animation props based on motion preference
+  const backdropAnimationProps = prefersReducedMotion ? {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
+    transition: getTweenConfig('fade'),
+  } : {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
+    transition: getTweenConfig('fade'),
+  };
+
+  const modalAnimationProps = prefersReducedMotion ? {
+    initial: { opacity: 0 },
+    animate: isPageVisible ? { opacity: 1 } : { opacity: 0 },
+    exit: { opacity: 0 },
+    transition: getTweenConfig('fade'),
+  } : {
+    initial: { scale: 0.9, opacity: 0 },
+    animate: isPageVisible ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 },
+    exit: { scale: 0.9, opacity: 0 },
+    transition: getTransitionConfig('modal'),
+  };
+
   return (
     <>
       <div
@@ -127,10 +153,7 @@ export default function ImageLightbox({
               {expanded && (
                 <m.div
                   className={`fixed inset-0 flex items-center justify-center z-50 cursor-zoom-out backdrop-blur-xs ${modalClassName}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={getTweenConfig('fade')}
+                  {...backdropAnimationProps}
                   onClick={() => setExpanded(false)}
                   role="dialog"
                   aria-modal="true"
@@ -140,12 +163,9 @@ export default function ImageLightbox({
                   style={{ willChange: 'opacity' }}
                 >
                   <m.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={isPageVisible ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 }}
-                    exit={{ scale: 0.9, opacity: 0 }}
-                    transition={getTransitionConfig('modal')}
+                    {...modalAnimationProps}
                     className="relative flex items-center justify-center p-4 rounded-xl"
-                    style={{ willChange: 'transform, opacity' }}
+                    style={{ willChange: prefersReducedMotion ? 'opacity' : 'transform, opacity' }}
                   >
                     {isModalLoading && <LoadingSpinnerOverlay />}
                     <Image

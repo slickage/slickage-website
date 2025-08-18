@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { m } from 'motion/react';
+import { m, useReducedMotion } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { getS3ImageUrl } from '@/lib/utils';
 import { logger } from '@/lib/utils/logger';
@@ -22,6 +22,7 @@ export default function CaseStudyImage({
 }) {
   const [s3Url, setS3Url] = useState<string>('/placeholder.svg');
   const [isLoadingS3, setIsLoadingS3] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (src && src !== '/placeholder.svg') {
@@ -44,25 +45,36 @@ export default function CaseStudyImage({
 
   const imageSrc = isLoadingS3 ? '/placeholder.svg' : s3Url;
 
+  // Conditional animation props based on motion preference
+  const motionProps = prefersReducedMotion ? {
+    variants: {
+      hidden: { opacity: 0, y: 20 },
+      show: { opacity: 1, y: 0 },
+    },
+    transition: getTransitionConfig('card'),
+  } : {
+    whileHover: { scale: 1.05 },
+    whileTap: { scale: 0.97 },
+    variants: {
+      hidden: { opacity: 0, y: 20 },
+      show: { opacity: 1, y: 0 },
+    },
+    transition: getTransitionConfig('card'),
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <LazyMotionWrapper>
         <m.div
           className="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-blue-500/10 bg-white/5 cursor-pointer relative"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.97 }}
-          variants={{
-            hidden: { opacity: 0, y: 20 },
-            show: { opacity: 1, y: 0 },
-          }}
-          transition={getTransitionConfig('card')}
+          {...motionProps}
         >
           <div className="relative group cursor-pointer overflow-hidden rounded-lg">
             {isLoadingS3 && <LoadingSpinnerOverlay />}
             <ImageLightboxComponent
               src={imageSrc}
               alt={alt}
-              className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
+              className={`w-full h-auto transition-transform duration-300 ${!prefersReducedMotion ? 'group-hover:scale-105' : ''}`}
               unoptimized={src?.toLowerCase().includes('.gif')}
             />
           </div>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { m, usePageInView } from 'motion/react';
+import { m, usePageInView, useReducedMotion } from 'motion/react';
 import { getTransitionConfig } from '@/lib/animations';
 import type { Insight } from '@/types/insight';
 import { getS3ImageUrl } from '@/lib/utils';
@@ -20,6 +20,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
   const [s3Url, setS3Url] = useState<string>('/placeholder.svg');
   const [isLoadingS3, setIsLoadingS3] = useState(false);
   const isPageVisible = usePageInView();
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (insight.imageSrc && insight.imageSrc !== '/placeholder.svg') {
@@ -49,6 +50,28 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
     visible: { opacity: 1, y: 0 },
   };
 
+  // Conditional animation props based on motion preference
+  const motionProps = prefersReducedMotion ? {
+    variants: cardVariants,
+    initial: "hidden",
+    whileInView: isPageVisible ? "visible" : undefined,
+    viewport: { once: true, margin: '-50px' },
+    transition: getTransitionConfig('card'),
+  } : {
+    variants: cardVariants,
+    initial: "hidden",
+    whileInView: isPageVisible ? "visible" : undefined,
+    viewport: { once: true, margin: '-50px' },
+    transition: getTransitionConfig('card'),
+  };
+
+  // Conditional hover effects
+  const hoverEffects = prefersReducedMotion ? {} : {
+    scale: 1.05,
+    y: -4,
+    borderColor: 'rgba(59, 130, 246, 0.5)', // blue-500/50
+  };
+
   return (
     <Link
       href={`/case-studies/${insight.id}`}
@@ -56,12 +79,9 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
     >
       <LazyMotionWrapper>
         <m.div
-          className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-xl hover:shadow-2xl transition-all duration-150 hover:scale-105 hover:-translate-y-1 hover:border-blue-500/50"
-          variants={cardVariants}
-          initial="hidden"
-          whileInView={isPageVisible ? "visible" : undefined}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={getTransitionConfig('card')}
+          className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-xl hover:shadow-2xl transition-all duration-150 hover:border-blue-500/50"
+          {...motionProps}
+          whileHover={hoverEffects}
           tabIndex={0}
         >
           <div className="relative w-full h-full">
@@ -74,7 +94,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
                 fill
                 priority={true}
                 loading="eager"
-                className="object-cover transition-all group-hover:scale-105"
+                className={`object-cover transition-all ${!prefersReducedMotion ? 'group-hover:scale-105' : ''}`}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 unoptimized={insight.imageSrc?.toLowerCase().includes('.gif')}
                 quality={85}
@@ -99,6 +119,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
                   <m.span
                     key={index}
                     className="px-2 py-0.5 text-xs font-medium rounded-md bg-blue-900/20 backdrop-blur-sm text-blue-100 tracking-wide border border-blue-400/50 transition-transform duration-150 hover:scale-105 hover:-translate-y-1"
+                    whileHover={prefersReducedMotion ? {} : { scale: 1.05, y: -1 }}
                   >
                     {tech}
                   </m.span>

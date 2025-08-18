@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { m } from 'motion/react';
+import { m, useReducedMotion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -9,6 +9,22 @@ import { LazyMotionWrapper } from '@/components/ui/LazyMotionWrapper';
 
 
 export default function HeroSection() {
+  const prefersReducedMotion = useReducedMotion();
+
+  // Conditional animation props for the scrolling indicator
+  const scrollAnimationProps = prefersReducedMotion ? {
+    // No animation for reduced motion users - just static positioning
+  } : {
+    animate: {
+      y: [0, 12, 0],
+    },
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: 'easeInOut' as const,
+    },
+  };
+
   return (
     <section id="hero" className="relative min-h-screen flex items-center">
       <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-950/20 to-violet-950/20" />
@@ -44,14 +60,7 @@ export default function HeroSection() {
           <LazyMotionWrapper>
             <m.div
               className="w-1.5 h-4 rounded-full bg-gradient-to-b from-blue-400 to-blue-600"
-              animate={{
-                y: [0, 12, 0],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
+              {...scrollAnimationProps}
             />
           </LazyMotionWrapper>
         </div>
