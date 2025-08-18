@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'motion/react';
+import { getTransitionConfig } from '@/lib/animations';
 import type { Insight } from '@/types/insight';
 import { getS3ImageUrl } from '@/lib/utils';
 import { logger } from '@/lib/utils/logger';
@@ -42,7 +43,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
   const imageSrc = isLoadingS3 ? '/placeholder.svg' : s3Url;
 
   const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
 
@@ -56,6 +57,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
         variants={cardVariants}
         initial="hidden"
         animate="visible"
+        transition={getTransitionConfig('card')}
         tabIndex={0}
       >
         <div className="relative w-full h-full">

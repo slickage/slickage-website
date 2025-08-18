@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
+import { getTransitionConfig } from '@/lib/animations';
 
 export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -59,12 +60,12 @@ const IconButton = React.forwardRef<
         whileHover={{
           scale: 1.1,
           rotate: 5,
-          transition: { type: 'spring', stiffness: 400, damping: 25 },
+          transition: getTransitionConfig('hover'),
         }}
         whileTap={{
           scale: 0.9,
           rotate: -5,
-          transition: { type: 'spring', stiffness: 400, damping: 25 },
+          transition: getTransitionConfig('interactive'),
         }}
         className="inline-block"
       >
@@ -86,12 +87,12 @@ const IconButton = React.forwardRef<
         whileHover={{
           scale: 1.1,
           rotate: 5,
-          transition: { type: 'spring', stiffness: 400, damping: 25 },
+          transition: getTransitionConfig('hover'),
         }}
         whileTap={{
           scale: 0.9,
           rotate: -5,
-          transition: { type: 'spring', stiffness: 400, damping: 25 },
+          transition: getTransitionConfig('interactive'),
         }}
         className="inline-block"
       >
@@ -111,12 +112,12 @@ const IconButton = React.forwardRef<
       whileHover={{
         scale: 1.1,
         rotate: 5,
-        transition: { type: 'spring', stiffness: 400, damping: 25 },
+        transition: getTransitionConfig('hover'),
       }}
       whileTap={{
         scale: 0.9,
         rotate: -5,
-        transition: { type: 'spring', stiffness: 400, damping: 25 },
+        transition: getTransitionConfig('interactive'),
       }}
       className="inline-block"
     >

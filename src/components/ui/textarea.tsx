@@ -4,6 +4,7 @@ import * as React from 'react';
 import { motion } from 'motion/react';
 
 import { cn } from '@/lib/utils';
+import { getTransitionConfig } from '@/lib/animations';
 
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
@@ -12,7 +13,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <motion.div
         whileFocus={{ scale: 1.01 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+        transition={getTransitionConfig('focus')}
         className="inline-block w-full"
       >
         <textarea

@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import Image, { ImageProps } from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { LoadingSpinnerOverlay } from './LoadingSpinner';
+import { getTransitionConfig } from '@/lib/animations';
 
 interface ImageLightboxProps extends Omit<ImageProps, 'ref'> {
   src: string;
@@ -137,7 +138,7 @@ export default function ImageLightbox({
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  transition={getTransitionConfig('modal')}
                   className="relative flex items-center justify-center p-4 rounded-xl"
                 >
                   {isModalLoading && <LoadingSpinnerOverlay />}

@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { getS3ImageUrl } from '@/lib/utils';
 import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
+import { getTransitionConfig } from '@/lib/animations';
 
 const ImageLightboxComponent = dynamic(() => import('../ui/ImageLightbox'));
 
@@ -52,7 +53,7 @@ export default function CaseStudyImage({
           hidden: { opacity: 0, y: 20 },
           show: { opacity: 1, y: 0 },
         }}
-        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+        transition={getTransitionConfig('card')}
       >
         <div className="relative group cursor-pointer overflow-hidden rounded-lg">
           {isLoadingS3 && <LoadingSpinnerOverlay />}

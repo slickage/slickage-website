@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from 'motion/react';
 import React from 'react';
+import { getTransitionConfig } from '@/lib/animations';
 
 type AnimationVariant =
   | 'fadeIn' // Simple fade (original behavior)
@@ -84,18 +85,14 @@ export default function AnimatedSection({
 }: AnimatedSectionProps) {
   const prefersReducedMotion = useReducedMotion();
 
-  // Spring configurations for different variants - optimized for performance
   const getSpringConfig = () => {
-    // If user prefers reduced motion, use simple transitions
     if (prefersReducedMotion) {
-      return { type: 'tween' as const, ease: 'easeOut' as const };
+      return getTransitionConfig('entrance', true);
     }
 
-    // Simplified spring configuration for all variants
-    return { type: 'spring' as const, stiffness: 100, damping: 30, mass: 1.0 };
+    return getTransitionConfig('entrance');
   };
 
-  // Use appropriate variants based on motion preference
   const animationVariants = prefersReducedMotion ? reducedMotionVariants : variants;
 
   return (

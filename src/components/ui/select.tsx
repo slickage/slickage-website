@@ -6,6 +6,7 @@ import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
+import { getTransitionConfig } from '@/lib/animations';
 
 const Select = SelectPrimitive.Root;
 
@@ -19,7 +20,7 @@ const SelectTrigger = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <motion.div
     whileFocus={{ scale: 1.01 }}
-    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+    transition={getTransitionConfig('focus')}
     className="inline-block w-full"
   >
     <SelectPrimitive.Trigger
