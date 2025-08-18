@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import dynamic from 'next/dynamic';
