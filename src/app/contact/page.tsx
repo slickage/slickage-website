@@ -48,9 +48,7 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
-      </AnimatedSection>
 
-      <AnimatedSection variant="fadeInUp" delay={0.2}>
         <FaqSection />
       </AnimatedSection>
     </main>
