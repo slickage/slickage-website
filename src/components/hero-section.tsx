@@ -16,7 +16,6 @@ export default function HeroSection() {
           <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] tracking-tight mb-8 gradient-text">
             We build software that works
           </h1>
-
           <div className="space-y-4 mb-12">
             <p className="text-xl md:text-2xl text-blue-100 font-medium leading-relaxed">
               Fast, reliable, and beautifully crafted.
@@ -26,7 +25,6 @@ export default function HeroSection() {
               exceptional digital products for partners worldwide.
             </p>
           </div>
-
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href="/#insights">
               <Button className="px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 flex items-center justify-center group shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">

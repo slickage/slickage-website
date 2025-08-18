@@ -254,6 +254,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
           />
           {fieldErrors.name && <p className="mt-1 text-sm text-red-400">{fieldErrors.name}</p>}
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
@@ -297,6 +298,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
             {fieldErrors.phone && <p className="mt-1 text-sm text-red-400">{fieldErrors.phone}</p>}
           </div>
         </div>
+
         <div className="mb-4">
           <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-1">
             Company or Project Name <span className="text-red-400">*</span>
@@ -318,6 +320,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
             <p className="mt-1 text-sm text-red-400">{fieldErrors.subject}</p>
           )}
         </div>
+
         <div className="mb-4">
           <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">
             How can we help you? <span className="text-red-400">*</span>
@@ -340,6 +343,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
           )}
           <p className="mt-1 text-xs text-gray-500">{formData.message.length}/5000 characters</p>
         </div>
+
         <Button
           type="submit"
           className="w-full px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group"

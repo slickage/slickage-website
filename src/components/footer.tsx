@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import Link from 'next/link';
+import { IconButton } from '@/components/ui';
 
 export default function Footer() {
   return (
@@ -13,29 +14,24 @@ export default function Footer() {
               A boutique software company based in Honolulu, Hawaii building big things.
             </p>
             <div className="flex space-x-4">
-              {[
-                {
-                  icon: <FaLinkedin className="h-5 w-5" />,
-                  href: 'https://www.linkedin.com/company/slickage-studios',
-                  label: 'Visit Slickage on LinkedIn',
-                },
-                {
-                  icon: <FaGithub className="h-5 w-5" />,
-                  href: 'https://github.com/slickage',
-                  label: 'Visit Slickage on GitHub',
-                },
-              ].map((social, index) => (
-                <a
-                  key={index}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center h-10 w-10 rounded-full bg-gray-800 text-gray-400 hover:bg-blue-500 hover:text-white transition-colors"
-                  aria-label={social.label}
-                >
-                  {social.icon}
-                </a>
-              ))}
+              <IconButton
+                icon={<FaLinkedin className="h-5 w-5" />}
+                href="https://www.linkedin.com/company/slickage-studios"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="blue"
+                size="md"
+                aria-label="Visit Slickage on LinkedIn"
+              />
+              <IconButton
+                icon={<FaGithub className="h-5 w-5" />}
+                href="https://github.com/slickage"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="blue"
+                size="md"
+                aria-label="Visit Slickage on GitHub"
+              />
             </div>
           </div>
 
