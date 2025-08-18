@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -38,7 +39,18 @@ export default function HeroSection() {
 
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
         <div className="w-1.5 h-16 rounded-full bg-gray-700/50 backdrop-blur-sm">
-          <div className="w-1.5 h-4 rounded-full bg-gradient-to-b from-blue-400 to-blue-600 animate-scroll-down" />
+          <motion.div
+            className="w-1.5 h-4 rounded-full bg-gradient-to-b from-blue-400 to-blue-600"
+            animate={{
+              y: [0, 9, 0],
+            }}
+            transition={{
+              duration: 1.5,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "loop"
+            }}
+          />
         </div>
       </div>
     </section>
