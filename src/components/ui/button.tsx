@@ -56,15 +56,23 @@ function Button({
   return (
     <LazyMotionWrapper>
       <m.div
-        whileHover={shouldAnimateInteractions ? {
-          scale: 1.01,
-          y: -1,
-          transition: getTransitionConfig('hover'),
-        } : undefined}
-        whileTap={shouldAnimateInteractions ? {
-          scale: 0.99,
-          transition: getTransitionConfig('interactive'),
-        } : undefined}
+        whileHover={
+          shouldAnimateInteractions
+            ? {
+                scale: 1.01,
+                y: -1,
+                transition: getTransitionConfig('hover'),
+              }
+            : undefined
+        }
+        whileTap={
+          shouldAnimateInteractions
+            ? {
+                scale: 0.99,
+                transition: getTransitionConfig('interactive'),
+              }
+            : undefined
+        }
         className={isFullWidth ? 'w-full' : 'inline-block'}
       >
         <Comp

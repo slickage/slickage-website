@@ -104,7 +104,7 @@ export default function AnimatedSection({
       <m.div
         variants={animationVariants[variant]}
         initial="offscreen"
-        whileInView={shouldAnimate ? "onscreen" : undefined}
+        whileInView={shouldAnimate ? 'onscreen' : undefined}
         exit="exit"
         viewport={{
           once: true,

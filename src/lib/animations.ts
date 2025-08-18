@@ -1,6 +1,6 @@
 /**
  * Centralized animation configuration for consistent motion behavior across the application
- * 
+ *
  * This file provides standardized spring configurations for different interaction types,
  * ensuring consistent animation feel and performance optimization.
  */
@@ -109,7 +109,7 @@ export function getTweenConfig(type: keyof typeof tweenConfigs): TweenConfig {
 // Helper function to get appropriate config based on motion preference
 export function getTransitionConfig(
   type: keyof typeof springConfigs | keyof typeof tweenConfigs,
-  prefersReducedMotion: boolean = false
+  prefersReducedMotion: boolean = false,
 ): TransitionConfig {
   if (prefersReducedMotion) {
     // For reduced motion, use simple tween transitions

@@ -7,23 +7,24 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { LazyMotionWrapper } from '@/components/ui/LazyMotionWrapper';
 
-
 export default function HeroSection() {
   const prefersReducedMotion = useReducedMotion();
 
   // Conditional animation props for the scrolling indicator
-  const scrollAnimationProps = prefersReducedMotion ? {
-    // No animation for reduced motion users - just static positioning
-  } : {
-    animate: {
-      y: [0, 12, 0],
-    },
-    transition: {
-      duration: 2,
-      repeat: Infinity,
-      ease: 'easeInOut' as const,
-    },
-  };
+  const scrollAnimationProps = prefersReducedMotion
+    ? {
+        // No animation for reduced motion users - just static positioning
+      }
+    : {
+        animate: {
+          y: [0, 12, 0],
+        },
+        transition: {
+          duration: 2,
+          repeat: Infinity,
+          ease: 'easeInOut' as const,
+        },
+      };
 
   return (
     <section id="hero" className="relative min-h-screen flex items-center">

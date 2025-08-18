@@ -93,29 +93,33 @@ export default function ImageLightbox({
   };
 
   // Conditional animation props based on motion preference
-  const backdropAnimationProps = prefersReducedMotion ? {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 },
-    transition: getTweenConfig('fade'),
-  } : {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 },
-    transition: getTweenConfig('fade'),
-  };
+  const backdropAnimationProps = prefersReducedMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: getTweenConfig('fade'),
+      }
+    : {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: getTweenConfig('fade'),
+      };
 
-  const modalAnimationProps = prefersReducedMotion ? {
-    initial: { opacity: 0 },
-    animate: isPageVisible ? { opacity: 1 } : { opacity: 0 },
-    exit: { opacity: 0 },
-    transition: getTweenConfig('fade'),
-  } : {
-    initial: { scale: 0.9, opacity: 0 },
-    animate: isPageVisible ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 },
-    exit: { scale: 0.9, opacity: 0 },
-    transition: getTransitionConfig('modal'),
-  };
+  const modalAnimationProps = prefersReducedMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: isPageVisible ? { opacity: 1 } : { opacity: 0 },
+        exit: { opacity: 0 },
+        transition: getTweenConfig('fade'),
+      }
+    : {
+        initial: { scale: 0.9, opacity: 0 },
+        animate: isPageVisible ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 },
+        exit: { scale: 0.9, opacity: 0 },
+        transition: getTransitionConfig('modal'),
+      };
 
   return (
     <>

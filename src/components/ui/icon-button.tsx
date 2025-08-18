@@ -58,26 +58,25 @@ const IconButton = React.forwardRef<
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimateInteractions = !prefersReducedMotion;
 
-  const motionProps = shouldAnimateInteractions ? {
-    whileHover: {
-      scale: 1.1,
-      rotate: 5,
-      transition: getTransitionConfig('hover'),
-    },
-    whileTap: {
-      scale: 0.9,
-      rotate: -5,
-      transition: getTransitionConfig('interactive'),
-    },
-  } : {};
+  const motionProps = shouldAnimateInteractions
+    ? {
+        whileHover: {
+          scale: 1.1,
+          rotate: 5,
+          transition: getTransitionConfig('hover'),
+        },
+        whileTap: {
+          scale: 0.9,
+          rotate: -5,
+          transition: getTransitionConfig('interactive'),
+        },
+      }
+    : {};
 
   if (href) {
     return (
       <LazyMotionWrapper>
-        <m.div
-          {...motionProps}
-          className="inline-block"
-        >
+        <m.div {...motionProps} className="inline-block">
           <a
             ref={ref as React.Ref<HTMLAnchorElement>}
             href={href}
@@ -94,10 +93,7 @@ const IconButton = React.forwardRef<
   if (asChild) {
     return (
       <LazyMotionWrapper>
-        <m.div
-          {...motionProps}
-          className="inline-block"
-        >
+        <m.div {...motionProps} className="inline-block">
           <div
             ref={ref as React.Ref<HTMLDivElement>}
             className={baseClasses}
@@ -112,15 +108,8 @@ const IconButton = React.forwardRef<
 
   return (
     <LazyMotionWrapper>
-      <m.div
-        {...motionProps}
-        className="inline-block"
-      >
-        <button
-          ref={ref as React.Ref<HTMLButtonElement>}
-          className={baseClasses}
-          {...props}
-        >
+      <m.div {...motionProps} className="inline-block">
+        <button ref={ref as React.Ref<HTMLButtonElement>} className={baseClasses} {...props}>
           {iconContent}
         </button>
       </m.div>

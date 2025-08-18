@@ -46,21 +46,23 @@ export default function CaseStudyImage({
   const imageSrc = isLoadingS3 ? '/placeholder.svg' : s3Url;
 
   // Conditional animation props based on motion preference
-  const motionProps = prefersReducedMotion ? {
-    variants: {
-      hidden: { opacity: 0, y: 20 },
-      show: { opacity: 1, y: 0 },
-    },
-    transition: getTransitionConfig('card'),
-  } : {
-    whileHover: { scale: 1.05 },
-    whileTap: { scale: 0.97 },
-    variants: {
-      hidden: { opacity: 0, y: 20 },
-      show: { opacity: 1, y: 0 },
-    },
-    transition: getTransitionConfig('card'),
-  };
+  const motionProps = prefersReducedMotion
+    ? {
+        variants: {
+          hidden: { opacity: 0, y: 20 },
+          show: { opacity: 1, y: 0 },
+        },
+        transition: getTransitionConfig('card'),
+      }
+    : {
+        whileHover: { scale: 1.05 },
+        whileTap: { scale: 0.97 },
+        variants: {
+          hidden: { opacity: 0, y: 20 },
+          show: { opacity: 1, y: 0 },
+        },
+        transition: getTransitionConfig('card'),
+      };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -79,7 +81,9 @@ export default function CaseStudyImage({
             />
           </div>
           {caption && (
-            <div className="px-4 py-2 text-center text-gray-400 text-sm bg-opacity-80">{caption}</div>
+            <div className="px-4 py-2 text-center text-gray-400 text-sm bg-opacity-80">
+              {caption}
+            </div>
           )}
         </m.div>
       </LazyMotionWrapper>
