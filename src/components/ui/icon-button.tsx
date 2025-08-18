@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
 import { getTransitionConfig } from '@/lib/animations';
+import { useMotionPreferences } from '@/lib/contexts/motion-preferences';
 
 export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -54,19 +55,26 @@ const IconButton = React.forwardRef<
     <div className={cn('flex items-center justify-center', iconSizes[size])}>{icon}</div>
   );
 
+  const { shouldAnimate } = useMotionPreferences();
+  const shouldAnimateInteractions = shouldAnimate('interaction');
+
+  const motionProps = shouldAnimateInteractions ? {
+    whileHover: {
+      scale: 1.1,
+      rotate: 5,
+      transition: getTransitionConfig('hover'),
+    },
+    whileTap: {
+      scale: 0.9,
+      rotate: -5,
+      transition: getTransitionConfig('interactive'),
+    },
+  } : {};
+
   if (href) {
     return (
       <motion.div
-        whileHover={{
-          scale: 1.1,
-          rotate: 5,
-          transition: getTransitionConfig('hover'),
-        }}
-        whileTap={{
-          scale: 0.9,
-          rotate: -5,
-          transition: getTransitionConfig('interactive'),
-        }}
+        {...motionProps}
         className="inline-block"
       >
         <a
@@ -84,16 +92,7 @@ const IconButton = React.forwardRef<
   if (asChild) {
     return (
       <motion.div
-        whileHover={{
-          scale: 1.1,
-          rotate: 5,
-          transition: getTransitionConfig('hover'),
-        }}
-        whileTap={{
-          scale: 0.9,
-          rotate: -5,
-          transition: getTransitionConfig('interactive'),
-        }}
+        {...motionProps}
         className="inline-block"
       >
         <div
@@ -109,16 +108,7 @@ const IconButton = React.forwardRef<
 
   return (
     <motion.div
-      whileHover={{
-        scale: 1.1,
-        rotate: 5,
-        transition: getTransitionConfig('hover'),
-      }}
-      whileTap={{
-        scale: 0.9,
-        rotate: -5,
-        transition: getTransitionConfig('interactive'),
-      }}
+      {...motionProps}
       className="inline-block"
     >
       <button

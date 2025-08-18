@@ -1,8 +1,9 @@
 'use client';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import React from 'react';
 import { getTransitionConfig } from '@/lib/animations';
+import { useMotionPreferences } from '@/lib/contexts/motion-preferences';
 
 type AnimationVariant =
   | 'fadeIn' // Simple fade (original behavior)
@@ -83,7 +84,7 @@ export default function AnimatedSection({
   duration = 0.3,
   className = '',
 }: AnimatedSectionProps) {
-  const prefersReducedMotion = useReducedMotion();
+  const { prefersReducedMotion, shouldAnimate } = useMotionPreferences();
 
   const getSpringConfig = () => {
     if (prefersReducedMotion) {
@@ -92,6 +93,10 @@ export default function AnimatedSection({
 
     return getTransitionConfig('entrance');
   };
+
+  if (!shouldAnimate('entrance')) {
+    return <div className={className}>{children}</div>;
+  }
 
   const animationVariants = prefersReducedMotion ? reducedMotionVariants : variants;
 
