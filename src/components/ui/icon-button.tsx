@@ -1,10 +1,9 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { cn } from '@/lib/utils';
 import { getTransitionConfig } from '@/lib/animations';
-import { useMotionPreferences } from '@/lib/contexts/motion-preferences';
 
 export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -55,8 +54,8 @@ const IconButton = React.forwardRef<
     <div className={cn('flex items-center justify-center', iconSizes[size])}>{icon}</div>
   );
 
-  const { shouldAnimate } = useMotionPreferences();
-  const shouldAnimateInteractions = shouldAnimate('interaction');
+  const prefersReducedMotion = useReducedMotion();
+  const shouldAnimateInteractions = !prefersReducedMotion;
 
   const motionProps = shouldAnimateInteractions ? {
     whileHover: {
