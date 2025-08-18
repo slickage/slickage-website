@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import Image, { ImageProps } from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { LoadingSpinnerOverlay } from './LoadingSpinner';
-import { getTransitionConfig } from '@/lib/animations';
+import { getTransitionConfig, getTweenConfig } from '@/lib/animations';
 
 interface ImageLightboxProps extends Omit<ImageProps, 'ref'> {
   src: string;
@@ -127,12 +127,14 @@ export default function ImageLightbox({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                transition={getTweenConfig('fade')}
                 onClick={() => setExpanded(false)}
                 role="dialog"
                 aria-modal="true"
                 aria-label={alt}
                 tabIndex={-1}
                 ref={modalRef}
+                style={{ willChange: 'opacity' }}
               >
                 <motion.div
                   initial={{ scale: 0.9, opacity: 0 }}
@@ -140,6 +142,7 @@ export default function ImageLightbox({
                   exit={{ scale: 0.9, opacity: 0 }}
                   transition={getTransitionConfig('modal')}
                   className="relative flex items-center justify-center p-4 rounded-xl"
+                  style={{ willChange: 'transform, opacity' }}
                 >
                   {isModalLoading && <LoadingSpinnerOverlay />}
                   <Image
