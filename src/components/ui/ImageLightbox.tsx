@@ -3,9 +3,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import Image, { ImageProps } from 'next/image';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { LoadingSpinnerOverlay } from './LoadingSpinner';
 import { getTransitionConfig, getTweenConfig } from '@/lib/animations';
+import { LazyMotionWrapper } from './LazyMotionWrapper';
 
 interface ImageLightboxProps extends Omit<ImageProps, 'ref'> {
   src: string;
@@ -120,51 +121,53 @@ export default function ImageLightbox({
       </div>
       {typeof window !== 'undefined' &&
         ReactDOM.createPortal(
-          <AnimatePresence>
-            {expanded && (
-              <motion.div
-                className={`fixed inset-0 flex items-center justify-center z-50 cursor-zoom-out backdrop-blur-xs ${modalClassName}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={getTweenConfig('fade')}
-                onClick={() => setExpanded(false)}
-                role="dialog"
-                aria-modal="true"
-                aria-label={alt}
-                tabIndex={-1}
-                ref={modalRef}
-                style={{ willChange: 'opacity' }}
-              >
-                <motion.div
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.9, opacity: 0 }}
-                  transition={getTransitionConfig('modal')}
-                  className="relative flex items-center justify-center p-4 rounded-xl"
-                  style={{ willChange: 'transform, opacity' }}
+          <LazyMotionWrapper>
+            <AnimatePresence>
+              {expanded && (
+                <m.div
+                  className={`fixed inset-0 flex items-center justify-center z-50 cursor-zoom-out backdrop-blur-xs ${modalClassName}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={getTweenConfig('fade')}
+                  onClick={() => setExpanded(false)}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label={alt}
+                  tabIndex={-1}
+                  ref={modalRef}
+                  style={{ willChange: 'opacity' }}
                 >
-                  {isModalLoading && <LoadingSpinnerOverlay />}
-                  <Image
-                    src={src || '/placeholder.svg'}
-                    alt={alt}
-                    width={defaultProps.width}
-                    height={defaultProps.height}
-                    className={`object-contain rounded-lg cursor-zoom-out
-                      ${isPortrait ? 'w-3xl h-auto' : 'w-6xl h-auto'}`}
-                    priority={true}
-                    unoptimized={props.unoptimized}
-                    onClick={() => setExpanded(false)}
-                    onLoad={handleModalImageLoad}
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                    quality={85}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
-                  />
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>,
+                  <m.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    transition={getTransitionConfig('modal')}
+                    className="relative flex items-center justify-center p-4 rounded-xl"
+                    style={{ willChange: 'transform, opacity' }}
+                  >
+                    {isModalLoading && <LoadingSpinnerOverlay />}
+                    <Image
+                      src={src || '/placeholder.svg'}
+                      alt={alt}
+                      width={defaultProps.width}
+                      height={defaultProps.height}
+                      className={`object-contain rounded-lg cursor-zoom-out
+                        ${isPortrait ? 'w-3xl h-auto' : 'w-6xl h-auto'}`}
+                      priority={true}
+                      unoptimized={props.unoptimized}
+                      onClick={() => setExpanded(false)}
+                      onLoad={handleModalImageLoad}
+                      placeholder="blur"
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                      quality={85}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
+                    />
+                  </m.div>
+                </m.div>
+              )}
+            </AnimatePresence>
+          </LazyMotionWrapper>,
           document.body,
         )}
     </>

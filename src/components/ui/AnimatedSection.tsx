@@ -1,8 +1,9 @@
 'use client';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { m, useReducedMotion } from 'motion/react';
 import React from 'react';
 import { getTransitionConfig } from '@/lib/animations';
+import { LazyMotionWrapper } from './LazyMotionWrapper';
 
 type AnimationVariant =
   | 'fadeIn' // Simple fade (original behavior)
@@ -96,25 +97,27 @@ export default function AnimatedSection({
   const animationVariants = prefersReducedMotion ? reducedMotionVariants : variants;
 
   return (
-    <motion.div
-      variants={animationVariants[variant]}
-      initial="offscreen"
-      whileInView="onscreen"
-      exit="exit"
-      viewport={{
-        once: true,
-        margin: '-50px',
-        amount: 0.3,
-      }}
-      transition={{
-        ...getSpringConfig(),
-        delay: prefersReducedMotion ? 0 : delay,
-        duration: prefersReducedMotion ? 0 : duration,
-      }}
-      className={className}
-      style={{ willChange: 'transform, opacity' }}
-    >
-      {children}
-    </motion.div>
+    <LazyMotionWrapper>
+      <m.div
+        variants={animationVariants[variant]}
+        initial="offscreen"
+        whileInView="onscreen"
+        exit="exit"
+        viewport={{
+          once: true,
+          margin: '-50px',
+          amount: 0.3,
+        }}
+        transition={{
+          ...getSpringConfig(),
+          delay: prefersReducedMotion ? 0 : delay,
+          duration: prefersReducedMotion ? 0 : duration,
+        }}
+        className={className}
+        style={{ willChange: 'transform, opacity' }}
+      >
+        {children}
+      </m.div>
+    </LazyMotionWrapper>
   );
 }

@@ -77,7 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${inter.className} bg-gradient-to-r from-blue-500/10 to-violet-500/10`}>
         <Header />
-          {children}
+        {children}
         <Footer />
       </body>
     </html>

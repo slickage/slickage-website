@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { getS3ImageUrl } from '@/lib/utils';
 import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
 import { getTransitionConfig } from '@/lib/animations';
+import { LazyMotionWrapper } from '@/components/ui/LazyMotionWrapper';
 
 const ImageLightboxComponent = dynamic(() => import('../ui/ImageLightbox'));
 
@@ -45,29 +46,31 @@ export default function CaseStudyImage({
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <motion.div
-        className="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-blue-500/10 bg-white/5 cursor-pointer relative"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.97 }}
-        variants={{
-          hidden: { opacity: 0, y: 20 },
-          show: { opacity: 1, y: 0 },
-        }}
-        transition={getTransitionConfig('card')}
-      >
-        <div className="relative group cursor-pointer overflow-hidden rounded-lg">
-          {isLoadingS3 && <LoadingSpinnerOverlay />}
-          <ImageLightboxComponent
-            src={imageSrc}
-            alt={alt}
-            className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
-            unoptimized={src?.toLowerCase().includes('.gif')}
-          />
-        </div>
-        {caption && (
-          <div className="px-4 py-2 text-center text-gray-400 text-sm bg-opacity-80">{caption}</div>
-        )}
-      </motion.div>
+      <LazyMotionWrapper>
+        <m.div
+          className="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-blue-500/10 bg-white/5 cursor-pointer relative"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.97 }}
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            show: { opacity: 1, y: 0 },
+          }}
+          transition={getTransitionConfig('card')}
+        >
+          <div className="relative group cursor-pointer overflow-hidden rounded-lg">
+            {isLoadingS3 && <LoadingSpinnerOverlay />}
+            <ImageLightboxComponent
+              src={imageSrc}
+              alt={alt}
+              className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
+              unoptimized={src?.toLowerCase().includes('.gif')}
+            />
+          </div>
+          {caption && (
+            <div className="px-4 py-2 text-center text-gray-400 text-sm bg-opacity-80">{caption}</div>
+          )}
+        </m.div>
+      </LazyMotionWrapper>
     </div>
   );
 }
