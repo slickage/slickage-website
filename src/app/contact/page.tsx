@@ -1,4 +1,5 @@
 import { ContactHero, ContactForm, ContactInfo, FaqSection } from '@/components/contact';
+import AnimatedSection from '@/components/ui/AnimatedSection';
 
 export const metadata = {
   title: 'Contact Slickage | Get in Touch',
@@ -30,10 +31,12 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="flex-1">
-      <ContactHero />
+    <main className="flex-1 bg-gradient-to-r from-blue-500/10 to-violet-500/10">
+      <AnimatedSection variant="fadeInUp" delay={0}>
+        <ContactHero />
+      </AnimatedSection>
 
-      <section className="py-4 relative bg-gradient-to-r from-blue-500/10 to-violet-500/10">
+      <AnimatedSection variant="fadeInUp" delay={0.1}>
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
@@ -45,9 +48,11 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
-      </section>
+      </AnimatedSection>
 
-      <FaqSection />
+      <AnimatedSection variant="fadeInUp" delay={0.2}>
+        <FaqSection />
+      </AnimatedSection>
     </main>
   );
 }

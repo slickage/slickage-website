@@ -7,8 +7,8 @@ import {
   CaseStudyImage,
   CaseStudyQuote,
 } from '@/components/case-study';
-import type { CaseStudy } from '@/types/case-study';
 import AnimatedSection from '@/components/ui/AnimatedSection';
+import type { CaseStudy } from '@/types/case-study';
 
 export default async function CaseStudyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -18,22 +18,24 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
 
   return (
     <main className="flex-1 py-8">
-      <AnimatedSection>
+      <AnimatedSection variant="fadeInUp" delay={0}>
         <CaseStudyHero
           title={caseStudy.title}
           subtitle={caseStudy.subtitle}
           heroImage={caseStudy.heroImage}
         />
       </AnimatedSection>
-      <AnimatedSection>
+
+      <AnimatedSection variant="fadeInUp" delay={0.1}>
         <CaseStudyOverview
           overview={caseStudy.overview}
           tags={caseStudy.tags}
           quickFacts={caseStudy.quickFacts}
         />
       </AnimatedSection>
+
       {caseStudy.content.map((item, idx) => (
-        <AnimatedSection key={idx}>
+        <AnimatedSection key={idx} variant="fadeInUp" delay={0.1}>
           {item.type === 'section' && (
             <CaseStudySection title={item.title} content={item.content} />
           )}
