@@ -1,30 +1,27 @@
 'use client';
 
 import * as React from 'react';
-import { m } from 'motion/react';
 
 import { cn } from '@/lib/utils';
-import { useMotionTransition } from '@/lib/animations';
 
-export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  error?: boolean;
+}
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, error, ...props }, ref) => {
     return (
-      <m.div
-        whileFocus={{ scale: 1.01 }}
-        transition={useMotionTransition('input')}
-        className="inline-block w-full"
-      >
-        <textarea
-          className={cn(
-            'flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-            className,
-          )}
-          ref={ref}
-          {...props}
-        />
-      </m.div>
+      <textarea
+        className={cn(
+          'flex min-h-[60px] w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+          className,
+          error
+            ? '!border-red-500 focus:!border-red-500 focus-visible:!ring-red-500'
+            : 'border-gray-700 focus:border-blue-500 focus-visible:ring-blue-500',
+        )}
+        ref={ref}
+        {...props}
+      />
     );
   },
 );
