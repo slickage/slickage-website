@@ -1,6 +1,6 @@
 'use client';
 
-import { m, usePageInView } from 'motion/react';
+import { m } from 'motion/react';
 import React from 'react';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 
@@ -21,8 +21,6 @@ export default function AnimatedSection({
   duration = 0.3,
   className = '',
 }: AnimatedSectionProps) {
-  const isPageVisible = usePageInView();
-
   const transition = useMotionTransition('entrance');
 
   const getVariantMapping = () => {
@@ -48,7 +46,7 @@ export default function AnimatedSection({
     <m.div
       variants={animationVariants}
       initial="hidden"
-      whileInView={isPageVisible ? 'visible' : undefined}
+      whileInView="visible"
       exit="exit"
       viewport={{
         once: true,

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import Image, { ImageProps } from 'next/image';
-import { m, AnimatePresence, usePageInView } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { LoadingSpinnerOverlay } from './LoadingSpinner';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 
@@ -30,7 +30,6 @@ export default function ImageLightbox({
   const [isModalLoading, setIsModalLoading] = useState(true);
   const triggerRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
-  const isPageVisible = usePageInView();
 
   const fadeVariants = useMotionVariant('fade');
   const modalVariants = useMotionVariant('modal');
@@ -105,7 +104,7 @@ export default function ImageLightbox({
 
   const modalAnimationProps = {
     initial: 'hidden',
-    animate: isPageVisible ? 'visible' : 'hidden',
+    animate: 'visible',
     exit: 'exit',
     variants: modalVariants,
     transition: modalTransition,
