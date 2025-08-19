@@ -20,7 +20,7 @@ export default function FaqSection() {
     {
       question: 'What technologies do you specialize in?',
       answer:
-        'We work with a wide range of technologies including React, Angular, Vue.js, Node.js, Python, Ruby on Rails, and more. We choose the best technology stack for each project based on requirements.',
+        'We work with modern web frameworks including Elixir/Phoenix, Ruby on Rails, React/Next.js, Vue.js, and Node.js. Our expertise covers multiple languages (Elixir, Ruby, JavaScript/TypeScript, Python), cloud infrastructure (AWS, Docker, Kubernetes), and CI/CD automation (GitHub Actions). We select the optimal technology stack for each project based on requirements and long-term maintainability.',
     },
     {
       question: 'How do you handle project pricing?',
