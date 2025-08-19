@@ -3,10 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import Image, { ImageProps } from 'next/image';
-import { m, AnimatePresence, usePageInView, useReducedMotion } from 'motion/react';
+import { m, AnimatePresence, usePageInView } from 'motion/react';
 import { LoadingSpinnerOverlay } from './LoadingSpinner';
-import { getTransitionConfig, getTweenConfig } from '@/lib/animations';
-
+import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 
 interface ImageLightboxProps extends Omit<ImageProps, 'ref'> {
   src: string;
@@ -32,7 +31,11 @@ export default function ImageLightbox({
   const triggerRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const isPageVisible = usePageInView();
-  const prefersReducedMotion = useReducedMotion();
+
+  const fadeVariants = useMotionVariant('fade');
+  const modalVariants = useMotionVariant('modal');
+  const fadeTransition = useMotionTransition('fade');
+  const modalTransition = useMotionTransition('modal');
 
   const defaultProps = {
     width: 800,
@@ -92,34 +95,21 @@ export default function ImageLightbox({
     setIsModalLoading(false);
   };
 
-  // Conditional animation props based on motion preference
-  const backdropAnimationProps = prefersReducedMotion
-    ? {
-        initial: { opacity: 0 },
-        animate: { opacity: 1 },
-        exit: { opacity: 0 },
-        transition: getTweenConfig('fade'),
-      }
-    : {
-        initial: { opacity: 0 },
-        animate: { opacity: 1 },
-        exit: { opacity: 0 },
-        transition: getTweenConfig('fade'),
-      };
+  const backdropAnimationProps = {
+    initial: 'hidden',
+    animate: 'visible',
+    exit: 'exit',
+    variants: fadeVariants,
+    transition: fadeTransition,
+  };
 
-  const modalAnimationProps = prefersReducedMotion
-    ? {
-        initial: { opacity: 0 },
-        animate: isPageVisible ? { opacity: 1 } : { opacity: 0 },
-        exit: { opacity: 0 },
-        transition: getTweenConfig('fade'),
-      }
-    : {
-        initial: { scale: 0.9, opacity: 0 },
-        animate: isPageVisible ? { scale: 1, opacity: 1 } : { scale: 0.9, opacity: 0 },
-        exit: { scale: 0.9, opacity: 0 },
-        transition: getTransitionConfig('modal'),
-      };
+  const modalAnimationProps = {
+    initial: 'hidden',
+    animate: isPageVisible ? 'visible' : 'hidden',
+    exit: 'exit',
+    variants: modalVariants,
+    transition: modalTransition,
+  };
 
   return (
     <>
@@ -152,46 +142,45 @@ export default function ImageLightbox({
       </div>
       {typeof window !== 'undefined' &&
         ReactDOM.createPortal(
-
-            <AnimatePresence>
-              {expanded && (
+          <AnimatePresence>
+            {expanded && (
+              <m.div
+                className={`fixed inset-0 flex items-center justify-center z-50 cursor-zoom-out backdrop-blur-xs ${modalClassName}`}
+                {...backdropAnimationProps}
+                onClick={() => setExpanded(false)}
+                role="dialog"
+                aria-modal="true"
+                aria-label={alt}
+                tabIndex={-1}
+                ref={modalRef}
+                style={{ willChange: 'opacity' }}
+              >
                 <m.div
-                  className={`fixed inset-0 flex items-center justify-center z-50 cursor-zoom-out backdrop-blur-xs ${modalClassName}`}
-                  {...backdropAnimationProps}
-                  onClick={() => setExpanded(false)}
-                  role="dialog"
-                  aria-modal="true"
-                  aria-label={alt}
-                  tabIndex={-1}
-                  ref={modalRef}
-                  style={{ willChange: 'opacity' }}
+                  {...modalAnimationProps}
+                  className="relative flex items-center justify-center p-4 rounded-xl"
+                  style={{ willChange: 'transform, opacity' }}
                 >
-                  <m.div
-                    {...modalAnimationProps}
-                    className="relative flex items-center justify-center p-4 rounded-xl"
-                    style={{ willChange: prefersReducedMotion ? 'opacity' : 'transform, opacity' }}
-                  >
-                    {isModalLoading && <LoadingSpinnerOverlay />}
-                    <Image
-                      src={src || '/placeholder.svg'}
-                      alt={alt}
-                      width={defaultProps.width}
-                      height={defaultProps.height}
-                      className={`object-contain rounded-lg cursor-zoom-out
+                  {isModalLoading && <LoadingSpinnerOverlay />}
+                  <Image
+                    src={src || '/placeholder.svg'}
+                    alt={alt}
+                    width={defaultProps.width}
+                    height={defaultProps.height}
+                    className={`object-contain rounded-lg cursor-zoom-out
                         ${isPortrait ? 'w-3xl h-auto' : 'w-6xl h-auto'}`}
-                      priority={true}
-                      unoptimized={props.unoptimized}
-                      onClick={() => setExpanded(false)}
-                      onLoad={handleModalImageLoad}
-                      placeholder="blur"
-                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                      quality={85}
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
-                    />
-                  </m.div>
+                    priority={true}
+                    unoptimized={props.unoptimized}
+                    onClick={() => setExpanded(false)}
+                    onLoad={handleModalImageLoad}
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                    quality={85}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
+                  />
                 </m.div>
-              )}
-            </AnimatePresence>,
+              </m.div>
+            )}
+          </AnimatePresence>,
           document.body,
         )}
     </>

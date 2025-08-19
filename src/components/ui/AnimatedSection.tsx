@@ -1,16 +1,10 @@
 'use client';
 
-import { m, useReducedMotion, usePageInView } from 'motion/react';
+import { m, usePageInView } from 'motion/react';
 import React from 'react';
-import { getTransitionConfig } from '@/lib/animations';
+import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 
-
-type AnimationVariant =
-  | 'fadeIn' // Simple fade (original behavior)
-  | 'fadeInUp'
-  | 'fadeInDown'
-  | 'fadeInLeft'
-  | 'fadeInRight';
+type AnimationVariant = 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight';
 
 interface AnimatedSectionProps {
   children: React.ReactNode;
@@ -20,63 +14,6 @@ interface AnimatedSectionProps {
   className?: string;
 }
 
-const variants = {
-  fadeIn: {
-    offscreen: { opacity: 0, y: 20 },
-    onscreen: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 },
-  },
-  fadeInUp: {
-    offscreen: { opacity: 0, y: 40 },
-    onscreen: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 },
-  },
-  fadeInDown: {
-    offscreen: { opacity: 0, y: -40 },
-    onscreen: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: 20 },
-  },
-  fadeInLeft: {
-    offscreen: { opacity: 0, x: -40 },
-    onscreen: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -20 },
-  },
-  fadeInRight: {
-    offscreen: { opacity: 0, x: 40 },
-    onscreen: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: 20 },
-  },
-};
-
-// Reduced motion variants for accessibility
-const reducedMotionVariants = {
-  fadeIn: {
-    offscreen: { opacity: 0 },
-    onscreen: { opacity: 1 },
-    exit: { opacity: 0 },
-  },
-  fadeInUp: {
-    offscreen: { opacity: 0 },
-    onscreen: { opacity: 1 },
-    exit: { opacity: 0 },
-  },
-  fadeInDown: {
-    offscreen: { opacity: 0 },
-    onscreen: { opacity: 1 },
-    exit: { opacity: 0 },
-  },
-  fadeInLeft: {
-    offscreen: { opacity: 0 },
-    onscreen: { opacity: 1 },
-    exit: { opacity: 0 },
-  },
-  fadeInRight: {
-    offscreen: { opacity: 0 },
-    onscreen: { opacity: 1 },
-    exit: { opacity: 0 },
-  },
-};
-
 export default function AnimatedSection({
   children,
   variant = 'fadeIn',
@@ -84,26 +21,34 @@ export default function AnimatedSection({
   duration = 0.3,
   className = '',
 }: AnimatedSectionProps) {
-  const prefersReducedMotion = useReducedMotion();
   const isPageVisible = usePageInView();
 
-  const getSpringConfig = () => {
-    if (prefersReducedMotion) {
-      return getTransitionConfig('entrance', true);
-    }
+  const transition = useMotionTransition('entrance');
 
-    return getTransitionConfig('entrance');
+  const getVariantMapping = () => {
+    switch (variant) {
+      case 'fadeIn':
+        return useMotionVariant('fade');
+      case 'fadeInUp':
+        return useMotionVariant('slideUp');
+      case 'fadeInDown':
+        return useMotionVariant('slideDown');
+      case 'fadeInLeft':
+        return useMotionVariant('slideLeft');
+      case 'fadeInRight':
+        return useMotionVariant('slideRight');
+      default:
+        return useMotionVariant('fade');
+    }
   };
 
-  const animationVariants = prefersReducedMotion ? reducedMotionVariants : variants;
-
-  const shouldAnimate = isPageVisible && !prefersReducedMotion;
+  const animationVariants = getVariantMapping();
 
   return (
     <m.div
-      variants={animationVariants[variant]}
-      initial="offscreen"
-      whileInView={shouldAnimate ? 'onscreen' : undefined}
+      variants={animationVariants}
+      initial="hidden"
+      whileInView={isPageVisible ? 'visible' : undefined}
       exit="exit"
       viewport={{
         once: true,
@@ -111,9 +56,9 @@ export default function AnimatedSection({
         amount: 0.3,
       }}
       transition={{
-        ...getSpringConfig(),
-        delay: prefersReducedMotion ? 0 : delay,
-        duration: prefersReducedMotion ? 0 : duration,
+        ...transition,
+        delay,
+        duration,
       }}
       className={className}
       style={{ willChange: 'transform, opacity' }}

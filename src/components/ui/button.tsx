@@ -3,13 +3,13 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { m, useReducedMotion } from 'motion/react';
+import { m } from 'motion/react';
 
 import { cn } from '@/lib/utils';
-import { getTransitionConfig } from '@/lib/animations';
+import { useMotionVariant } from '@/lib/animations';
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-ring/20 dark:aria-invalid:ring-ring/40 aria-invalid:border-ring cursor-pointer",
   {
     variants: {
       variant: {
@@ -48,29 +48,16 @@ function Button({
   }) {
   const Comp = asChild ? Slot : 'button';
   const isFullWidth = className?.includes('w-full');
-  const prefersReducedMotion = useReducedMotion();
 
-  const shouldAnimateInteractions = !prefersReducedMotion;
+  const buttonVariant = useMotionVariant('button');
 
   return (
     <m.div
-      whileHover={
-        shouldAnimateInteractions
-          ? {
-              scale: 1.01,
-              y: -1,
-              transition: getTransitionConfig('hover'),
-            }
-          : undefined
-      }
-      whileTap={
-        shouldAnimateInteractions
-          ? {
-              scale: 0.99,
-              transition: getTransitionConfig('interactive'),
-            }
-          : undefined
-      }
+      variants={buttonVariant}
+      initial="hidden"
+      animate="visible"
+      whileHover="hover"
+      whileTap="tap"
       className={isFullWidth ? 'w-full' : 'inline-block'}
     >
       <Comp

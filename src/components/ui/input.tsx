@@ -4,8 +4,7 @@ import * as React from 'react';
 import { m } from 'motion/react';
 
 import { cn } from '@/lib/utils';
-import { getTransitionConfig } from '@/lib/animations';
-
+import { useMotionTransition } from '@/lib/animations';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
@@ -14,7 +13,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <m.div
         whileFocus={{ scale: 1.01 }}
-        transition={getTransitionConfig('focus')}
+        transition={useMotionTransition('input')}
         className="inline-block w-full"
       >
         <input
