@@ -18,7 +18,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
 
   return (
     <main className="flex-1 py-8">
-      <AnimatedSection variant="fadeInUp">
+      <AnimatedSection variant="slideUp">
         <CaseStudyHero
           title={caseStudy.title}
           subtitle={caseStudy.subtitle}
@@ -26,7 +26,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
         />
       </AnimatedSection>
 
-      <AnimatedSection variant="fadeInUp">
+      <AnimatedSection variant="slideUp">
         <CaseStudyOverview
           overview={caseStudy.overview}
           tags={caseStudy.tags}
@@ -35,7 +35,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
       </AnimatedSection>
 
       {caseStudy.content.map((item, idx) => (
-        <AnimatedSection key={idx} variant="fadeInUp">
+        <AnimatedSection key={idx} variant="slideUp">
           {item.type === 'section' && (
             <CaseStudySection title={item.title} content={item.content} />
           )}
