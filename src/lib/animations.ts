@@ -10,16 +10,13 @@
 
 import { useReducedMotion } from 'motion/react';
 
-// Core animation variants - only keeping used ones
 export const variants = {
-  // Basic fade - simple opacity transition
   fade: {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
     exit: { opacity: 0 },
   },
 
-  // Slide animations - hardware accelerated
   slideUp: {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
@@ -44,24 +41,13 @@ export const variants = {
     exit: { opacity: 0, x: 20 },
   },
 
-  // Scale animations - interactive elements
-  button: {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 0.9 },
-    hover: { scale: 1.05 },
-    tap: { scale: 0.95 },
-  },
-
-  // Card animations - content blocks
   card: {
     hidden: { opacity: 0, y: 20, scale: 0.95 },
     visible: { opacity: 1, y: 0, scale: 1 },
     exit: { opacity: 0, y: -20, scale: 0.95 },
-    hover: { y: -5, scale: 1.02 },
+    hover: { scale: 1.05, y: -4 },
   },
 
-  // Image animations - subtle lift without scale
   image: {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
@@ -69,36 +55,32 @@ export const variants = {
     hover: { y: -10 },
   },
 
-  // Modal animations - smooth entrances
   modal: {
     hidden: { opacity: 0, scale: 0.8, y: 20 },
     visible: { opacity: 1, scale: 1, y: 0 },
     exit: { opacity: 0, scale: 0.8, y: -20 },
   },
+
+  tag: {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 0.9 },
+    hover: { scale: 1.05, y: -1 },
+  },
 };
 
-// Simple spring transitions - only keeping used ones
 export const transitions = {
-  // Form controls - inputs, selects, textareas (subtle focus feedback)
-  input: { type: 'spring' as const, stiffness: 300, damping: 30, mass: 0.8 },
-
-  // Interactive buttons - more pronounced feedback for clicks/hover
-  'icon-button': { type: 'spring' as const, stiffness: 400, damping: 25, mass: 0.8 },
-
-  // Fade animations
   fade: { type: 'tween' as const, duration: 0.3, ease: 'easeOut' as const },
 
-  // Modal animations
   modal: { type: 'spring' as const, stiffness: 300, damping: 30, mass: 1.0 },
 
-  // Entrance animations
-  entrance: { type: 'spring' as const, stiffness: 100, damping: 30, mass: 1.0 },
+  contentEntrance: { type: 'spring' as const, stiffness: 100, damping: 30, mass: 1.0 },
 
-  // Image animations
   image: { type: 'spring' as const, stiffness: 250, damping: 25, mass: 0.7 },
 
-  // Card animations
   card: { type: 'spring' as const, stiffness: 300, damping: 20, mass: 0.8 },
+
+  tag: { type: 'spring' as const, stiffness: 400, damping: 25, mass: 0.6 },
 };
 
 // Hook to get motion-aware variants

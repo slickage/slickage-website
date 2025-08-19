@@ -4,7 +4,7 @@ import { m } from 'motion/react';
 import React from 'react';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 
-type AnimationVariant = 'fadeIn' | 'fadeInUp' | 'fadeInDown' | 'fadeInLeft' | 'fadeInRight';
+type AnimationVariant = 'fadeIn' | 'slideUp' | 'slideDown' | 'slideLeft' | 'slideRight';
 
 interface AnimatedSectionProps {
   children: React.ReactNode;
@@ -21,19 +21,19 @@ export default function AnimatedSection({
   duration = 0.3,
   className = '',
 }: AnimatedSectionProps) {
-  const transition = useMotionTransition('entrance');
+  const transition = useMotionTransition('contentEntrance');
 
   const getVariantMapping = () => {
     switch (variant) {
       case 'fadeIn':
         return useMotionVariant('fade');
-      case 'fadeInUp':
+      case 'slideUp':
         return useMotionVariant('slideUp');
-      case 'fadeInDown':
+      case 'slideDown':
         return useMotionVariant('slideDown');
-      case 'fadeInLeft':
+      case 'slideLeft':
         return useMotionVariant('slideLeft');
-      case 'fadeInRight':
+      case 'slideRight':
         return useMotionVariant('slideRight');
       default:
         return useMotionVariant('fade');
