@@ -27,7 +27,11 @@ export default function HeroSection() {
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href="/#insights">
-              <Button variant="gradient" size="xl" className="group shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+              <Button
+                variant="blue"
+                size="lg"
+                className="group shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
                 View Our Work
                 <ArrowRight className="ml-3 h-5 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
