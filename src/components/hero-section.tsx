@@ -8,7 +8,6 @@ import Link from 'next/link';
 export default function HeroSection() {
   return (
     <section id="hero" className="relative min-h-screen flex items-center">
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-950/20 to-violet-950/20" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-violet-500/10" />
 
       <div className="container mx-auto px-4 pt-32 pb-16 relative z-10">
