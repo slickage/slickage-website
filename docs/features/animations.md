@@ -24,6 +24,7 @@ The animation system is centralized in `src/lib/animations.ts` and provides:
 ### Motion Library
 
 The project uses **Motion React** (`motion/react`) instead of Framer Motion, providing:
+
 - Smaller bundle size
 - Better tree-shaking
 - Modern React patterns
@@ -33,33 +34,33 @@ The project uses **Motion React** (`motion/react`) instead of Framer Motion, pro
 
 ### Basic Variants
 
-| Variant      | Description                | Properties                    | Best For              |
-| ------------ | -------------------------- | ----------------------------- | --------------------- |
-| `fade`       | Simple opacity transition  | `opacity: 0 → 1`             | Basic content reveals |
-| `slideUp`    | Slide up from below        | `opacity: 0→1, y: 20→0`      | Content entrances     |
-| `slideDown`  | Slide down from above      | `opacity: 0→1, y: -20→0`     | Dropdowns, modals     |
-| `slideLeft`  | Slide in from right        | `opacity: 0→1, x: 20→0`      | Side panels           |
-| `slideRight` | Slide in from left         | `opacity: 0→1, x: -20→0`     | Navigation menus      |
+| Variant      | Description               | Properties               | Best For              |
+| ------------ | ------------------------- | ------------------------ | --------------------- |
+| `fade`       | Simple opacity transition | `opacity: 0 → 1`         | Basic content reveals |
+| `slideUp`    | Slide up from below       | `opacity: 0→1, y: 20→0`  | Content entrances     |
+| `slideDown`  | Slide down from above     | `opacity: 0→1, y: -20→0` | Dropdowns, modals     |
+| `slideLeft`  | Slide in from right       | `opacity: 0→1, x: 20→0`  | Side panels           |
+| `slideRight` | Slide in from left        | `opacity: 0→1, x: -20→0` | Navigation menus      |
 
 ### Interactive Variants
 
-| Variant      | Description                | Properties                    | Best For              |
-| ------------ | -------------------------- | ----------------------------- | --------------------- |
-| `card`       | Card with hover effects    | `opacity, y, scale, hover`   | Cards, tiles          |
-| `image`      | Image with hover lift      | `opacity, y, hover`           | Images, galleries     |
-| `modal`      | Modal entrance/exit        | `opacity, scale, y`           | Dialogs, overlays     |
-| `tag`        | Tag with hover effects     | `opacity, scale, hover`       | Tags, badges          |
+| Variant | Description             | Properties                 | Best For          |
+| ------- | ----------------------- | -------------------------- | ----------------- |
+| `card`  | Card with hover effects | `opacity, y, scale, hover` | Cards, tiles      |
+| `image` | Image with hover lift   | `opacity, y, hover`        | Images, galleries |
+| `modal` | Modal entrance/exit     | `opacity, scale, y`        | Dialogs, overlays |
+| `tag`   | Tag with hover effects  | `opacity, scale, hover`    | Tags, badges      |
 
 ## Available Transitions
 
-| Transition        | Type   | Properties                    | Best For              |
-| ----------------- | ------ | ----------------------------- | --------------------- |
-| `fade`            | tween  | `duration: 0.3s, easeOut`    | Simple transitions    |
-| `modal`           | spring | `stiffness: 300, damping: 30`| Modal animations      |
-| `contentEntrance` | spring | `stiffness: 100, damping: 30`| Page content          |
-| `image`           | spring | `stiffness: 250, damping: 25`| Image interactions    |
-| `card`            | spring | `stiffness: 300, damping: 20`| Card animations      |
-| `tag`             | spring | `stiffness: 400, damping: 25`| Tag interactions     |
+| Transition        | Type   | Properties                    | Best For           |
+| ----------------- | ------ | ----------------------------- | ------------------ |
+| `fade`            | tween  | `duration: 0.3s, easeOut`     | Simple transitions |
+| `modal`           | spring | `stiffness: 300, damping: 30` | Modal animations   |
+| `contentEntrance` | spring | `stiffness: 100, damping: 30` | Page content       |
+| `image`           | spring | `stiffness: 250, damping: 25` | Image interactions |
+| `card`            | spring | `stiffness: 300, damping: 20` | Card animations    |
+| `tag`             | spring | `stiffness: 400, damping: 25` | Tag interactions   |
 
 ## Usage Examples
 
@@ -74,12 +75,7 @@ function MyComponent() {
   const transition = useMotionTransition('card');
 
   return (
-    <m.div
-      variants={cardVariants}
-      initial="hidden"
-      animate="visible"
-      transition={transition}
-    >
+    <m.div variants={cardVariants} initial="hidden" animate="visible" transition={transition}>
       Content
     </m.div>
   );
@@ -122,7 +118,7 @@ function MyPage() {
       <AnimatedSection variant="slideUp">
         <HeroSection />
       </AnimatedSection>
-      
+
       <AnimatedSection variant="slideUp">
         <ContentSection />
       </AnimatedSection>
@@ -254,11 +250,7 @@ variants={{
 
 ```tsx
 // ✅ Good - Scroll-triggered with performance
-<m.div
-  whileInView="visible"
-  viewport={{ once: true, margin: '-50px' }}
-  initial="hidden"
->
+<m.div whileInView="visible" viewport={{ once: true, margin: '-50px' }} initial="hidden">
   Content
 </m.div>
 ```
@@ -280,6 +272,7 @@ interface AnimatedSectionProps {
 ```
 
 **Features:**
+
 - Automatic viewport detection
 - Configurable delays and durations
 - Performance optimizations
@@ -299,6 +292,7 @@ Wraps the entire application to provide motion features:
 ```
 
 **Benefits:**
+
 - Motion features loaded only when needed
 - Better initial page load performance
 - Automatic tree-shaking
@@ -342,7 +336,7 @@ Replace custom animation logic with the standardized system:
 // Old - Custom animations
 const customVariants = {
   initial: { opacity: 0, y: 50 },
-  animate: { opacity: 1, y: 0 }
+  animate: { opacity: 1, y: 0 },
 };
 
 // New - Standardized system
