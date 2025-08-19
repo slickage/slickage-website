@@ -20,7 +20,9 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
   const [isLoadingS3, setIsLoadingS3] = useState(false);
 
   const cardVariants = useMotionVariant('card');
-  const transition = useMotionTransition('card');
+  const cardTransition = useMotionTransition('card');
+  const tagVariants = useMotionVariant('tag');
+  const tagTransition = useMotionTransition('tag');
 
   useEffect(() => {
     if (insight.imageSrc && insight.imageSrc !== '/placeholder.svg') {
@@ -50,7 +52,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
     initial: 'hidden',
     whileInView: 'visible',
     viewport: { once: true, margin: '-50px' },
-    transition,
+    transition: cardTransition,
   };
 
   return (
@@ -59,14 +61,11 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
       className="block focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-500/50 rounded-xl"
     >
       <m.div
-        className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-lg hover:shadow-xl transition-shadow duration-200 hover:border-blue-500/50"
+        className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-xl hover:shadow-xl transition-shadow duration-200 hover:border-blue-500/50"
         {...motionProps}
         whileHover="hover"
         tabIndex={0}
-        variants={{
-          ...cardVariants,
-          hover: { scale: 1.05, y: -4 },
-        }}
+        style={{ willChange: 'transform' }}
       >
         <div className="relative w-full h-full">
           {isLoadingS3 && <LoadingSpinnerOverlay />}
@@ -102,10 +101,12 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
               <m.span
                 key={index}
                 className="px-2 py-0.5 text-xs font-medium rounded-md bg-blue-900/20 backdrop-blur-sm text-blue-100 tracking-wide border border-blue-400/50"
+                variants={tagVariants}
+                initial="hidden"
+                animate="visible"
                 whileHover="hover"
-                variants={{
-                  hover: { scale: 1.05, y: -1 },
-                }}
+                transition={tagTransition}
+                style={{ willChange: 'transform' }}
               >
                 {tech}
               </m.span>

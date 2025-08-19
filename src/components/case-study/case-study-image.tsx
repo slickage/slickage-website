@@ -59,6 +59,7 @@ export default function CaseStudyImage({
       <m.div
         className="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-blue-500/10 bg-white/5 cursor-pointer relative"
         {...motionProps}
+        style={{ willChange: 'transform' }}
       >
         <div className="relative group cursor-pointer overflow-hidden rounded-lg">
           {isLoadingS3 && <LoadingSpinnerOverlay />}
