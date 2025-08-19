@@ -20,7 +20,7 @@ export default function FaqSection() {
     {
       question: 'What technologies do you specialize in?',
       answer:
-        'We work with a wide range of technologies including React, Angular, Vue.js, Node.js, Python, Ruby on Rails, and more. We choose the best technology stack for each project based on requirements.',
+        'We work with modern web frameworks including Elixir/Phoenix, Ruby on Rails, React/Next.js, Vue.js, and Node.js. Our expertise covers multiple languages (Elixir, Ruby, JavaScript/TypeScript, Python), cloud infrastructure (AWS, Docker, Kubernetes), and CI/CD automation (GitHub Actions). We select the optimal technology stack for each project based on requirements and long-term maintainability.',
     },
     {
       question: 'How do you handle project pricing?',
@@ -36,8 +36,6 @@ export default function FaqSection() {
 
   return (
     <section className="relative py-16">
-      <div className="absolute inset-0" />
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col items-center text-center space-y-4 mb-8">
           <h2 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight gradient-text mb-4">

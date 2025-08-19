@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import Link from 'next/link';
+import { IconButton } from '@/components/ui';
 
 export default function Footer() {
   return (
@@ -13,55 +14,26 @@ export default function Footer() {
               A boutique software company based in Honolulu, Hawaii building big things.
             </p>
             <div className="flex space-x-4">
-              {[
-                {
-                  icon: <FaLinkedin className="h-5 w-5" />,
-                  href: 'https://www.linkedin.com/company/slickage-studios',
-                  label: 'Visit Slickage on LinkedIn',
-                },
-                {
-                  icon: <FaGithub className="h-5 w-5" />,
-                  href: 'https://github.com/slickage',
-                  label: 'Visit Slickage on GitHub',
-                },
-              ].map((social, index) => (
-                <a
-                  key={index}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center h-10 w-10 rounded-full bg-gray-800 text-gray-400 hover:bg-blue-500 hover:text-white transition-colors"
-                  aria-label={social.label}
-                >
-                  {social.icon}
-                </a>
-              ))}
+              <IconButton
+                icon={<FaLinkedin className="h-5 w-5" />}
+                href="https://www.linkedin.com/company/slickage-studios"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="blue"
+                size="md"
+                aria-label="Visit Slickage on LinkedIn"
+              />
+              <IconButton
+                icon={<FaGithub className="h-5 w-5" />}
+                href="https://github.com/slickage"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="blue"
+                size="md"
+                aria-label="Visit Slickage on GitHub"
+              />
             </div>
           </div>
-
-          {/* <div></div>
-          <div></div>
-          <div></div> */}
-
-          {/* <div className="md:text-right">
-            <h4 className="text-lg font-semibold mb-6">Services</h4>
-            <ul className="space-y-4">
-              {[
-                'Web Development',
-                'Mobile Development',
-                'Backend Solutions',
-                'Frontend Development',
-                'Data Analytics',
-                'Security Solutions',
-              ].map((service, index) => (
-                <li key={index}>
-                  <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                    {service}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div> */}
 
           <div className="md:text-right md:col-span-1 md:col-start-6 md:col-end-7">
             <h4 className="text-lg font-semibold mb-6">Company</h4>
@@ -81,31 +53,6 @@ export default function Footer() {
               ))}
             </ul>
           </div>
-
-          {/* <div>
-            <h4 className="text-lg font-semibold mb-6">Newsletter</h4>
-            <p className="text-gray-400 mb-4">
-              Subscribe to our newsletter for the latest updates.
-            </p>
-            <form className="mb-4">
-              <div className="flex">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  className="px-4 py-2 rounded-l-lg w-full bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <Button
-                  type="submit"
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-r-lg transition-colors"
-                >
-                  Subscribe
-                </Button>
-              </div>
-            </form>
-            <p className="text-sm text-gray-500">
-              We respect your privacy. Unsubscribe at any time.
-            </p>
-          </div> */}
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8">
