@@ -16,9 +16,9 @@ export default function ProjectCTA() {
             expertise.
           </p>
           <div className="pt-4">
-            <Button className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
+            <Button variant="blueLight" size="xl" className="group">
               Start Your Project
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
             </Button>
           </div>
         </div>

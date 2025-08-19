@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 export default function JoinTeamSection() {
   return (
@@ -20,9 +21,9 @@ export default function JoinTeamSection() {
               great team, we'd love to hear from you.
             </p>
             <div className="pt-4">
-              <Button className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group">
+              <Button variant="blueLight" size="xl" className="group">
                 Join Our Team
-                {/* Add icon if needed */}
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
             </div>
           </div>

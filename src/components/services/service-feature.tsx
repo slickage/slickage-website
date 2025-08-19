@@ -52,7 +52,7 @@ export default function ServiceFeature({
                   ))}
                 </ul>
                 <div className="pt-4">
-                  <Button className="bg-red-600 hover:bg-red-700 text-white">
+                  <Button variant="red">
                     Learn More
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -89,8 +89,8 @@ export default function ServiceFeature({
                   ))}
                 </ul>
                 <div className="pt-4">
-                  <Button className="bg-red-600 hover:bg-red-700 text-white">
-                    Learn More
+                  <Button variant="red">
+                    Get Started
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>

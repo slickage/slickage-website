@@ -16,5 +16,5 @@ export {
 } from './select';
 export { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 export { Textarea } from './textarea';
-export { IconButton } from './icon-button';
+export { IconButton, iconButtonVariants } from './icon-button';
 export { default as AnimatedSection } from './AnimatedSection';

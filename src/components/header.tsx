@@ -48,21 +48,23 @@ export default function Header() {
               </Link>
             ))}
             <Link href="/contact">
-              <Button className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors">
+              <Button variant="default" size="lg">
                 Get in Touch
               </Button>
             </Link>
           </nav>
 
-          <button
+          <Button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            variant="ghost"
+            size="icon"
             className="md:hidden text-gray-300 hover:text-white"
             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-menu"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -87,7 +89,9 @@ export default function Header() {
               ))}
               <Link href="/contact">
                 <Button
-                  className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors w-full"
+                  variant="default"
+                  size="xl"
+                  className="w-full"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Get in Touch

@@ -55,7 +55,6 @@ export default function ProjectCarousel({ title, projects }: ProjectCarouselProp
             size="icon"
             onClick={() => scroll('left')}
             disabled={!showLeftArrow}
-            className={!showLeftArrow ? 'opacity-50 cursor-not-allowed' : ''}
           >
             <ChevronLeft className="h-5 w-5" />
             <span className="sr-only">Scroll left</span>
@@ -65,7 +64,6 @@ export default function ProjectCarousel({ title, projects }: ProjectCarouselProp
             size="icon"
             onClick={() => scroll('right')}
             disabled={!showRightArrow}
-            className={!showRightArrow ? 'opacity-50 cursor-not-allowed' : ''}
           >
             <ChevronRight className="h-5 w-5" />
             <span className="sr-only">Scroll right</span>

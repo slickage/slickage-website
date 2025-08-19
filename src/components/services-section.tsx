@@ -30,7 +30,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, tec
                 </span>
               ))}
             </div>
-            <Button className="flex items-center text-blue-400 font-medium text-sm group-hover:text-blue-300 transition-colors">
+            <Button variant="transparent">
               Learn more
               <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Button>

@@ -33,7 +33,7 @@ const ServiceCard: React.FC<ServiceCardProps> = React.memo(({ title, description
         </p>
       </CardContent>
       <CardFooter>
-        <Button className="flex items-center text-blue-400 hover:text-blue-500 font-medium transition-colors p-0 h-auto bg-transparent">
+        <Button variant="transparent">
           Learn more <ArrowRight className="ml-1 h-4 w-4" />
         </Button>
       </CardFooter>

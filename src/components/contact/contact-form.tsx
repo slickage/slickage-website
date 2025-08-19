@@ -190,7 +190,8 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
         </p>
         <Button
           onClick={() => setIsSubmitted(false)}
-          className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 border-0"
+          variant="blueLight"
+          size="lg"
         >
           Send Another Message
         </Button>
@@ -346,7 +347,9 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
 
         <Button
           type="submit"
-          className="w-full px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group"
+          variant="default"
+          size="lg"
+          className="w-full group"
           disabled={isSubmitting || !recaptchaLoaded}
         >
           {isSubmitting ? (

@@ -27,7 +27,7 @@ export default function HeroSection() {
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href="/#insights">
-              <Button className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 flex items-center justify-center group shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+              <Button variant="gradient" size="xl" className="group shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                 View Our Work
                 <ArrowRight className="ml-3 h-5 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
