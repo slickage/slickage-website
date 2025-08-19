@@ -22,7 +22,8 @@ const buttonVariants = cva(
         // New variants to cover current usage patterns
         blue: 'bg-blue-600 hover:bg-blue-700 text-white',
         blueLight: 'bg-blue-500 hover:bg-blue-600 text-white',
-        gradient: 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white',
+        gradient:
+          'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white',
         red: 'bg-red-600 hover:bg-red-700 text-white',
         transparent: 'bg-transparent text-blue-400 hover:text-blue-500 p-0 h-auto',
       },

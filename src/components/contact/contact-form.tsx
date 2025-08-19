@@ -200,7 +200,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
       ref={sectionRef}
       className={
         standalone
-          ? 'bg-white/5 backdrop-blur-sm rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300'
+          ? 'bg-white/5 backdrop-blur-sm shadow-xl rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300'
           : ''
       }
     >
