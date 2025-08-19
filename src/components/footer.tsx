@@ -35,30 +35,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* <div></div>
-          <div></div>
-          <div></div> */}
-
-          {/* <div className="md:text-right">
-            <h4 className="text-lg font-semibold mb-6">Services</h4>
-            <ul className="space-y-4">
-              {[
-                'Web Development',
-                'Mobile Development',
-                'Backend Solutions',
-                'Frontend Development',
-                'Data Analytics',
-                'Security Solutions',
-              ].map((service, index) => (
-                <li key={index}>
-                  <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                    {service}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div> */}
-
           <div className="md:text-right md:col-span-1 md:col-start-6 md:col-end-7">
             <h4 className="text-lg font-semibold mb-6">Company</h4>
             <ul className="space-y-4">
@@ -77,32 +53,6 @@ export default function Footer() {
               ))}
             </ul>
           </div>
-
-          {/* <div>
-            <h4 className="text-lg font-semibold mb-6">Newsletter</h4>
-            <p className="text-gray-400 mb-4">
-              Subscribe to our newsletter for the latest updates.
-            </p>
-            <form className="mb-4">
-              <div className="flex">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  className="px-4 py-2 rounded-l-lg w-full bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <Button
-                  type="submit"
-                  variant="blueLight"
-                  size="sm"
-                >
-                  Subscribe
-                </Button>
-              </div>
-            </form>
-            <p className="text-sm text-gray-500">
-              We respect your privacy. Unsubscribe at any time.
-            </p>
-          </div> */}
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8">
