@@ -19,7 +19,6 @@ const buttonVariants = cva(
         secondary: 'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
-        // New variants to cover current usage patterns
         blue: 'bg-blue-600 hover:bg-blue-700 text-white',
         blueLight: 'bg-blue-500 hover:bg-blue-600 text-white',
         gradient:

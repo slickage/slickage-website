@@ -1,13 +1,3 @@
-/**
- * Simplified animation system for Motion React
- *
- * Best practices applied:
- * - Focus on transform/opacity for performance
- * - Simple, reusable variants
- * - Automatic reduced motion support
- * - Hardware-accelerated animations
- */
-
 import { useReducedMotion } from 'motion/react';
 
 export const variants = {
@@ -83,12 +73,10 @@ export const transitions = {
   tag: { type: 'spring' as const, stiffness: 400, damping: 25, mass: 0.6 },
 };
 
-// Hook to get motion-aware variants
 export function useMotionVariant(variantName: keyof typeof variants) {
   const prefersReducedMotion = useReducedMotion();
 
   if (prefersReducedMotion) {
-    // For reduced motion, use simple fade variants
     return {
       hidden: { opacity: 0 },
       visible: { opacity: 1 },
@@ -99,7 +87,6 @@ export function useMotionVariant(variantName: keyof typeof variants) {
   return variants[variantName];
 }
 
-// Hook to get appropriate transition
 export function useMotionTransition(type: keyof typeof transitions) {
   const prefersReducedMotion = useReducedMotion();
 
@@ -110,6 +97,5 @@ export function useMotionTransition(type: keyof typeof transitions) {
   return transitions[type];
 }
 
-// Export types
 export type VariantType = keyof typeof variants;
 export type TransitionType = keyof typeof transitions;
