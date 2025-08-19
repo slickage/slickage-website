@@ -3,7 +3,6 @@ import type { Insight } from '@/types/insight';
 import { getFeaturedInsights } from '@/data/insights';
 import { InsightCard } from '@/components/insights';
 
-// Enable caching for this component
 export const revalidate = 3600; // Revalidate every hour
 
 export default async function Insights() {

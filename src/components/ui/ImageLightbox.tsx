@@ -3,8 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import Image, { ImageProps } from 'next/image';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { LoadingSpinnerOverlay } from './LoadingSpinner';
+import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 
 interface ImageLightboxProps extends Omit<ImageProps, 'ref'> {
   src: string;
@@ -29,6 +30,11 @@ export default function ImageLightbox({
   const [isModalLoading, setIsModalLoading] = useState(true);
   const triggerRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const fadeVariants = useMotionVariant('fade');
+  const modalVariants = useMotionVariant('modal');
+  const fadeTransition = useMotionTransition('fade');
+  const modalTransition = useMotionTransition('modal');
 
   const defaultProps = {
     width: 800,
@@ -88,6 +94,22 @@ export default function ImageLightbox({
     setIsModalLoading(false);
   };
 
+  const backdropAnimationProps = {
+    initial: 'hidden',
+    animate: 'visible',
+    exit: 'exit',
+    variants: fadeVariants,
+    transition: fadeTransition,
+  };
+
+  const modalAnimationProps = {
+    initial: 'hidden',
+    animate: 'visible',
+    exit: 'exit',
+    variants: modalVariants,
+    transition: modalTransition,
+  };
+
   return (
     <>
       <div
@@ -121,24 +143,21 @@ export default function ImageLightbox({
         ReactDOM.createPortal(
           <AnimatePresence>
             {expanded && (
-              <motion.div
+              <m.div
                 className={`fixed inset-0 flex items-center justify-center z-50 cursor-zoom-out backdrop-blur-xs ${modalClassName}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                {...backdropAnimationProps}
                 onClick={() => setExpanded(false)}
                 role="dialog"
                 aria-modal="true"
                 aria-label={alt}
                 tabIndex={-1}
                 ref={modalRef}
+                style={{ willChange: 'opacity' }}
               >
-                <motion.div
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.9, opacity: 0 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                <m.div
+                  {...modalAnimationProps}
                   className="relative flex items-center justify-center p-4 rounded-xl"
+                  style={{ willChange: 'transform, opacity' }}
                 >
                   {isModalLoading && <LoadingSpinnerOverlay />}
                   <Image
@@ -147,7 +166,7 @@ export default function ImageLightbox({
                     width={defaultProps.width}
                     height={defaultProps.height}
                     className={`object-contain rounded-lg cursor-zoom-out
-                      ${isPortrait ? 'w-3xl h-auto' : 'w-6xl h-auto'}`}
+                        ${isPortrait ? 'w-3xl h-auto' : 'w-6xl h-auto'}`}
                     priority={true}
                     unoptimized={props.unoptimized}
                     onClick={() => setExpanded(false)}
@@ -157,8 +176,8 @@ export default function ImageLightbox({
                     quality={85}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
                   />
-                </motion.div>
-              </motion.div>
+                </m.div>
+              </m.div>
             )}
           </AnimatePresence>,
           document.body,

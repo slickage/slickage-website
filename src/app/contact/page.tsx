@@ -1,4 +1,11 @@
-import { ContactHero, ContactForm, ContactInfo, FaqSection } from '@/components/contact';
+import {
+  ContactHero,
+  ContactForm,
+  ContactInfo,
+  FaqSection,
+  FaqPreview,
+} from '@/components/contact';
+import AnimatedSection from '@/components/ui/AnimatedSection';
 
 export const metadata = {
   title: 'Contact Slickage | Get in Touch',
@@ -30,24 +37,47 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="flex-1">
-      <ContactHero />
+    <main className="flex-1 bg-gradient-to-r from-blue-500/10 to-violet-500/10">
+      <AnimatedSection variant="slideUp">
+        <ContactHero />
+      </AnimatedSection>
 
-      <section className="py-4 relative bg-gradient-to-r from-blue-500/10 to-violet-500/10">
+      <AnimatedSection variant="slideUp">
+        <FaqPreview />
+      </AnimatedSection>
+
+      <AnimatedSection variant="slideUp">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <ContactForm standalone={true} />
             </div>
-
             <div>
               <ContactInfo />
             </div>
           </div>
         </div>
-      </section>
+      </AnimatedSection>
 
-      <FaqSection />
+      <div className="text-center py-12 text-gray-500">
+        <div className="animate-bounce">
+          <svg className="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            />
+          </svg>
+        </div>
+        <p className="text-sm mt-3 text-gray-400">More helpful information below</p>
+      </div>
+
+      <div id="faq">
+        <AnimatedSection variant="slideUp">
+          <FaqSection />
+        </AnimatedSection>
+      </div>
     </main>
   );
 }

@@ -188,10 +188,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
         <p className="text-gray-300 mb-6 leading-relaxed">
           Thank you for reaching out. We'll get back to you as soon as possible.
         </p>
-        <Button
-          onClick={() => setIsSubmitted(false)}
-          className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 border-0"
-        >
+        <Button onClick={() => setIsSubmitted(false)} variant="blue" size="lg">
           Send Another Message
         </Button>
       </div>
@@ -203,7 +200,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
       ref={sectionRef}
       className={
         standalone
-          ? 'bg-white/5 backdrop-blur-sm rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300'
+          ? 'bg-white/5 backdrop-blur-sm shadow-xl rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300'
           : ''
       }
     >
@@ -224,7 +221,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
           }}
         >
           <label htmlFor="website">Website</label>
-          <input
+          <Input
             type="text"
             id="website"
             name="website"
@@ -246,14 +243,12 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
             value={formData.name}
             onChange={handleChange}
             required
-            className={`w-full px-4 py-3 rounded-lg bg-gray-800 border text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-colors ${
-              fieldErrors.name
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-700 focus:ring-blue-500'
-            }`}
+            error={!!fieldErrors.name}
+            className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-400"
           />
           {fieldErrors.name && <p className="mt-1 text-sm text-red-400">{fieldErrors.name}</p>}
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
@@ -267,11 +262,8 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
               value={formData.email}
               onChange={handleChange}
               required
-              className={`w-full px-4 py-3 rounded-lg bg-gray-800 border text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-colors ${
-                fieldErrors.email
-                  ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-700 focus:ring-blue-500'
-              }`}
+              error={!!fieldErrors.email}
+              className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-400"
             />
             {fieldErrors.email && <p className="mt-1 text-sm text-red-400">{fieldErrors.email}</p>}
           </div>
@@ -288,15 +280,13 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
               onChange={handleChange}
               maxLength={14}
               autoComplete="tel"
-              className={`w-full px-4 py-3 rounded-lg bg-gray-800 border text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-colors ${
-                fieldErrors.phone
-                  ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-700 focus:ring-blue-500'
-              }`}
+              error={!!fieldErrors.phone}
+              className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-400"
             />
             {fieldErrors.phone && <p className="mt-1 text-sm text-red-400">{fieldErrors.phone}</p>}
           </div>
         </div>
+
         <div className="mb-4">
           <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-1">
             Company or Project Name <span className="text-red-400">*</span>
@@ -308,16 +298,14 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
             value={formData.subject}
             onChange={handleChange}
             required
-            className={`w-full px-4 py-3 rounded-lg bg-gray-800 border text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-colors ${
-              fieldErrors.subject
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-700 focus:ring-blue-500'
-            }`}
+            error={!!fieldErrors.subject}
+            className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-400"
           />
           {fieldErrors.subject && (
             <p className="mt-1 text-sm text-red-400">{fieldErrors.subject}</p>
           )}
         </div>
+
         <div className="mb-4">
           <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">
             How can we help you? <span className="text-red-400">*</span>
@@ -328,21 +316,21 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
             placeholder="Please describe your company, project or what you need help with. (Maximum 2 links allowed)"
             value={formData.message}
             onChange={handleChange}
-            className={`w-full px-4 py-3 rounded-lg bg-gray-800 border text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-colors min-h-[150px] ${
-              fieldErrors.message
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-700 focus:ring-blue-500'
-            }`}
             required
+            error={!!fieldErrors.message}
+            className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-400 min-h-[150px]"
           />
           {fieldErrors.message && (
             <p className="mt-1 text-sm text-red-400">{fieldErrors.message}</p>
           )}
           <p className="mt-1 text-xs text-gray-500">{formData.message.length}/5000 characters</p>
         </div>
+
         <Button
           type="submit"
-          className="w-full px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition-all duration-300 flex items-center justify-center group"
+          variant="default"
+          size="lg"
+          className="w-full group"
           disabled={isSubmitting || !recaptchaLoaded}
         >
           {isSubmitting ? (

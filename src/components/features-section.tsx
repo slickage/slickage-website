@@ -54,11 +54,6 @@ export default function Features() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <div key={index} className="flex">
-              {/* <div className="flex-shrink-0">
-                <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-500/10 text-blue-400">
-                  {feature.icon}
-                </div>
-              </div> */}
               <div className="">
                 <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
                 <p className="text-gray-400">{feature.description}</p>

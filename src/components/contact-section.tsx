@@ -8,7 +8,7 @@ export default function ContactSection() {
   return (
     <section id="contact" className="py-24">
       <div className="container px-4 max-w-7xl mx-auto">
-        <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300">
+        <div className="bg-white/5 backdrop-blur-sm rounded-xl shadow-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300">
           <div className="grid lg:grid-cols-5 gap-8 items-center">
             <div className="text-center lg:text-left lg:col-span-2">
               <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto lg:mx-0 mb-6">

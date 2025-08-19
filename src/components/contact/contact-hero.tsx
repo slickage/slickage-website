@@ -1,10 +1,7 @@
 export default function ContactHero() {
   return (
     <section id="contact-hero" className="relative min-h-[30vh] flex items-center">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10" />
-      </div>
-      <div className="container mx-auto px-4 py-24 md:py-32 relative z-10">
+      <div className="container mx-auto px-4 py-24 relative z-10">
         <div className="flex flex-col items-center text-center space-y-4 md:space-y-6">
           <div className="inline-block rounded-full bg-blue-500/10 px-4 py-1.5 text-sm text-blue-400 font-medium mb-4">
             Contact Us
