@@ -5,46 +5,48 @@ import posthog from 'posthog-js';
 import { PostHogProvider as PHProvider } from 'posthog-js/react';
 import { useEffect } from 'react';
 import { useClientConfig } from '@/lib/hooks/useClientConfig';
+import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
 
-// Event tracking constants following cursor rules for TypeScript enums
+// Event tracking constants following PostHog best practices
+// Format: category:object_action with versioning support
 export const EVENTS = {
-  // Page and content events
-  PAGE_VIEWED: 'page_viewed',
-  SECTION_VIEWED: 'section_viewed',
+  // Page and content events - v1
+  PAGE_VIEWED: 'navigation:page_view',
+  SECTION_VIEWED: 'content:section_view',
   
-  // Navigation events
-  CTA_CLICKED: 'cta_clicked',
-  NAVIGATION_CLICKED: 'navigation_clicked',
-  MOBILE_MENU_TOGGLED: 'mobile_menu_toggled',
+  // Navigation events - v1
+  CTA_CLICKED: 'navigation:cta_click',
+  NAVIGATION_CLICKED: 'navigation:menu_click',
+  MOBILE_MENU_TOGGLED: 'navigation:mobile_menu_toggle',
   
-  // Contact form events
-  CONTACT_FORM_VIEWED: 'contact_form_viewed',
-  CONTACT_FORM_STARTED: 'contact_form_started',
-  CONTACT_FORM_SUBMITTED: 'contact_form_submitted',
-  CONTACT_FORM_ERROR: 'contact_form_error',
+  // Contact form events - v1
+  CONTACT_FORM_VIEWED: 'contact_flow:form_view',
+  CONTACT_FORM_STARTED: 'contact_flow:form_start',
+  CONTACT_FORM_SUBMITTED: 'contact_flow:form_submit',
+  CONTACT_FORM_ERROR: 'contact_flow:form_error',
   
-  // Case study events
-  CASE_STUDY_VIEWED: 'case_study_viewed',
-  CASE_STUDY_IMAGE_CLICKED: 'case_study_image_clicked',
-  CASE_STUDY_SECTION_VIEWED: 'case_study_section_viewed',
+  // Case study events - v1
+  CASE_STUDY_VIEWED: 'content:case_study_view',
+  CASE_STUDY_IMAGE_CLICKED: 'content:case_study_image_click',
+  CASE_STUDY_SECTION_VIEWED: 'content:case_study_section_view',
   
-  // Insights events
-  INSIGHT_CARD_CLICKED: 'insight_card_clicked',
-  INSIGHTS_SECTION_VIEWED: 'insights_section_viewed',
+  // Insights events - v1
+  INSIGHT_CARD_CLICKED: 'content:insight_click',
+  INSIGHTS_SECTION_VIEWED: 'content:insights_section_view',
   
-  // External link events
-  EXTERNAL_LINK_CLICKED: 'external_link_clicked',
+  // External link events - v1
+  EXTERNAL_LINK_CLICKED: 'navigation:external_link_click',
   
-  // Error and system events
-  ERROR_PAGE_VIEWED: 'error_page_viewed',
-  NOT_FOUND_PAGE_VIEWED: 'not_found_page_viewed',
-  ERROR_BOUNDARY_TRIGGERED: 'error_boundary_triggered',
-  USER_SESSION_STARTED: 'user_session_started',
+  // Error and system events - v1
+  ERROR_PAGE_VIEWED: 'system:error_page_view',
+  NOT_FOUND_PAGE_VIEWED: 'system:not_found_view',
+  ERROR_BOUNDARY_TRIGGERED: 'system:error_boundary_trigger',
+  USER_SESSION_STARTED: 'system:session_start',
   
-  // User identification events
-  LEAD_IDENTIFIED: 'lead_identified',
-  RETURNING_VISITOR: 'returning_visitor',
-  INTERNAL_USER_DETECTED: 'internal_user_detected',
+  // User identification events - v1
+  LEAD_IDENTIFIED: 'user_flow:lead_identify',
+  RETURNING_VISITOR: 'user_flow:visitor_return',
+  INTERNAL_USER_DETECTED: 'system:internal_user_detect',
 } as const;
 
 export const PROPERTIES = {
@@ -91,6 +93,7 @@ export const PROPERTIES = {
   TOTAL_VISITS: 'total_visits',
   IS_INTERNAL: 'is_internal',
   COMPANY_DOMAIN: 'company_domain',
+  PREVIOUS_ID: 'previous_id',
 } as const;
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
@@ -102,29 +105,47 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
         api_host: '/ingest', // Use reverse proxy to bypass ad blockers
         ui_host: posthogConfig.host, // Keep UI on PostHog domain
         debug: process.env.NODE_ENV === 'development',
-        // Enhanced session recording and data collection
+        
+        // Privacy and consent options
+        opt_out_capturing_by_default: false, // Users opt-in by default
+        respect_dnt: true, // Respect Do Not Track headers
+        
+        // Enhanced session recording with privacy protection
         session_recording: {
           collectFonts: true,
-          maskAllInputs: false,
+          maskAllInputs: true, // Mask inputs for privacy
+          maskInputOptions: {
+            password: true,
+            email: true,
+          },
         },
+        
+        // Autocapture configuration
         autocapture: {
-          // Capture more user interactions
           dom_event_allowlist: ['click', 'change', 'submit'],
         },
+        
+        // Performance optimizations
+        loaded: function() {
+          // Custom initialization logic
+          if (process.env.NODE_ENV === 'development') {
+            console.log('PostHog loaded successfully with reverse proxy');
+          }
+        },
+        
+        // Cross-domain tracking
+        cross_subdomain_cookie: false, // Disable for privacy
       });
 
-      // Track session start with enhanced context
-      posthog.capture(EVENTS.USER_SESSION_STARTED, {
+      // Track session start with minimal necessary data and version metadata
+      posthog.capture(EVENTS.USER_SESSION_STARTED, addVersionMetadata({
         [PROPERTIES.SESSION_ID]: posthog.get_session_id(),
-        [PROPERTIES.USER_AGENT]: navigator.userAgent,
-        [PROPERTIES.REFERRER]: document.referrer || 'direct',
+        [PROPERTIES.REFERRER]: document.referrer ? 'referral' : 'direct', // Categorize instead of full URL
         [PROPERTIES.IS_INTERNAL]: false, // Default to external, will be updated if internal detected
         visitor_type: 'anonymous',
-        session_start_time: new Date().toISOString(),
-        page_load_time: performance.now(),
-        screen_resolution: `${screen.width}x${screen.height}`,
-        timestamp: new Date().toISOString(),
-      });
+        // Removed: user_agent, screen_resolution, exact timestamps for privacy
+        // Keep only essential analytics data
+      }));
     }
   }, [posthogConfig]);
 

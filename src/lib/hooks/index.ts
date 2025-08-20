@@ -4,3 +4,4 @@ export { useScrollPosition } from './useScrollPosition';
 export { usePageTracking } from './usePageTracking';
 export { useEventTracking } from './useEventTracking';
 export { useUserIdentification } from './useUserIdentification';
+export { useAnalyticsConsent } from './useAnalyticsConsent';
