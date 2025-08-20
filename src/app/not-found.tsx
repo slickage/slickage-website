@@ -1,7 +1,19 @@
+'use client';
+
 import Link from 'next/link';
 import { Home } from 'lucide-react';
+import { useEffect } from 'react';
+import { useEventTracking } from '@/lib/hooks/useEventTracking';
 
 export default function NotFound() {
+  const { trackEvent } = useEventTracking();
+
+  useEffect(() => {
+    trackEvent('NOT_FOUND_PAGE_VIEWED', {
+      PAGE_PATH: window.location.pathname,
+      REFERRER: document.referrer || 'direct',
+    });
+  }, [trackEvent]);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500/10 to-violet-500/10">
       <div className="max-w-md w-full bg-white/5 backdrop-blur-sm rounded-xl p-8 text-center border border-white/10">
@@ -12,6 +24,11 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
+          onClick={() => trackEvent('NAVIGATION_CLICKED', {
+            LINK_TEXT: 'Back to Home',
+            DESTINATION: '/',
+            MENU_TYPE: '404_page',
+          })}
           className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors font-semibold"
         >
           <Home className="w-4 h-4" />

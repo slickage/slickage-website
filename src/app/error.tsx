@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { logger } from '@/lib/utils/logger';
+import { useEventTracking } from '@/lib/hooks/useEventTracking';
 
 export default function Error({
   error,
@@ -10,9 +11,19 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { trackEvent } = useEventTracking();
+
   useEffect(() => {
     logger.error('Global error:', error);
-  }, [error]);
+    
+    // Track error occurrence
+    trackEvent('ERROR_PAGE_VIEWED', {
+      ERROR_TYPE: 'global_error',
+      ERROR_MESSAGE: error.message,
+      ERROR_STACK: error.stack?.slice(0, 500), // Limit stack trace length
+      PAGE_PATH: window.location.pathname,
+    });
+  }, [error, trackEvent]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500/10 to-violet-500/10">
