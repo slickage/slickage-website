@@ -1,6 +1,7 @@
 # PostHog Analytics Implementation
 
 > **⚠️ Security Notice**: This documentation contains implementation examples with placeholder values. Before using in production:
+>
 > - Replace all placeholder domains (`yourdomain.com`, `yourcompany.com`) with actual values
 > - Ensure sensitive data like email addresses are properly anonymized or hashed
 > - Never commit actual API keys or production URLs to version control
@@ -21,6 +22,7 @@ This document outlines the comprehensive PostHog analytics implementation for we
 #### Configuration
 
 **Next.js Configuration** (`next.config.ts`):
+
 ```typescript
 async rewrites() {
   return [
@@ -39,6 +41,7 @@ allowedDevOrigins: ['us.posthog.com', 'us.i.posthog.com', 'us-assets.i.posthog.c
 ```
 
 **Client-Side Configuration** (`src/app/providers.tsx`):
+
 ```typescript
 posthog.init(posthogConfig.key, {
   api_host: '/ingest', // Use reverse proxy to bypass ad blockers
@@ -57,15 +60,17 @@ posthog.init(posthogConfig.key, {
 ```
 
 **Server-Side Configuration** (`src/lib/posthog-server.ts`):
+
 ```typescript
 export function createPostHogServer() {
   const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  
+
   // Use reverse proxy in production, direct connection in development
-const posthogHost = process.env.NODE_ENV === 'production' 
-    ? 'https://yourdomain.com/ingest'  // Production proxy
-    : 'https://us.i.posthog.com';      // Development direct
-  
+  const posthogHost =
+    process.env.NODE_ENV === 'production'
+      ? 'https://yourdomain.com/ingest' // Production proxy
+      : 'https://us.i.posthog.com'; // Development direct
+
   return new PostHog(posthogKey, {
     host: posthogHost,
     flushAt: 1, // Send events immediately for server-side usage
@@ -79,41 +84,42 @@ const posthogHost = process.env.NODE_ENV === 'production'
 Following TypeScript best practices and cursor rules for enums:
 
 **Complete Event Constants** (`src/app/providers.tsx`):
+
 ```typescript
 export const EVENTS = {
   // Page and content events
   PAGE_VIEWED: 'page_viewed',
   SECTION_VIEWED: 'section_viewed',
-  
+
   // Navigation events
   CTA_CLICKED: 'cta_clicked',
   NAVIGATION_CLICKED: 'navigation_clicked',
   MOBILE_MENU_TOGGLED: 'mobile_menu_toggled',
-  
+
   // Contact form events
   CONTACT_FORM_VIEWED: 'contact_form_viewed',
   CONTACT_FORM_STARTED: 'contact_form_started',
   CONTACT_FORM_SUBMITTED: 'contact_form_submitted',
   CONTACT_FORM_ERROR: 'contact_form_error',
-  
+
   // Case study events
   CASE_STUDY_VIEWED: 'case_study_viewed',
   CASE_STUDY_IMAGE_CLICKED: 'case_study_image_clicked',
   CASE_STUDY_SECTION_VIEWED: 'case_study_section_viewed',
-  
+
   // Insights events
   INSIGHT_CARD_CLICKED: 'insight_card_clicked',
   INSIGHTS_SECTION_VIEWED: 'insights_section_viewed',
-  
+
   // External link events
   EXTERNAL_LINK_CLICKED: 'external_link_clicked',
-  
+
   // Error and system events
   ERROR_PAGE_VIEWED: 'error_page_viewed',
   NOT_FOUND_PAGE_VIEWED: 'not_found_page_viewed',
   ERROR_BOUNDARY_TRIGGERED: 'error_boundary_triggered',
   USER_SESSION_STARTED: 'user_session_started',
-  
+
   // User identification events
   LEAD_IDENTIFIED: 'lead_identified',
   RETURNING_VISITOR: 'returning_visitor',
@@ -125,18 +131,18 @@ export const PROPERTIES = {
   PAGE_PATH: 'page_path',
   PAGE_TITLE: 'page_title',
   REFERRER: 'referrer',
-  
+
   // User interaction properties
   CTA_TEXT: 'cta_text',
   CTA_LOCATION: 'cta_location',
   LINK_URL: 'link_url',
   LINK_TEXT: 'link_text',
-  
+
   // Form properties
   FORM_TYPE: 'form_type',
   FORM_FIELD: 'form_field',
   FORM_COMPLETION_TIME: 'form_completion_time',
-  
+
   // Content properties
   CASE_STUDY_ID: 'case_study_id',
   CASE_STUDY_TITLE: 'case_study_title',
@@ -144,11 +150,11 @@ export const PROPERTIES = {
   INSIGHT_TITLE: 'insight_title',
   SECTION_NAME: 'section_name',
   IMAGE_SRC: 'image_src',
-  
+
   // Navigation properties
   MENU_TYPE: 'menu_type',
   DESTINATION: 'destination',
-  
+
   // Error and system properties
   ERROR_TYPE: 'error_type',
   ERROR_MESSAGE: 'error_message',
@@ -156,7 +162,7 @@ export const PROPERTIES = {
   SESSION_ID: 'session_id',
   USER_ID: 'user_id',
   USER_AGENT: 'user_agent',
-  
+
   // User identification properties
   LEAD_SOURCE: 'lead_source',
   LEAD_SCORE: 'lead_score',
@@ -172,6 +178,7 @@ export const PROPERTIES = {
 ### Page Tracking Hook
 
 **Hook** (`src/lib/hooks/usePageTracking.ts`):
+
 ```typescript
 export function usePageTracking() {
   const pathname = usePathname();
@@ -192,91 +199,107 @@ export function usePageTracking() {
 ### Event Tracking Hook
 
 **Hook** (`src/lib/hooks/useEventTracking.ts`):
+
 ```typescript
 export function useEventTracking() {
-  const trackEvent = useCallback((
-    event: keyof typeof EVENTS,
-    properties?: Partial<Record<keyof typeof PROPERTIES, string | number | boolean>>
-  ) => {
-    if (typeof window !== 'undefined' && posthog.__loaded) {
-      const eventName = EVENTS[event];
-      const eventProperties: Record<string, any> = {};
-      
-      // Convert property keys to their values
-      if (properties) {
-        Object.entries(properties).forEach(([key, value]) => {
-          const propertyKey = key as keyof typeof PROPERTIES;
-          eventProperties[PROPERTIES[propertyKey]] = value;
-        });
+  const trackEvent = useCallback(
+    (
+      event: keyof typeof EVENTS,
+      properties?: Partial<Record<keyof typeof PROPERTIES, string | number | boolean>>,
+    ) => {
+      if (typeof window !== 'undefined' && posthog.__loaded) {
+        const eventName = EVENTS[event];
+        const eventProperties: Record<string, any> = {};
+
+        // Convert property keys to their values
+        if (properties) {
+          Object.entries(properties).forEach(([key, value]) => {
+            const propertyKey = key as keyof typeof PROPERTIES;
+            eventProperties[PROPERTIES[propertyKey]] = value;
+          });
+        }
+
+        // Add timestamp to all events
+        eventProperties.timestamp = new Date().toISOString();
+
+        posthog.capture(eventName, eventProperties);
       }
-      
-      // Add timestamp to all events
-      eventProperties.timestamp = new Date().toISOString();
-      
-      posthog.capture(eventName, eventProperties);
-    }
-  }, []);
+    },
+    [],
+  );
 
   // Specific tracking methods for common events
-  const trackCTAClick = useCallback((ctaText: string, location: string, destination?: string) => {
-    trackEvent('CTA_CLICKED', {
-      CTA_TEXT: ctaText,
-      CTA_LOCATION: location,
-      DESTINATION: destination,
-    });
-  }, [trackEvent]);
+  const trackCTAClick = useCallback(
+    (ctaText: string, location: string, destination?: string) => {
+      trackEvent('CTA_CLICKED', {
+        CTA_TEXT: ctaText,
+        CTA_LOCATION: location,
+        DESTINATION: destination,
+      });
+    },
+    [trackEvent],
+  );
 
-  const trackNavigation = useCallback((linkText: string, destination: string, menuType: string = 'desktop') => {
-    trackEvent('NAVIGATION_CLICKED', {
-      LINK_TEXT: linkText,
-      DESTINATION: destination,
-      MENU_TYPE: menuType,
-    });
-  }, [trackEvent]);
+  const trackNavigation = useCallback(
+    (linkText: string, destination: string, menuType: string = 'desktop') => {
+      trackEvent('NAVIGATION_CLICKED', {
+        LINK_TEXT: linkText,
+        DESTINATION: destination,
+        MENU_TYPE: menuType,
+      });
+    },
+    [trackEvent],
+  );
 
-  const trackFormInteraction = useCallback((
-    formType: string,
-    action: 'viewed' | 'started' | 'submitted' | 'error',
-    details?: { field?: string; error?: string; completionTime?: number }
-  ) => {
-    const eventMap = {
-      viewed: 'CONTACT_FORM_VIEWED',
-      started: 'CONTACT_FORM_STARTED',
-      submitted: 'CONTACT_FORM_SUBMITTED',
-      error: 'CONTACT_FORM_ERROR',
-    } as const;
+  const trackFormInteraction = useCallback(
+    (
+      formType: string,
+      action: 'viewed' | 'started' | 'submitted' | 'error',
+      details?: { field?: string; error?: string; completionTime?: number },
+    ) => {
+      const eventMap = {
+        viewed: 'CONTACT_FORM_VIEWED',
+        started: 'CONTACT_FORM_STARTED',
+        submitted: 'CONTACT_FORM_SUBMITTED',
+        error: 'CONTACT_FORM_ERROR',
+      } as const;
 
-    const properties: Partial<Record<keyof typeof PROPERTIES, string | number>> = {
-      FORM_TYPE: formType,
-    };
+      const properties: Partial<Record<keyof typeof PROPERTIES, string | number>> = {
+        FORM_TYPE: formType,
+      };
 
-    if (details?.field) properties.FORM_FIELD = details.field;
-    if (details?.error) properties.ERROR_MESSAGE = details.error;
-    if (details?.completionTime) properties.FORM_COMPLETION_TIME = details.completionTime;
+      if (details?.field) properties.FORM_FIELD = details.field;
+      if (details?.error) properties.ERROR_MESSAGE = details.error;
+      if (details?.completionTime) properties.FORM_COMPLETION_TIME = details.completionTime;
 
-    trackEvent(eventMap[action], properties);
-  }, [trackEvent]);
+      trackEvent(eventMap[action], properties);
+    },
+    [trackEvent],
+  );
 
-  const trackContentInteraction = useCallback((
-    contentType: 'case_study' | 'insight',
-    action: string,
-    details: { id: string; title?: string; section?: string; imageSrc?: string }
-  ) => {
-    const properties: Partial<Record<keyof typeof PROPERTIES, string>> = {};
-    
-    if (contentType === 'case_study') {
-      properties.CASE_STUDY_ID = details.id;
-      if (details.title) properties.CASE_STUDY_TITLE = details.title;
-      if (details.section) properties.SECTION_NAME = details.section;
-      if (details.imageSrc) properties.IMAGE_SRC = details.imageSrc;
-    } else if (contentType === 'insight') {
-      properties.INSIGHT_ID = details.id;
-      if (details.title) properties.INSIGHT_TITLE = details.title;
-    }
+  const trackContentInteraction = useCallback(
+    (
+      contentType: 'case_study' | 'insight',
+      action: string,
+      details: { id: string; title?: string; section?: string; imageSrc?: string },
+    ) => {
+      const properties: Partial<Record<keyof typeof PROPERTIES, string>> = {};
 
-    const eventKey = action.toUpperCase().replace(/\s+/g, '_') as keyof typeof EVENTS;
-    trackEvent(eventKey, properties);
-  }, [trackEvent]);
+      if (contentType === 'case_study') {
+        properties.CASE_STUDY_ID = details.id;
+        if (details.title) properties.CASE_STUDY_TITLE = details.title;
+        if (details.section) properties.SECTION_NAME = details.section;
+        if (details.imageSrc) properties.IMAGE_SRC = details.imageSrc;
+      } else if (contentType === 'insight') {
+        properties.INSIGHT_ID = details.id;
+        if (details.title) properties.INSIGHT_TITLE = details.title;
+      }
+
+      const eventKey = action.toUpperCase().replace(/\s+/g, '_') as keyof typeof EVENTS;
+      trackEvent(eventKey, properties);
+    },
+    [trackEvent],
+  );
 
   return {
     trackEvent,
@@ -291,13 +314,14 @@ export function useEventTracking() {
 ### User Identification Hook
 
 **Hook** (`src/lib/hooks/useUserIdentification.ts`):
+
 ```typescript
 export function useUserIdentification() {
   const checkInternalUser = useCallback((email: string): InternalUserCheck => {
     // Check internal domains
     const internalDomains = ['yourcompany.com', 'yourdomain.org'];
     const domain = email.split('@')[1]?.toLowerCase();
-    
+
     if (domain && internalDomains.includes(domain)) {
       return { isInternal: true, reason: 'internal_domain' };
     }
@@ -305,70 +329,73 @@ export function useUserIdentification() {
     return { isInternal: false };
   }, []);
 
-  const identifyUser = useCallback(async (userData: UserIdentificationData) => {
-    if (typeof window === 'undefined' || !posthog.__loaded) {
-      return;
-    }
+  const identifyUser = useCallback(
+    async (userData: UserIdentificationData) => {
+      if (typeof window === 'undefined' || !posthog.__loaded) {
+        return;
+      }
 
-    const { email, company, leadSource, formType } = userData;
-    
-    // Check if this is an internal user
-    const internalCheck = checkInternalUser(email);
-    
-    if (internalCheck.isInternal) {
-      // Track internal user but don't identify
-      posthog.capture(EVENTS.INTERNAL_USER_DETECTED, {
-        // Note: Consider hashing or anonymizing email addresses for privacy
-        [PROPERTIES.IS_INTERNAL]: true,
-        [PROPERTIES.ERROR_TYPE]: internalCheck.reason,
+      const { email, company, leadSource, formType } = userData;
+
+      // Check if this is an internal user
+      const internalCheck = checkInternalUser(email);
+
+      if (internalCheck.isInternal) {
+        // Track internal user but don't identify
+        posthog.capture(EVENTS.INTERNAL_USER_DETECTED, {
+          // Note: Consider hashing or anonymizing email addresses for privacy
+          [PROPERTIES.IS_INTERNAL]: true,
+          [PROPERTIES.ERROR_TYPE]: internalCheck.reason,
+          [PROPERTIES.LEAD_SOURCE]: leadSource,
+        });
+
+        // Set internal user property to filter in PostHog
+        posthog.setPersonProperties({
+          [PROPERTIES.IS_INTERNAL]: true,
+          internal_detection_reason: internalCheck.reason,
+        });
+
+        return;
+      }
+
+      // Create unique distinct ID for lead
+      const distinctId = `lead_${email.toLowerCase()}`;
+
+      // Get current user properties to check if returning visitor
+      const currentDistinctId = posthog.get_distinct_id();
+      const isReturning = currentDistinctId && currentDistinctId !== distinctId;
+
+      if (isReturning) {
+        posthog.capture(EVENTS.RETURNING_VISITOR, {
+          // Note: Consider hashing or anonymizing email addresses for privacy
+          [PROPERTIES.LEAD_SOURCE]: leadSource,
+          [PROPERTIES.PREVIOUS_ID]: currentDistinctId,
+        });
+      }
+
+      // Identify the user
+      posthog.identify(distinctId, {
+        email: email,
+        company: company || userData.company,
+        lead_source: leadSource,
+        first_contact_form: formType || 'contact',
+        first_identified: new Date().toISOString(),
+        [PROPERTIES.IS_INTERNAL]: false,
+        [PROPERTIES.COMPANY_DOMAIN]: email.split('@')[1]?.toLowerCase(),
+      });
+
+      // Track identification event
+      posthog.capture(EVENTS.LEAD_IDENTIFIED, {
+        [PROPERTIES.EMAIL]: email,
         [PROPERTIES.LEAD_SOURCE]: leadSource,
+        [PROPERTIES.FORM_TYPE]: formType || 'contact',
+        [PROPERTIES.COMPANY_DOMAIN]: email.split('@')[1]?.toLowerCase(),
+        [PROPERTIES.IS_INTERNAL]: false,
+        [PROPERTIES.FIRST_VISIT]: !isReturning,
       });
-      
-      // Set internal user property to filter in PostHog
-      posthog.setPersonProperties({
-        [PROPERTIES.IS_INTERNAL]: true,
-        internal_detection_reason: internalCheck.reason,
-      });
-      
-      return;
-    }
-
-    // Create unique distinct ID for lead
-    const distinctId = `lead_${email.toLowerCase()}`;
-    
-    // Get current user properties to check if returning visitor
-    const currentDistinctId = posthog.get_distinct_id();
-    const isReturning = currentDistinctId && currentDistinctId !== distinctId;
-    
-    if (isReturning) {
-      posthog.capture(EVENTS.RETURNING_VISITOR, {
-        // Note: Consider hashing or anonymizing email addresses for privacy
-        [PROPERTIES.LEAD_SOURCE]: leadSource,
-        [PROPERTIES.PREVIOUS_ID]: currentDistinctId,
-      });
-    }
-
-    // Identify the user
-    posthog.identify(distinctId, {
-      email: email,
-      company: company || userData.company,
-      lead_source: leadSource,
-      first_contact_form: formType || 'contact',
-      first_identified: new Date().toISOString(),
-      [PROPERTIES.IS_INTERNAL]: false,
-      [PROPERTIES.COMPANY_DOMAIN]: email.split('@')[1]?.toLowerCase(),
-    });
-
-    // Track identification event
-    posthog.capture(EVENTS.LEAD_IDENTIFIED, {
-      [PROPERTIES.EMAIL]: email,
-      [PROPERTIES.LEAD_SOURCE]: leadSource,
-      [PROPERTIES.FORM_TYPE]: formType || 'contact',
-      [PROPERTIES.COMPANY_DOMAIN]: email.split('@')[1]?.toLowerCase(),
-      [PROPERTIES.IS_INTERNAL]: false,
-      [PROPERTIES.FIRST_VISIT]: !isReturning,
-    });
-  }, [checkInternalUser]);
+    },
+    [checkInternalUser],
+  );
 
   return {
     identifyUser,
@@ -382,6 +409,7 @@ export function useUserIdentification() {
 ### PostHog Provider Setup
 
 **Provider** (`src/app/providers.tsx`):
+
 ```typescript
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   const { config: posthogConfig, isLoading } = useClientConfig('posthog');
@@ -429,6 +457,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
 ### Page Tracker Component
 
 **Component** (`src/components/PageTracker.tsx`):
+
 ```typescript
 export function PageTracker() {
   usePageTracking();
@@ -439,6 +468,7 @@ export function PageTracker() {
 ### Layout Integration
 
 **Layout** (`src/app/layout.tsx`):
+
 ```typescript
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -463,6 +493,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ### Contact Form Tracking
 
 **Contact Form** (`src/components/contact/contact-form.tsx`):
+
 ```typescript
 export default function ContactForm({ standalone = false }: ContactFormProps) {
   const { trackFormInteraction } = useEventTracking();
@@ -475,7 +506,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     // ... form submission logic ...
-    
+
     if (res.ok) {
       // Identify user for lead tracking
       await identifyUser({
@@ -486,8 +517,8 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
       });
 
       // Track successful submission
-      trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'submitted', { 
-        completionTime: elapsed 
+      trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'submitted', {
+        completionTime: elapsed,
       });
     }
   };
@@ -497,6 +528,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
 ### Navigation Tracking
 
 **Tracked Navigation** (`src/components/footer/TrackedNavigation.tsx`):
+
 ```typescript
 export default function TrackedNavigation({ items, context, className = '' }: TrackedNavigationProps) {
   const { trackNavigation } = useEventTracking();
@@ -522,6 +554,7 @@ export default function TrackedNavigation({ items, context, className = '' }: Tr
 ### CTA Tracking
 
 **Hero Section** (`src/components/hero-section.tsx`):
+
 ```typescript
 export default function HeroSection() {
   const { trackCTAClick } = useEventTracking();
@@ -543,11 +576,12 @@ export default function HeroSection() {
 ### Error Boundary Tracking
 
 **Error Boundary** (`src/components/ui/ErrorBoundary.tsx`):
+
 ```typescript
 export class ErrorBoundary extends Component<Props, State> {
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     logger.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+
     // Track error boundary activation
     if (typeof window !== 'undefined' && posthog.__loaded) {
       posthog.capture('error_boundary_triggered', {
@@ -568,6 +602,7 @@ export class ErrorBoundary extends Component<Props, State> {
 ### Server Event Capture
 
 **Server Utilities** (`src/lib/posthog-server.ts`):
+
 ```typescript
 // Helper function to capture server-side events
 export async function captureServerEvent(
@@ -600,9 +635,9 @@ export async function getServerFeatureFlags(userId: string, flagKeys?: string[])
       onlyEvaluateLocallyIfPossible: false,
     });
 
-    return flagKeys ? 
-      Object.fromEntries(Object.entries(flags).filter(([key]) => flagKeys.includes(key))) :
-      flags;
+    return flagKeys
+      ? Object.fromEntries(Object.entries(flags).filter(([key]) => flagKeys.includes(key)))
+      : flags;
   } finally {
     await client.shutdown();
   }
@@ -612,37 +647,30 @@ export async function getServerFeatureFlags(userId: string, flagKeys?: string[])
 ### Contact API Server Tracking
 
 **Contact API** (`src/app/api/contact/route.ts`):
+
 ```typescript
 import { captureServerEvent } from '@/lib/posthog-server';
 
 export async function POST(request: NextRequest) {
   // ... form processing logic ...
 
-        // Server-side tracking for successful submission
-      await captureServerEvent(
-        distinctId,
-        'contact_form_submitted_server',
-        {
-          form_type: 'contact',
-          lead_source: 'website',
-          processing_time: Date.now() - startTime,
-          // Note: Avoid logging sensitive data like client_ip or emails
-          submission_id: submissionResult.submissionId,
-        }
-      );
+  // Server-side tracking for successful submission
+  await captureServerEvent(distinctId, 'contact_form_submitted_server', {
+    form_type: 'contact',
+    lead_source: 'website',
+    processing_time: Date.now() - startTime,
+    // Note: Avoid logging sensitive data like client_ip or emails
+    submission_id: submissionResult.submissionId,
+  });
 
-      // Track internal users on server side
-      if (isInternalUser) {
-        await captureServerEvent(
-          distinctId,
-          'internal_user_detected',
-          {
-            // Note: Avoid logging actual email addresses
-            is_internal: true,
-            detection_method: 'server_side',
-          }
-        );
-      }
+  // Track internal users on server side
+  if (isInternalUser) {
+    await captureServerEvent(distinctId, 'internal_user_detected', {
+      // Note: Avoid logging actual email addresses
+      is_internal: true,
+      detection_method: 'server_side',
+    });
+  }
 }
 ```
 
@@ -651,6 +679,7 @@ export async function POST(request: NextRequest) {
 ### Environment Configuration
 
 Required environment variables (`.env.example`):
+
 ```bash
 # PostHog Analytics
 NEXT_PUBLIC_POSTHOG_KEY=your_posthog_project_key_here
@@ -660,6 +689,7 @@ NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
 ### Client Configuration API
 
 **Client Config API** (`src/app/api/client-config/route.ts`):
+
 ```typescript
 const clientConfig = {
   posthog: {
@@ -677,6 +707,7 @@ export async function GET() {
 ### Client Configuration Hook
 
 **Config Hook** (`src/lib/hooks/useClientConfig.ts`):
+
 ```typescript
 export function useClientConfig<T extends keyof ClientConfig>(configKey: T) {
   const [config, setConfig] = useState<ClientConfig[T] | null>(null);
@@ -707,12 +738,14 @@ export function useClientConfig<T extends keyof ClientConfig>(configKey: T) {
 ## Testing the Setup
 
 ### Browser Developer Tools
+
 1. Open Developer Tools → Network tab
 2. Filter by "ingest"
 3. Navigate the site - you should see requests to `/ingest/` instead of `posthog.com`
 4. Check PostHog dashboard for real-time events
 
 ### Command Line Testing
+
 ```bash
 # Test reverse proxy endpoint
 curl -v "http://localhost:3000/ingest/batch" \
@@ -724,6 +757,7 @@ curl -v "http://localhost:3000/api/client-config"
 ```
 
 ### Analytics Testing
+
 ```bash
 # Development server
 bun dev
@@ -737,6 +771,7 @@ bun dev
 ## Implementation Status ✅ **COMPLETE**
 
 ### 🎯 Core Tracking ✅ **FULLY IMPLEMENTED**
+
 - [x] **Page Views**: Automatic tracking on all pages with PostHog integration
 - [x] **Session Tracking**: Enhanced session start events with privacy protection
 - [x] **Form Interactions**: Complete contact form lifecycle with event versioning
@@ -746,12 +781,14 @@ bun dev
 - [x] **Error Tracking**: Error boundary and system errors with stack truncation
 
 ### 👤 User Identification ✅ **PRIVACY-COMPLIANT**
+
 - [x] **Lead Identification**: SHA-256 hashed email-based user identification
 - [x] **Internal User Detection**: Automatic filtering of internal traffic by domain/IP
 - [x] **Returning Visitor Detection**: Track repeat visitors with anonymized IDs
 - [x] **Anonymous Visitor Tracking**: Default visitor properties with consent management
 
 ### 🔧 Technical Features ✅ **PRODUCTION-READY**
+
 - [x] **Reverse Proxy**: Ad-blocker bypass via Next.js rewrites (`/ingest` endpoint)
 - [x] **Server-Side Tracking**: Critical events tracked server-side with privacy utils
 - [x] **Type Safety**: Full TypeScript support with typed events and properties
@@ -759,6 +796,7 @@ bun dev
 - [x] **Error Handling**: Comprehensive error tracking with privacy safeguards
 
 ### 📊 Analytics Features ✅ **GDPR-COMPLIANT**
+
 - [x] **Session Recording**: Font collection with full input masking (`maskAllInputs: true`)
 - [x] **Enhanced Autocapture**: Targeted DOM event collection with allowlist
 - [x] **Feature Flags Ready**: Server-side feature flag support implemented
@@ -788,6 +826,7 @@ bun dev
 ## Monitoring and Maintenance
 
 ### Key Metrics to Monitor
+
 1. **Event Volume**: Track daily/monthly event counts
 2. **Proxy Performance**: Monitor `/ingest/` endpoint response times
 3. **User Identification Rate**: Track percentage of identified vs anonymous users
@@ -795,6 +834,7 @@ bun dev
 5. **Error Rates**: Track error boundary activations and API errors
 
 ### Troubleshooting
+
 1. **Missing Events**: Check PostHog initialization and network requests
 2. **Proxy Issues**: Verify Next.js rewrites configuration
 3. **User Identification Problems**: Check email validation and internal domain lists
@@ -833,6 +873,7 @@ Our implementation follows PostHog's current privacy best practices and GDPR com
 - **✅ Data Anonymization**: Personal identifiers are hashed or anonymized before transmission
 
 ### Configuration Security
+
 - Never commit actual PostHog project keys to version control
 - Use environment-specific configuration for different deployment stages
 - Regularly rotate analytics API keys if compromised

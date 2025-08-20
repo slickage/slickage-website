@@ -28,10 +28,9 @@ export default function CaseStudyImage({
   const { trackContentInteraction } = useEventTracking();
 
   const handleImageClick = () => {
-    // Extract case study ID from current path if available
     const pathParts = window.location.pathname.split('/');
     const caseStudyId = pathParts[pathParts.length - 1] || 'unknown';
-    
+
     trackContentInteraction('case_study', 'CASE_STUDY_IMAGE_CLICKED', {
       id: caseStudyId,
       imageSrc: src,
@@ -74,7 +73,10 @@ export default function CaseStudyImage({
         {...motionProps}
         style={{ willChange: 'transform' }}
       >
-        <div className="relative group cursor-pointer overflow-hidden rounded-lg" onClick={handleImageClick}>
+        <div
+          className="relative group cursor-pointer overflow-hidden rounded-lg"
+          onClick={handleImageClick}
+        >
           {isLoadingS3 && <LoadingSpinnerOverlay />}
           <ImageLightboxComponent
             src={imageSrc}

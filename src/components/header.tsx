@@ -40,7 +40,11 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link href="/" onClick={handleLogoClick} className="font-bold tracking-tight gradient-text">
+            <Link
+              href="/"
+              onClick={handleLogoClick}
+              className="font-bold tracking-tight gradient-text"
+            >
               <Image
                 src="/logo-slickage-lines-blue-light.svg"
                 alt="Company Logo"
@@ -103,15 +107,14 @@ export default function Header() {
                   {item}
                 </Link>
               ))}
-              <Link href="/contact" onClick={() => {
-                setIsMobileMenuOpen(false);
-                trackCTAClick('Get in Touch', 'mobile_menu', '/contact');
-              }}>
-                <Button
-                  variant="default"
-                  size="xl"
-                  className="w-full"
-                >
+              <Link
+                href="/contact"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  trackCTAClick('Get in Touch', 'mobile_menu', '/contact');
+                }}
+              >
+                <Button variant="default" size="xl" className="w-full">
                   Get in Touch
                 </Button>
               </Link>

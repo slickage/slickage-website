@@ -15,7 +15,11 @@ interface TrackedNavigationProps {
   className?: string;
 }
 
-export default function TrackedNavigation({ items, context, className = '' }: TrackedNavigationProps) {
+export default function TrackedNavigation({
+  items,
+  context,
+  className = '',
+}: TrackedNavigationProps) {
   const { trackNavigation } = useEventTracking();
 
   return (

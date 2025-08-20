@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { usePostHog } from 'posthog-js/react';
 
-export type ConsentStatus = 'pending' | 'granted' | 'denied';
+type ConsentStatus = 'pending' | 'granted' | 'denied';
 
 interface AnalyticsConsent {
   essential: boolean;
@@ -19,22 +19,20 @@ export function useAnalyticsConsent() {
   const posthog = usePostHog();
   const [consentStatus, setConsentStatus] = useState<ConsentStatus>('pending');
   const [consent, setConsent] = useState<AnalyticsConsent>({
-    essential: true, // Always required for core functionality
+    essential: true,
     analytics: false,
     marketing: false,
   });
 
-  // Load consent from localStorage on mount
   useEffect(() => {
     const savedConsent = localStorage.getItem(CONSENT_STORAGE_KEY);
-    
+
     if (savedConsent) {
       try {
         const parsed = JSON.parse(savedConsent);
         setConsent(parsed.consent);
         setConsentStatus(parsed.status);
-        
-        // Configure PostHog based on consent
+
         if (posthog && (parsed.status === 'denied' || !parsed.consent.analytics)) {
           posthog.opt_out_capturing();
         } else if (posthog && parsed.status === 'granted' && parsed.consent.analytics) {
@@ -46,29 +44,32 @@ export function useAnalyticsConsent() {
     }
   }, []);
 
-  const grantConsent = useCallback((consentSettings: Partial<AnalyticsConsent>) => {
-    const newConsent = { ...consent, ...consentSettings };
-    setConsent(newConsent);
-    setConsentStatus('granted');
-    
-    // Save to localStorage
-    localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({
-      consent: newConsent,
-      status: 'granted',
-      timestamp: new Date().toISOString(),
-    }));
-    
-    // Enable PostHog if analytics consent is granted
-    if (newConsent.analytics && posthog) {
-      posthog.opt_in_capturing();
-      
-      // Track consent granted event
-      posthog.capture('system:consent_grant', {
-        consent_analytics: newConsent.analytics,
-        consent_marketing: newConsent.marketing,
-      });
-    }
-  }, [consent]);
+  const grantConsent = useCallback(
+    (consentSettings: Partial<AnalyticsConsent>) => {
+      const newConsent = { ...consent, ...consentSettings };
+      setConsent(newConsent);
+      setConsentStatus('granted');
+
+      localStorage.setItem(
+        CONSENT_STORAGE_KEY,
+        JSON.stringify({
+          consent: newConsent,
+          status: 'granted',
+          timestamp: new Date().toISOString(),
+        }),
+      );
+
+      if (newConsent.analytics && posthog) {
+        posthog.opt_in_capturing();
+
+        posthog.capture('system:consent_grant', {
+          consent_analytics: newConsent.analytics,
+          consent_marketing: newConsent.marketing,
+        });
+      }
+    },
+    [consent],
+  );
 
   const denyConsent = useCallback(() => {
     const deniedConsent = {
@@ -76,18 +77,19 @@ export function useAnalyticsConsent() {
       analytics: false,
       marketing: false,
     };
-    
+
     setConsent(deniedConsent);
     setConsentStatus('denied');
-    
-    // Save to localStorage
-    localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({
-      consent: deniedConsent,
-      status: 'denied',
-      timestamp: new Date().toISOString(),
-    }));
-    
-    // Disable PostHog
+
+    localStorage.setItem(
+      CONSENT_STORAGE_KEY,
+      JSON.stringify({
+        consent: deniedConsent,
+        status: 'denied',
+        timestamp: new Date().toISOString(),
+      }),
+    );
+
     if (posthog) {
       posthog.opt_out_capturing();
     }
@@ -100,33 +102,37 @@ export function useAnalyticsConsent() {
       analytics: false,
       marketing: false,
     });
-    
+
     localStorage.removeItem(CONSENT_STORAGE_KEY);
     if (posthog) {
       posthog.opt_out_capturing();
     }
   }, []);
 
-  const updateConsent = useCallback((updates: Partial<AnalyticsConsent>) => {
-    const newConsent = { ...consent, ...updates };
-    setConsent(newConsent);
-    
-    // Update localStorage
-    localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({
-      consent: newConsent,
-      status: consentStatus,
-      timestamp: new Date().toISOString(),
-    }));
-    
-    // Update PostHog based on analytics consent
-    if (posthog) {
-      if (newConsent.analytics && consentStatus === 'granted') {
-        posthog.opt_in_capturing();
-      } else {
-        posthog.opt_out_capturing();
+  const updateConsent = useCallback(
+    (updates: Partial<AnalyticsConsent>) => {
+      const newConsent = { ...consent, ...updates };
+      setConsent(newConsent);
+
+      localStorage.setItem(
+        CONSENT_STORAGE_KEY,
+        JSON.stringify({
+          consent: newConsent,
+          status: consentStatus,
+          timestamp: new Date().toISOString(),
+        }),
+      );
+
+      if (posthog) {
+        if (newConsent.analytics && consentStatus === 'granted') {
+          posthog.opt_in_capturing();
+        } else {
+          posthog.opt_out_capturing();
+        }
       }
-    }
-  }, [consent, consentStatus]);
+    },
+    [consent, consentStatus],
+  );
 
   return {
     consentStatus,

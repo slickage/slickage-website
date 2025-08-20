@@ -12,7 +12,6 @@ export function usePageTracking() {
   const posthog = usePostHog();
 
   useEffect(() => {
-    // Only track if PostHog is initialized
     if (posthog && typeof window !== 'undefined') {
       posthog.capture(EVENTS.PAGE_VIEWED, {
         [PROPERTIES.PAGE_PATH]: pathname,

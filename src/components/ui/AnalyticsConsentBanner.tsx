@@ -11,31 +11,23 @@ import { Button } from '@/components/ui/button';
  * Integrates with useAnalyticsConsent hook and PostHog
  */
 export function AnalyticsConsentBanner() {
-  const {
-    consentStatus,
-    grantConsent,
-    denyConsent,
-  } = useAnalyticsConsent();
+  const { consentStatus, grantConsent, denyConsent } = useAnalyticsConsent();
 
-  // Use animations following the same pattern as insight-card
   const slideUpVariants = useMotionVariant('slideUp');
   const slideUpTransition = useMotionTransition('contentEntrance');
 
-  // Add body padding when banner is visible
   useEffect(() => {
     if (consentStatus === 'pending') {
-      document.body.classList.add('pb-24'); // Tailwind class for padding-bottom: 96px
+      document.body.classList.add('pb-24');
     } else {
       document.body.classList.remove('pb-24');
     }
 
-    // Cleanup on unmount
     return () => {
       document.body.classList.remove('pb-24');
     };
   }, [consentStatus]);
 
-  // Don't show banner if consent has already been given or denied
   if (consentStatus !== 'pending') {
     return null;
   }
@@ -43,15 +35,13 @@ export function AnalyticsConsentBanner() {
   const handleAcceptAll = () => {
     grantConsent({
       analytics: true,
-      marketing: false, // Keep marketing separate for now
+      marketing: false,
     });
   };
 
   const handleEssentialOnly = () => {
     denyConsent();
   };
-
-
 
   return (
     <div
@@ -67,15 +57,14 @@ export function AnalyticsConsentBanner() {
       >
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
           <div className="flex-1">
-            <h3 className="text-white font-semibold mb-2">
-              Analytics & Privacy
-            </h3>
+            <h3 className="text-white font-semibold mb-2">Analytics & Privacy</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              We use analytics to improve our website and understand how visitors interact with our content. 
-              Your data is anonymized and we respect your privacy. You can change your preferences at any time.
+              We use analytics to improve our website and understand how visitors interact with our
+              content. Your data is anonymized and we respect your privacy. You can change your
+              preferences at any time.
             </p>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-3 lg:ml-6">
             <Button
               variant="outline"
@@ -85,12 +74,7 @@ export function AnalyticsConsentBanner() {
             >
               Essential Only
             </Button>
-            <Button
-              variant="blue"
-              size="sm"
-              onClick={handleAcceptAll}
-              className="shadow-lg"
-            >
+            <Button variant="blue" size="sm" onClick={handleAcceptAll} className="shadow-lg">
               Accept Analytics
             </Button>
           </div>

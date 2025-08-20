@@ -69,7 +69,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
-        {/* Preload critical resources for better LCP performance */}
         <link
           rel="preload"
           href="/logo-slickage-lines-blue-light.svg"

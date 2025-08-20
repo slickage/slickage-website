@@ -1,26 +1,24 @@
 import { PostHog } from 'posthog-node';
 
-// Server-side PostHog client
 export function createPostHogServer() {
   const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  
-  // Use reverse proxy in production, direct connection in development for easier debugging
-  const posthogHost = process.env.NODE_ENV === 'production' 
-    ? 'https://beta.slickage.io/ingest'  // Production proxy
-    : 'https://us.i.posthog.com';       // Development direct
-  
+
+  const posthogHost =
+    process.env.NODE_ENV === 'production'
+      ? 'https://beta.slickage.io/ingest'
+      : 'https://us.i.posthog.com';
+
   if (!posthogKey) {
     throw new Error('PostHog API key not configured');
   }
-  
+
   return new PostHog(posthogKey, {
     host: posthogHost,
-    flushAt: 1, // Send events immediately for server-side usage
-    flushInterval: 0, // Disable batching for server-side
+    flushAt: 1,
+    flushInterval: 0,
   });
 }
 
-// Helper function to get feature flags on the server
 export async function getServerFeatureFlags(userId: string, flagKeys?: string[]) {
   const client = createPostHogServer();
 
@@ -35,7 +33,6 @@ export async function getServerFeatureFlags(userId: string, flagKeys?: string[])
   }
 }
 
-// Helper function to capture server-side events
 export async function captureServerEvent(
   userId: string,
   event: string,

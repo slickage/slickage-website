@@ -99,51 +99,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Track successful contact form submission server-side
     const processingTime = Date.now() - startTime;
-    
-    // Check if internal user using privacy-safe methods
+
     const emailDomain = extractEmailDomain(sanitizedData.email);
     const isInternalUser = ['slickage.com'].includes(emailDomain);
-    
+
     try {
-      // Use privacy-safe identifiers
-      const distinctId = isInternalUser 
-        ? `internal_${anonymizeIp(clientIp)}` 
+      const distinctId = isInternalUser
+        ? `internal_${anonymizeIp(clientIp)}`
         : createSafeDistinctId(sanitizedData.email);
-        
-      await captureServerEvent(
-        distinctId,
-        'contact_flow_v1:server_submit',
-        {
-          submission_id: submissionResult.submissionId,
-          form_type: 'contact',
-          processing_time_ms: processingTime,
-          subject_category: sanitizedData.subject,
-          contact_method: sanitizedData.phone ? 'phone_and_email' : 'email_only',
-          form_completion_time_ms: validatedData.elapsed || 0,
-          source: 'server_api',
-          user_agent: request.headers.get('user-agent') || 'unknown',
-          referrer: request.headers.get('referer') || 'direct',
-          is_internal: isInternalUser,
-          company_domain: emailDomain,
-          lead_source: 'contact_form',
-          // Note: No longer tracking client IP directly for privacy
-        }
-      );
-      
-      // Additional internal user tracking with privacy protection
+
+      await captureServerEvent(distinctId, 'contact_flow:form_submit', {
+        form_type: 'contact',
+        lead_source: 'website',
+        processing_time: processingTime,
+        source: 'server_api',
+        user_agent: request.headers.get('user-agent') || 'unknown',
+        referrer: request.headers.get('referer') || 'direct',
+        is_internal: isInternalUser,
+        company_domain: emailDomain,
+      });
+
       if (isInternalUser) {
-        await captureServerEvent(
-          distinctId,
-          'system_v1:internal_user_detect',
-          {
-            detection_method: 'email_domain',
-            company_domain: emailDomain, // Use domain only, not full email
-            source: 'contact_form_server',
-            // Note: No personal identifiers logged
-          }
-        );
+        await captureServerEvent(distinctId, 'system_v1:internal_user_detect', {
+          detection_method: 'email_domain',
+          company_domain: emailDomain,
+          source: 'contact_form_server',
+        });
       }
     } catch (error) {
       logger.error('Failed to track contact submission:', error);
@@ -215,9 +197,4 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-}
-
-// Handle GET requests (optional - for health check)
-export async function GET() {
-  return NextResponse.json({ message: 'Contact API endpoint is working' }, { status: 200 });
 }

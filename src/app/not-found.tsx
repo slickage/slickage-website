@@ -24,11 +24,13 @@ export default function NotFound() {
         </p>
         <Link
           href="/"
-          onClick={() => trackEvent('NAVIGATION_CLICKED', {
-            LINK_TEXT: 'Back to Home',
-            DESTINATION: '/',
-            MENU_TYPE: '404_page',
-          })}
+          onClick={() =>
+            trackEvent('NAVIGATION_CLICKED', {
+              LINK_TEXT: 'Back to Home',
+              DESTINATION: '/',
+              MENU_TYPE: '404_page',
+            })
+          }
           className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors font-semibold"
         >
           <Home className="w-4 h-4" />

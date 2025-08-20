@@ -22,7 +22,7 @@ export function anonymizeIp(ip: string): string {
   if (ip === 'unknown' || !ip) {
     return 'unknown';
   }
-  
+
   // Handle IPv4
   if (ip.includes('.')) {
     const parts = ip.split('.');
@@ -30,7 +30,7 @@ export function anonymizeIp(ip: string): string {
       return `${parts[0]}.${parts[1]}.${parts[2]}.0`;
     }
   }
-  
+
   // Handle IPv6 (simplified - remove last segment)
   if (ip.includes(':')) {
     const parts = ip.split(':');
@@ -39,7 +39,7 @@ export function anonymizeIp(ip: string): string {
       return parts.join(':');
     }
   }
-  
+
   return 'anonymized';
 }
 
@@ -50,7 +50,7 @@ export function anonymizeIp(ip: string): string {
  */
 export function createSafeDistinctId(email: string): string {
   const hashedEmail = hashEmail(email);
-  return `lead_${hashedEmail.substring(0, 16)}`; // Use first 16 chars of hash
+  return `lead_${hashedEmail.substring(0, 16)}`;
 }
 
 /**
@@ -69,8 +69,5 @@ export function extractEmailDomain(email: string): string {
  * @returns Boolean indicating if tracking is allowed
  */
 export function isTrackingAllowed(dataType: 'email' | 'ip' | 'location' | 'device'): boolean {
-  // This can be extended to check user consent or privacy settings
-  // For now, we allow anonymized tracking only
   return dataType !== 'email' && dataType !== 'ip';
 }
-

@@ -8,5 +8,5 @@ import { usePageTracking } from '@/lib/hooks/usePageTracking';
  */
 export function PageTracker() {
   usePageTracking();
-  return null; // This component renders nothing, just tracks
+  return null;
 }

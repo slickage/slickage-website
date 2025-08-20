@@ -62,7 +62,6 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
   const { trackFormInteraction } = useEventTracking();
   const { identifyUser } = useUserIdentification();
 
-  // Track form view on mount
   React.useEffect(() => {
     trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'viewed');
   }, [trackFormInteraction, standalone]);
@@ -84,7 +83,6 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
 
-    // Track form start on first interaction
     if (!hasStartedTyping && value.trim().length > 0) {
       setHasStartedTyping(true);
       trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'started', { field: name });
@@ -138,7 +136,6 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
       const data: ApiError | { message: string; submissionId: string } = await res.json();
 
       if (res.ok) {
-        // Identify user for lead tracking
         await identifyUser({
           email: formData.email,
           company: formData.subject,
@@ -146,11 +143,10 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
           formType: 'contact',
         });
 
-        // Track successful submission
-        trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'submitted', { 
-          completionTime: elapsed 
+        trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'submitted', {
+          completionTime: elapsed,
         });
-        
+
         setIsSubmitted(true);
         setFormData({
           name: '',
@@ -182,23 +178,21 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
             errorMessage += ` Please try again in ${errorData.retryAfter} minutes.`;
           }
 
-          // Track form error
-          trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'error', { 
-            error: errorMessage 
+          trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'error', {
+            error: errorMessage,
           });
-          
+
           setError(errorMessage);
         }
       }
     } catch (err) {
       logger.error('Form submission error:', err);
       const networkError = 'Network error. Please check your connection and try again.';
-      
-      // Track network error
-      trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'error', { 
-        error: networkError 
+
+      trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'error', {
+        error: networkError,
       });
-      
+
       setError(networkError);
     } finally {
       setIsSubmitting(false);

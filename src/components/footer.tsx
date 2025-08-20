@@ -4,7 +4,6 @@ import TrackedNavigation from './footer/TrackedNavigation';
 import LegalLinks from './footer/LegalLinks';
 
 export default function Footer() {
-  // Static navigation data - server-side safe
   const companyNavigation = [
     { name: 'Insights', href: '/#insights' },
     { name: 'Contact Us', href: '/contact' },
@@ -24,14 +23,12 @@ export default function Footer() {
             <p className="text-gray-400 mb-6">
               A boutique software company based in Honolulu, Hawaii building big things.
             </p>
-            {/* Client component for interactive social buttons */}
             <SocialButtons />
           </div>
 
           <div className="md:text-right md:col-span-1 md:col-start-6 md:col-end-7">
             <h4 className="text-lg font-semibold mb-6">Company</h4>
             <ul className="space-y-4">
-              {/* Client component for tracked navigation */}
               <TrackedNavigation
                 items={companyNavigation}
                 context="footer_navigation"
@@ -47,7 +44,6 @@ export default function Footer() {
               © {new Date().getFullYear()} Slickage. All rights reserved.
             </p>
             <div className="flex space-x-6">
-              {/* Client component for tracked legal links */}
               <LegalLinks items={legalNavigation} />
             </div>
           </div>

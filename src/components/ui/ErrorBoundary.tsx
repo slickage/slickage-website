@@ -26,8 +26,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     logger.error('ErrorBoundary caught an error:', error, errorInfo);
-    
-    // Track error boundary activation
+
     if (typeof window !== 'undefined' && posthog.__loaded) {
       posthog.capture('error_boundary_triggered', {
         error_type: 'component_error',

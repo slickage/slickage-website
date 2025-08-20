@@ -15,12 +15,11 @@ export default function Error({
 
   useEffect(() => {
     logger.error('Global error:', error);
-    
-    // Track error occurrence
+
     trackEvent('ERROR_PAGE_VIEWED', {
       ERROR_TYPE: 'global_error',
       ERROR_MESSAGE: error.message,
-      ERROR_STACK: error.stack?.slice(0, 500), // Limit stack trace length
+      ERROR_STACK: error.stack?.slice(0, 500),
       PAGE_PATH: window.location.pathname,
     });
   }, [error, trackEvent]);
