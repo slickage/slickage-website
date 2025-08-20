@@ -4,6 +4,9 @@ import { Inter } from 'next/font/google';
 import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { LazyMotionWrapper } from '@/components/ui/LazyMotionWrapper';
+import { PostHogProvider } from './providers';
+import { PageTracker } from '../components/PageTracker';
+import { AnalyticsConsentBanner } from '@/components/ui/AnalyticsConsentBanner';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -66,7 +69,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
-        {/* Preload critical resources for better LCP performance */}
         <link
           rel="preload"
           href="/logo-slickage-lines-blue-light.svg"
@@ -77,11 +79,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${inter.className} bg-gradient-to-r from-blue-500/10 to-violet-500/10`}>
-        <LazyMotionWrapper>
-          <Header />
-          {children}
-          <Footer />
-        </LazyMotionWrapper>
+        <PostHogProvider>
+          <PageTracker />
+          <LazyMotionWrapper>
+            <Header />
+            {children}
+            <Footer />
+            <AnalyticsConsentBanner />
+          </LazyMotionWrapper>
+        </PostHogProvider>
       </body>
     </html>
   );

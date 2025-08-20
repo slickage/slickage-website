@@ -95,6 +95,98 @@ export default function PrivacyPolicyPage() {
       </section>
 
       <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Website Analytics & Data Collection</h2>
+        <p className="mb-4">
+          We use analytics tools to understand how visitors interact with our website and to improve
+          your experience. Here's what you need to know about our analytics practices:
+        </p>
+
+        <h3 className="text-xl font-semibold mb-3">What Analytics Data We Collect</h3>
+        <p className="mb-2">When you consent to analytics, we may collect:</p>
+        <ul className="list-disc list-inside ml-4 mt-2 mb-4">
+          <li>
+            <strong>Page views and navigation:</strong> Which pages you visit and how you navigate
+            our site
+          </li>
+          <li>
+            <strong>Interaction data:</strong> Button clicks, form interactions, and content
+            engagement
+          </li>
+          <li>
+            <strong>Technical information:</strong> Browser type, device information, and screen
+            resolution
+          </li>
+          <li>
+            <strong>Session data:</strong> How long you spend on our site and when you visit
+          </li>
+          <li>
+            <strong>Referral information:</strong> How you found our website (search engines, direct
+            visits, etc.)
+          </li>
+        </ul>
+
+        <h3 className="text-xl font-semibold mb-3">How We Protect Your Privacy</h3>
+        <ul className="list-disc list-inside ml-4 mt-2 mb-4">
+          <li>
+            <strong>Data anonymization:</strong> All personal identifiers are anonymized or hashed
+            before processing
+          </li>
+          <li>
+            <strong>IP address anonymization:</strong> Your IP address is anonymized to protect your
+            location privacy
+          </li>
+          <li>
+            <strong>No cross-site tracking:</strong> We don't track you across other websites
+          </li>
+          <li>
+            <strong>Secure data transmission:</strong> All analytics data is transmitted securely
+            through our own servers
+          </li>
+          <li>
+            <strong>Input masking:</strong> Any form inputs are masked in session recordings for
+            your privacy
+          </li>
+        </ul>
+
+        <h3 className="text-xl font-semibold mb-3">Your Analytics Choices</h3>
+        <p className="mb-2">You have full control over analytics data collection:</p>
+        <ul className="list-disc list-inside ml-4 mt-2 mb-4">
+          <li>
+            <strong>Consent banner:</strong> You'll see a banner on your first visit asking for your
+            analytics preferences
+          </li>
+          <li>
+            <strong>Essential only:</strong> You can choose to allow only essential website
+            functionality
+          </li>
+          <li>
+            <strong>Accept analytics:</strong> You can consent to analytics to help us improve the
+            website
+          </li>
+          <li>
+            <strong>Change anytime:</strong> You can clear your browser data to reset your
+            preferences
+          </li>
+        </ul>
+
+        <h3 className="text-xl font-semibold mb-3">Analytics Service Provider</h3>
+        <p className="mb-4">
+          We use PostHog for our website analytics. PostHog is a privacy-focused analytics platform
+          that helps us understand website usage while respecting user privacy. You can learn more
+          about PostHog's privacy practices in their{' '}
+          <a
+            href="https://posthog.com/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-800 underline"
+          >
+            privacy policy
+          </a>
+          .
+        </p>
+      </section>
+
+      <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Your Rights</h2>
         <p className="mb-2">
           You have certain rights regarding the personal information we hold about you. These may
@@ -106,6 +198,10 @@ export default function PrivacyPolicyPage() {
           <li>Request deletion of your personal information.</li>
           <li>Object to the processing of your personal information.</li>
           <li>Request restriction of processing your personal information.</li>
+          <li>
+            <strong>Withdraw analytics consent:</strong> You can opt out of analytics at any time by
+            clearing your browser data.
+          </li>
         </ul>
         <p className="mt-2">
           To exercise any of these rights, please contact us using the details provided in the
@@ -237,17 +333,52 @@ export default function PrivacyPolicyPage() {
         </p>
       </section>
 
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Contact Us About Privacy</h2>
+        <p className="mb-4">
+          If you have any questions about this Privacy Policy, your personal data, or our analytics
+          practices, please don't hesitate to contact us:
+        </p>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <p className="mb-2">
+            <strong>Email:</strong>{' '}
+            <a
+              href="mailto:privacy@slickage.io"
+              className="text-blue-600 hover:text-blue-800 underline"
+            >
+              privacy@slickage.io
+            </a>
+          </p>
+          <p className="mb-2">
+            <strong>General Contact:</strong>{' '}
+            <a href="/contact" className="text-blue-600 hover:text-blue-800 underline">
+              Contact Form
+            </a>
+          </p>
+          <p>
+            <strong>Business Address:</strong> Honolulu, Hawaii, United States
+          </p>
+        </div>
+      </section>
+
       <section>
         <h3>Consent</h3>
-
         <p>By using our website, you hereby consent to our disclaimer and agree to its terms.</p>
-        <h3>Update</h3>
-        <p>This site disclaimer was last updated on: Thursday, August 17th, 2017</p>
+
+        <h3>Privacy Policy Updates</h3>
+        <p>
+          This Privacy Policy was last updated on:{' '}
+          {new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </p>
 
         <br></br>
         <em>
-          Should we update, amend or make any changes to this document, those changes will be
-          prominently posted here.
+          Should we update, amend or make any changes to this Privacy Policy, those changes will be
+          prominently posted here. We encourage you to review this Privacy Policy periodically.
         </em>
       </section>
     </main>

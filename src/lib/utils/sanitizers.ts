@@ -1,14 +1,14 @@
 /**
  * Remove HTML tags from input string
  */
-export function stripTags(input: string): string {
+function stripTags(input: string): string {
   return input.replace(/<[^>]*>/g, '');
 }
 
 /**
  * Escape HTML special characters
  */
-export function escapeHtml(input: string): string {
+function escapeHtml(input: string): string {
   const htmlEscapes: Record<string, string> = {
     '&': '&amp;',
     '<': '&lt;',

@@ -3,6 +3,8 @@
 import React, { useState, useRef } from 'react';
 import { Send } from 'lucide-react';
 import { useRecaptcha } from '@/lib/hooks/useRecaptcha';
+import { useEventTracking } from '@/lib/hooks/useEventTracking';
+import { useUserIdentification } from '@/lib/hooks/useUserIdentification';
 import { Button, Input, Textarea } from '@/components/ui';
 import { logger } from '@/lib/utils/logger';
 
@@ -40,6 +42,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
     website: '',
   });
   const [startTime, setStartTime] = useState(Date.now());
+  const [hasStartedTyping, setHasStartedTyping] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -55,6 +58,13 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
     strategy: 'in-viewport',
     triggerRef: sectionRef,
   });
+
+  const { trackFormInteraction } = useEventTracking();
+  const { identifyUser } = useUserIdentification();
+
+  React.useEffect(() => {
+    trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'viewed');
+  }, [trackFormInteraction, standalone]);
 
   const formatPhoneNumber = (value: string): string => {
     const digits = value.replace(/\D/g, '');
@@ -72,6 +82,11 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+
+    if (!hasStartedTyping && value.trim().length > 0) {
+      setHasStartedTyping(true);
+      trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'started', { field: name });
+    }
 
     if (name === 'phone') {
       const formattedPhone = formatPhoneNumber(value);
@@ -121,6 +136,17 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
       const data: ApiError | { message: string; submissionId: string } = await res.json();
 
       if (res.ok) {
+        await identifyUser({
+          email: formData.email,
+          company: formData.subject,
+          leadSource: standalone ? 'contact_page' : 'homepage_contact_form',
+          formType: 'contact',
+        });
+
+        trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'submitted', {
+          completionTime: elapsed,
+        });
+
         setIsSubmitted(true);
         setFormData({
           name: '',
@@ -131,6 +157,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
           website: '',
         });
         setStartTime(Date.now());
+        setHasStartedTyping(false);
       } else {
         const errorData = data as ApiError;
 
@@ -151,12 +178,22 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
             errorMessage += ` Please try again in ${errorData.retryAfter} minutes.`;
           }
 
+          trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'error', {
+            error: errorMessage,
+          });
+
           setError(errorMessage);
         }
       }
     } catch (err) {
       logger.error('Form submission error:', err);
-      setError('Network error. Please check your connection and try again.');
+      const networkError = 'Network error. Please check your connection and try again.';
+
+      trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'error', {
+        error: networkError,
+      });
+
+      setError(networkError);
     } finally {
       setIsSubmitting(false);
     }

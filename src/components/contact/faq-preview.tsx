@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import TrackedFAQLink from './TrackedFAQLink';
 
 export default function FaqPreview() {
   return (
@@ -24,7 +24,7 @@ export default function FaqPreview() {
         </div>
       </div>
       <div className="text-center mt-6">
-        <Link
+        <TrackedFAQLink
           href="#faq"
           className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors text-sm font-medium"
         >
@@ -37,7 +37,7 @@ export default function FaqPreview() {
               d="M19 14l-7 7m0 0l-7-7m7 7V3"
             />
           </svg>
-        </Link>
+        </TrackedFAQLink>
       </div>
     </div>
   );

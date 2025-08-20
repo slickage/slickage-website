@@ -113,21 +113,3 @@ function cleanupCache() {
   }
   saveCacheToStorage(); // Save after cleanup
 }
-
-/**
- * Get cache statistics for debugging
- */
-export function getS3UrlCacheStats() {
-  const now = Date.now();
-  const entries = Array.from(s3UrlCache.entries()).map(([key, value]) => ({
-    key,
-    age: Math.round((now - value.timestamp) / 1000),
-    url: value.url.substring(0, 50) + '...',
-  }));
-
-  return {
-    size: s3UrlCache.size,
-    entries,
-    maxAge: Math.round(CACHE_DURATION / 1000),
-  };
-}

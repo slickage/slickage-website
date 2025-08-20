@@ -6,8 +6,15 @@ interface RecaptchaConfig {
   enabled: boolean;
 }
 
+interface PostHogConfig {
+  key: string;
+  host: string;
+  enabled: boolean;
+}
+
 interface ClientConfig {
   recaptcha: RecaptchaConfig;
+  posthog: PostHogConfig;
 }
 
 export function useClientConfig<T extends keyof ClientConfig>(configKey: T) {

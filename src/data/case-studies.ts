@@ -309,7 +309,3 @@ Unfortunately, the company ran out of funding before the new flow could go live,
 export async function getCaseStudyById(id: string) {
   return caseStudies.find((cs) => cs.id === id);
 }
-
-export function getAllCaseStudies() {
-  return caseStudies;
-}

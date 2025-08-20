@@ -1,0 +1,52 @@
+import { PostHog } from 'posthog-node';
+
+export function createPostHogServer() {
+  const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+
+  const posthogHost =
+    process.env.NODE_ENV === 'production'
+      ? 'https://beta.slickage.io/ingest'
+      : 'https://us.i.posthog.com';
+
+  if (!posthogKey) {
+    throw new Error('PostHog API key not configured');
+  }
+
+  return new PostHog(posthogKey, {
+    host: posthogHost,
+    flushAt: 1,
+    flushInterval: 0,
+  });
+}
+
+export async function getServerFeatureFlags(userId: string, flagKeys?: string[]) {
+  const client = createPostHogServer();
+
+  try {
+    if (flagKeys) {
+      return await client.getAllFlags(userId, { flagKeys });
+    } else {
+      return await client.getAllFlags(userId);
+    }
+  } finally {
+    await client.shutdown();
+  }
+}
+
+export async function captureServerEvent(
+  userId: string,
+  event: string,
+  properties?: Record<string, any>,
+) {
+  const client = createPostHogServer();
+
+  try {
+    await client.capture({
+      distinctId: userId,
+      event,
+      properties,
+    });
+  } finally {
+    await client.shutdown();
+  }
+}

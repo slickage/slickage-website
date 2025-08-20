@@ -13,6 +13,8 @@ import { checkRateLimit, MAX_REQUESTS_PER_WINDOW } from '@/lib/security/rate-lim
 import { verifyRecaptcha, validateRecaptchaScore } from '@/lib/security/recaptcha';
 import { sanitizeContactData, saveContactSubmission } from '@/lib/services/contact-service';
 import { createSlackService } from '@/lib/services/slack-service';
+import { captureServerEvent } from '@/lib/posthog-server';
+import { createSafeDistinctId, extractEmailDomain, anonymizeIp } from '@/lib/utils/privacy';
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
@@ -97,9 +99,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const processingTime = Date.now() - startTime;
+
+    const emailDomain = extractEmailDomain(sanitizedData.email);
+    const isInternalUser = ['slickage.com'].includes(emailDomain);
+
+    try {
+      const distinctId = isInternalUser
+        ? `internal_${anonymizeIp(clientIp)}`
+        : createSafeDistinctId(sanitizedData.email);
+
+      await captureServerEvent(distinctId, 'contact_flow:form_submit', {
+        form_type: 'contact',
+        lead_source: 'website',
+        processing_time: processingTime,
+        source: 'server_api',
+        user_agent: request.headers.get('user-agent') || 'unknown',
+        referrer: request.headers.get('referer') || 'direct',
+        is_internal: isInternalUser,
+        company_domain: emailDomain,
+      });
+
+      if (isInternalUser) {
+        await captureServerEvent(distinctId, 'system_v1:internal_user_detect', {
+          detection_method: 'email_domain',
+          company_domain: emailDomain,
+          source: 'contact_form_server',
+        });
+      }
+    } catch (error) {
+      logger.error('Failed to track contact submission:', error);
+    }
+
     const slackService = createSlackService();
     if (slackService) {
-      const processingTime = Date.now() - startTime;
       const slackMessage = slackService.createContactFormMessage({
         name: sanitizedData.name,
         email: sanitizedData.email,
@@ -164,9 +197,4 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-}
-
-// Handle GET requests (optional - for health check)
-export async function GET() {
-  return NextResponse.json({ message: 'Contact API endpoint is working' }, { status: 200 });
 }

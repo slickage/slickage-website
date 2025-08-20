@@ -14,6 +14,20 @@ const nextConfig = {
       },
     ],
   },
+  allowedDevOrigins: ['us.posthog.com', 'us.i.posthog.com', 'us-assets.i.posthog.com'],
+  // Reverse proxy for PostHog to bypass ad blockers and improve data collection
+  async rewrites() {
+    return [
+      {
+        source: '/ingest/:path*',
+        destination: 'https://us.i.posthog.com/:path*',
+      },
+      {
+        source: '/static/:path*',
+        destination: 'https://us-assets.i.posthog.com/static/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;
