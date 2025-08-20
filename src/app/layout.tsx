@@ -6,6 +6,7 @@ import Footer from '@/components/footer';
 import { LazyMotionWrapper } from '@/components/ui/LazyMotionWrapper';
 import { PostHogProvider } from './providers';
 import { PageTracker } from '../components/PageTracker';
+import { AnalyticsConsentBanner } from '@/components/ui/AnalyticsConsentBanner';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -85,6 +86,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Header />
             {children}
             <Footer />
+            <AnalyticsConsentBanner />
           </LazyMotionWrapper>
         </PostHogProvider>
       </body>
