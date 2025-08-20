@@ -57,6 +57,12 @@ export const variants = {
     exit: { opacity: 0, scale: 0.9 },
     hover: { scale: 1.05, y: -1 },
   },
+
+  banner: {
+    initial: { y: 100, opacity: 1 },
+    animate: { y: 0, opacity: 1 },
+    exit: { y: 100, opacity: 0 },
+  },
 };
 
 export const transitions = {
@@ -71,6 +77,8 @@ export const transitions = {
   card: { type: 'spring' as const, stiffness: 300, damping: 20, mass: 0.8 },
 
   tag: { type: 'spring' as const, stiffness: 400, damping: 25, mass: 0.6 },
+
+  banner: { type: 'spring' as const, stiffness: 200, damping: 25, mass: 0.8 },
 };
 
 export function useMotionVariant(variantName: keyof typeof variants) {
