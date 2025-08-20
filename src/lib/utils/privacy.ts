@@ -63,14 +63,5 @@ export function extractEmailDomain(email: string): string {
   return domain || 'unknown';
 }
 
-/**
- * Check if data should be tracked based on privacy settings
- * @param dataType Type of data being tracked
- * @returns Boolean indicating if tracking is allowed
- */
-export function isTrackingAllowed(dataType: 'email' | 'ip' | 'location' | 'device'): boolean {
-  // This can be extended to check user consent or privacy settings
-  // For now, we allow anonymized tracking only
-  return dataType !== 'email' && dataType !== 'ip';
-}
+
 

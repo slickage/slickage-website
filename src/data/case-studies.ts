@@ -310,6 +310,4 @@ export async function getCaseStudyById(id: string) {
   return caseStudies.find((cs) => cs.id === id);
 }
 
-export function getAllCaseStudies() {
-  return caseStudies;
-}
+
