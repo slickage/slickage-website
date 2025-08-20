@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import posthog from 'posthog-js';
 import { EVENTS, PROPERTIES } from '@/app/providers';
+import { hashEmail, createSafeDistinctId, extractEmailDomain } from '@/lib/utils/privacy';
+import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
 
 interface UserIdentificationData {
   email: string;
@@ -33,14 +35,14 @@ export function useUserIdentification() {
   const checkInternalUser = useCallback((email: string, clientIp?: string): InternalUserCheck => {
     // Check email domain
     if (email) {
-      const domain = email.split('@')[1]?.toLowerCase();
-      if (INTERNAL_DOMAINS.includes(domain as any)) {
+      const domain = extractEmailDomain(email);
+      if (domain !== 'unknown' && INTERNAL_DOMAINS.includes(domain as any)) {
         return { isInternal: true, reason: 'internal_email_domain' };
       }
     }
 
     // Check IP address
-    if (clientIp && INTERNAL_IPS.includes(clientIp as any)) {
+    if (clientIp && INTERNAL_IPS.some(ip => ip === clientIp)) {
       return { isInternal: true, reason: 'internal_ip_address' };
     }
 
@@ -58,13 +60,14 @@ export function useUserIdentification() {
     const internalCheck = checkInternalUser(email);
     
     if (internalCheck.isInternal) {
-      // Track internal user but don't identify
-      posthog.capture(EVENTS.INTERNAL_USER_DETECTED, {
-        [PROPERTIES.EMAIL]: email,
+      // Track internal user but don't identify - use anonymized data
+      posthog.capture(EVENTS.INTERNAL_USER_DETECTED, addVersionMetadata({
+        email_hash: hashEmail(email), // Use hashed email instead of plain text
         [PROPERTIES.IS_INTERNAL]: true,
         [PROPERTIES.ERROR_TYPE]: internalCheck.reason,
         [PROPERTIES.LEAD_SOURCE]: leadSource,
-      });
+        [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
+      }));
       
       // Set internal user property to filter in PostHog
       posthog.setPersonProperties({
@@ -75,41 +78,42 @@ export function useUserIdentification() {
       return;
     }
 
-    // Create unique distinct ID for lead
-    const distinctId = `lead_${email.toLowerCase()}`;
+    // Create privacy-safe distinct ID for lead
+    const distinctId = createSafeDistinctId(email);
     
     // Get current user properties to check if returning visitor
     const currentDistinctId = posthog.get_distinct_id();
     const isReturning = currentDistinctId && currentDistinctId !== distinctId;
     
     if (isReturning) {
-      posthog.capture(EVENTS.RETURNING_VISITOR, {
-        [PROPERTIES.EMAIL]: email,
+      posthog.capture(EVENTS.RETURNING_VISITOR, addVersionMetadata({
+        email_hash: hashEmail(email), // Use hashed email
         [PROPERTIES.LEAD_SOURCE]: leadSource,
         [PROPERTIES.PREVIOUS_ID]: currentDistinctId,
-      });
+        [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
+      }));
     }
 
-    // Identify the user
+    // Identify the user with privacy-safe data
     posthog.identify(distinctId, {
-      email: email,
+      email_hash: hashEmail(email), // Store hashed email instead of plain text
       company: company || userData.company,
       lead_source: leadSource,
       first_contact_form: formType || 'contact',
       first_identified: new Date().toISOString(),
       [PROPERTIES.IS_INTERNAL]: false,
-      [PROPERTIES.COMPANY_DOMAIN]: email.split('@')[1]?.toLowerCase(),
+      [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
     });
 
-    // Track identification event
-    posthog.capture(EVENTS.LEAD_IDENTIFIED, {
-      [PROPERTIES.EMAIL]: email,
+    // Track identification event with anonymized data
+    posthog.capture(EVENTS.LEAD_IDENTIFIED, addVersionMetadata({
+      email_hash: hashEmail(email), // Use hashed email
       [PROPERTIES.LEAD_SOURCE]: leadSource,
       [PROPERTIES.FORM_TYPE]: formType || 'contact',
-      [PROPERTIES.COMPANY_DOMAIN]: email.split('@')[1]?.toLowerCase(),
+      [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
       [PROPERTIES.IS_INTERNAL]: false,
       [PROPERTIES.FIRST_VISIT]: !isReturning,
-    });
+    }));
 
   }, [checkInternalUser]);
 
