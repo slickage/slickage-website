@@ -62,12 +62,3 @@ export function extractEmailDomain(email: string): string {
   const domain = email.split('@')[1]?.toLowerCase();
   return domain || 'unknown';
 }
-
-/**
- * Check if data should be tracked based on privacy settings
- * @param dataType Type of data being tracked
- * @returns Boolean indicating if tracking is allowed
- */
-export function isTrackingAllowed(dataType: 'email' | 'ip' | 'location' | 'device'): boolean {
-  return dataType !== 'email' && dataType !== 'ip';
-}

@@ -104,6 +104,3 @@ export function useMotionTransition(type: keyof typeof transitions) {
 
   return transitions[type];
 }
-
-export type VariantType = keyof typeof variants;
-export type TransitionType = keyof typeof transitions;

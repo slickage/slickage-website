@@ -31,10 +31,6 @@ export const featuredInsights: Insight[] = [
   },
 ];
 
-export async function getInsightById(id: string) {
-  return featuredInsights.find((insight) => insight.id === id);
-}
-
 export async function getFeaturedInsights() {
-  return featuredInsights.slice(0, 7);
+  return featuredInsights;
 }
