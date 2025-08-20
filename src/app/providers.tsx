@@ -6,6 +6,7 @@ import { PostHogProvider as PHProvider } from 'posthog-js/react';
 import { useEffect } from 'react';
 import { useClientConfig } from '@/lib/hooks/useClientConfig';
 import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
+import { logger } from '@/lib/utils/logger';
 
 // Event tracking constants following PostHog best practices
 // Format: category:object_action with versioning support
@@ -108,7 +109,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
         
         // Privacy and consent options
         opt_out_capturing_by_default: false, // Users opt-in by default
-        respect_dnt: true, // Respect Do Not Track headers
+        respect_dnt: process.env.NODE_ENV === 'production', // Only respect DNT in production
         
         // Enhanced session recording with privacy protection
         session_recording: {
@@ -128,9 +129,8 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
         // Performance optimizations
         loaded: function() {
           // Custom initialization logic
-          if (process.env.NODE_ENV === 'development') {
-            console.log('PostHog loaded successfully with reverse proxy');
-          }
+          logger.info('PostHog loaded successfully with reverse proxy');
+          
         },
         
         // Cross-domain tracking

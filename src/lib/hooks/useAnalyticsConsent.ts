@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import posthog from 'posthog-js';
+import { usePostHog } from 'posthog-js/react';
 
 export type ConsentStatus = 'pending' | 'granted' | 'denied';
 
@@ -16,6 +16,7 @@ const CONSENT_STORAGE_KEY = 'posthog_analytics_consent';
  * Following GDPR and PostHog privacy best practices
  */
 export function useAnalyticsConsent() {
+  const posthog = usePostHog();
   const [consentStatus, setConsentStatus] = useState<ConsentStatus>('pending');
   const [consent, setConsent] = useState<AnalyticsConsent>({
     essential: true, // Always required for core functionality
@@ -34,9 +35,9 @@ export function useAnalyticsConsent() {
         setConsentStatus(parsed.status);
         
         // Configure PostHog based on consent
-        if (parsed.status === 'denied' || !parsed.consent.analytics) {
+        if (posthog && (parsed.status === 'denied' || !parsed.consent.analytics)) {
           posthog.opt_out_capturing();
-        } else if (parsed.status === 'granted' && parsed.consent.analytics) {
+        } else if (posthog && parsed.status === 'granted' && parsed.consent.analytics) {
           posthog.opt_in_capturing();
         }
       } catch (error) {
@@ -58,7 +59,7 @@ export function useAnalyticsConsent() {
     }));
     
     // Enable PostHog if analytics consent is granted
-    if (newConsent.analytics) {
+    if (newConsent.analytics && posthog) {
       posthog.opt_in_capturing();
       
       // Track consent granted event
@@ -87,7 +88,9 @@ export function useAnalyticsConsent() {
     }));
     
     // Disable PostHog
-    posthog.opt_out_capturing();
+    if (posthog) {
+      posthog.opt_out_capturing();
+    }
   }, []);
 
   const resetConsent = useCallback(() => {
@@ -99,7 +102,9 @@ export function useAnalyticsConsent() {
     });
     
     localStorage.removeItem(CONSENT_STORAGE_KEY);
-    posthog.opt_out_capturing();
+    if (posthog) {
+      posthog.opt_out_capturing();
+    }
   }, []);
 
   const updateConsent = useCallback((updates: Partial<AnalyticsConsent>) => {
@@ -114,10 +119,12 @@ export function useAnalyticsConsent() {
     }));
     
     // Update PostHog based on analytics consent
-    if (newConsent.analytics && consentStatus === 'granted') {
-      posthog.opt_in_capturing();
-    } else {
-      posthog.opt_out_capturing();
+    if (posthog) {
+      if (newConsent.analytics && consentStatus === 'granted') {
+        posthog.opt_in_capturing();
+      } else {
+        posthog.opt_out_capturing();
+      }
     }
   }, [consent, consentStatus]);
 

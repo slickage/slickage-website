@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import posthog from 'posthog-js';
+import { usePostHog } from 'posthog-js/react';
 import { EVENTS, PROPERTIES } from '@/app/providers';
 import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
 
@@ -8,6 +8,7 @@ import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
  * Provides typed event tracking methods
  */
 export function useEventTracking() {
+  const posthog = usePostHog();
   const trackEvent = useCallback((
     event: keyof typeof EVENTS,
     properties?: Partial<Record<keyof typeof PROPERTIES, string | number | boolean>>

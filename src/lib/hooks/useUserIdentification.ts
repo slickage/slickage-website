@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import posthog from 'posthog-js';
+import { usePostHog } from 'posthog-js/react';
 import { EVENTS, PROPERTIES } from '@/app/providers';
 import { hashEmail, createSafeDistinctId, extractEmailDomain } from '@/lib/utils/privacy';
 import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
@@ -31,6 +31,7 @@ const INTERNAL_IPS = [
  * Handles lead tracking and removes internal team data
  */
 export function useUserIdentification() {
+  const posthog = usePostHog();
   
   const checkInternalUser = useCallback((email: string, clientIp?: string): InternalUserCheck => {
     // Check email domain
@@ -50,7 +51,7 @@ export function useUserIdentification() {
   }, []);
 
   const identifyUser = useCallback(async (userData: UserIdentificationData) => {
-    if (typeof window === 'undefined' || !posthog.__loaded) {
+    if (typeof window === 'undefined' || !posthog) {
       return;
     }
 
@@ -118,7 +119,7 @@ export function useUserIdentification() {
   }, [checkInternalUser]);
 
   const identifyAnonymousVisitor = useCallback(() => {
-    if (typeof window === 'undefined' || !posthog.__loaded) {
+    if (typeof window === 'undefined' || !posthog) {
       return;
     }
 

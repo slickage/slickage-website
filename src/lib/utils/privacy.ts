@@ -73,3 +73,4 @@ export function isTrackingAllowed(dataType: 'email' | 'ip' | 'location' | 'devic
   // For now, we allow anonymized tracking only
   return dataType !== 'email' && dataType !== 'ip';
 }
+

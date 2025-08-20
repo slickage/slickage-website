@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import posthog from 'posthog-js';
+import { usePostHog } from 'posthog-js/react';
 import { EVENTS, PROPERTIES } from '@/app/providers';
 
 /**
@@ -9,15 +9,16 @@ import { EVENTS, PROPERTIES } from '@/app/providers';
  */
 export function usePageTracking() {
   const pathname = usePathname();
+  const posthog = usePostHog();
 
   useEffect(() => {
     // Only track if PostHog is initialized
-    if (typeof window !== 'undefined' && posthog.__loaded) {
+    if (posthog && typeof window !== 'undefined') {
       posthog.capture(EVENTS.PAGE_VIEWED, {
         [PROPERTIES.PAGE_PATH]: pathname,
         [PROPERTIES.PAGE_TITLE]: document.title,
         timestamp: new Date().toISOString(),
       });
     }
-  }, [pathname]);
+  }, [pathname, posthog]);
 }
