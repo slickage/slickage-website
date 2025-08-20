@@ -6,7 +6,7 @@ import AnimatedSection from '@/components/ui/AnimatedSection';
 
 export default function Home() {
   return (
-    <main className="flex-1 bg-gradient-to-r from-blue-500/10 to-violet-500/10">
+    <main className="flex-1">
       <AnimatedSection variant="slideUp">
         <HeroSection />
       </AnimatedSection>
