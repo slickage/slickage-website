@@ -3,9 +3,16 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useEventTracking } from '@/lib/hooks/useEventTracking';
 import Link from 'next/link';
 
 export default function HeroSection() {
+  const { trackCTAClick } = useEventTracking();
+
+  const handleViewWorkClick = () => {
+    trackCTAClick('View Our Work', 'hero_section', '/#insights');
+  };
+
   return (
     <section id="hero" className="relative min-h-screen flex items-center">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-violet-500/10" />
@@ -25,7 +32,7 @@ export default function HeroSection() {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/#insights">
+            <Link href="/#insights" onClick={handleViewWorkClick}>
               <Button
                 variant="blue"
                 size="lg"

@@ -7,6 +7,7 @@ import { getS3ImageUrl } from '@/lib/utils';
 import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
+import { useEventTracking } from '@/lib/hooks/useEventTracking';
 
 const ImageLightboxComponent = dynamic(() => import('../ui/ImageLightbox'));
 
@@ -24,6 +25,18 @@ export default function CaseStudyImage({
 
   const imageVariants = useMotionVariant('image');
   const transition = useMotionTransition('image');
+  const { trackContentInteraction } = useEventTracking();
+
+  const handleImageClick = () => {
+    // Extract case study ID from current path if available
+    const pathParts = window.location.pathname.split('/');
+    const caseStudyId = pathParts[pathParts.length - 1] || 'unknown';
+    
+    trackContentInteraction('case_study', 'CASE_STUDY_IMAGE_CLICKED', {
+      id: caseStudyId,
+      imageSrc: src,
+    });
+  };
 
   useEffect(() => {
     if (src && src !== '/placeholder.svg') {
@@ -61,7 +74,7 @@ export default function CaseStudyImage({
         {...motionProps}
         style={{ willChange: 'transform' }}
       >
-        <div className="relative group cursor-pointer overflow-hidden rounded-lg">
+        <div className="relative group cursor-pointer overflow-hidden rounded-lg" onClick={handleImageClick}>
           {isLoadingS3 && <LoadingSpinnerOverlay />}
           <ImageLightboxComponent
             src={imageSrc}

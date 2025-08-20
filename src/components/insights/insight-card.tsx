@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { m } from 'motion/react';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
+import { useEventTracking } from '@/lib/hooks/useEventTracking';
 import type { Insight } from '@/types/insight';
 import { getS3ImageUrl } from '@/lib/utils';
 import { logger } from '@/lib/utils/logger';
@@ -23,6 +24,14 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
   const cardTransition = useMotionTransition('card');
   const tagVariants = useMotionVariant('tag');
   const tagTransition = useMotionTransition('tag');
+  const { trackContentInteraction } = useEventTracking();
+
+  const handleInsightClick = () => {
+    trackContentInteraction('insight', 'INSIGHT_CARD_CLICKED', {
+      id: insight.id,
+      title: insight.title,
+    });
+  };
 
   useEffect(() => {
     if (insight.imageSrc && insight.imageSrc !== '/placeholder.svg') {
@@ -58,6 +67,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
   return (
     <Link
       href={`/case-studies/${insight.id}`}
+      onClick={handleInsightClick}
       className="block focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-500/50 rounded-xl"
     >
       <m.div
