@@ -14,6 +14,7 @@ import { verifyRecaptcha, validateRecaptchaScore } from '@/lib/security/recaptch
 import { sanitizeContactData, saveContactSubmission } from '@/lib/services/contact-service';
 import { createSlackService } from '@/lib/services/slack-service';
 import { captureServerEvent } from '@/lib/posthog-server';
+import { createSafeDistinctId, extractEmailDomain, anonymizeIp } from '@/lib/utils/privacy';
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
@@ -101,19 +102,19 @@ export async function POST(request: NextRequest) {
     // Track successful contact form submission server-side
     const processingTime = Date.now() - startTime;
     
-    // Check if internal user
-    const emailDomain = sanitizedData.email.split('@')[1]?.toLowerCase() || '';
+    // Check if internal user using privacy-safe methods
+    const emailDomain = extractEmailDomain(sanitizedData.email);
     const isInternalUser = ['slickage.com'].includes(emailDomain);
     
     try {
-      // Use lead-based identifier for external users, IP for internal
+      // Use privacy-safe identifiers
       const distinctId = isInternalUser 
-        ? `internal_${clientIp}` 
-        : `lead_${sanitizedData.email.toLowerCase()}`;
+        ? `internal_${anonymizeIp(clientIp)}` 
+        : createSafeDistinctId(sanitizedData.email);
         
       await captureServerEvent(
         distinctId,
-        'contact_form_submitted_server',
+        'contact_flow_v1:server_submit',
         {
           submission_id: submissionResult.submissionId,
           form_type: 'contact',
@@ -127,18 +128,20 @@ export async function POST(request: NextRequest) {
           is_internal: isInternalUser,
           company_domain: emailDomain,
           lead_source: 'contact_form',
+          // Note: No longer tracking client IP directly for privacy
         }
       );
       
-      // Additional internal user tracking
+      // Additional internal user tracking with privacy protection
       if (isInternalUser) {
         await captureServerEvent(
           distinctId,
-          'internal_user_detected',
+          'system_v1:internal_user_detect',
           {
             detection_method: 'email_domain',
-            email_domain: emailDomain,
+            company_domain: emailDomain, // Use domain only, not full email
             source: 'contact_form_server',
+            // Note: No personal identifiers logged
           }
         );
       }
