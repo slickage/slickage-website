@@ -56,9 +56,7 @@ export default function Features() {
             <div key={index} className="flex">
               <div className="">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="text-blue-400">
-                    {feature.icon}
-                  </div>
+                  <div className="text-blue-400">{feature.icon}</div>
                   <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
                 </div>
                 <p className="text-gray-400">{feature.description}</p>
