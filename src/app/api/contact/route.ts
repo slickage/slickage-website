@@ -13,6 +13,7 @@ import { checkRateLimit, MAX_REQUESTS_PER_WINDOW } from '@/lib/security/rate-lim
 import { verifyRecaptcha, validateRecaptchaScore } from '@/lib/security/recaptcha';
 import { sanitizeContactData, saveContactSubmission } from '@/lib/services/contact-service';
 import { createSlackService } from '@/lib/services/slack-service';
+import { captureServerEvent } from '@/lib/posthog-server';
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
@@ -97,9 +98,56 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Track successful contact form submission server-side
+    const processingTime = Date.now() - startTime;
+    
+    // Check if internal user
+    const emailDomain = sanitizedData.email.split('@')[1]?.toLowerCase() || '';
+    const isInternalUser = ['slickage.com'].includes(emailDomain);
+    
+    try {
+      // Use lead-based identifier for external users, IP for internal
+      const distinctId = isInternalUser 
+        ? `internal_${clientIp}` 
+        : `lead_${sanitizedData.email.toLowerCase()}`;
+        
+      await captureServerEvent(
+        distinctId,
+        'contact_form_submitted_server',
+        {
+          submission_id: submissionResult.submissionId,
+          form_type: 'contact',
+          processing_time_ms: processingTime,
+          subject_category: sanitizedData.subject,
+          contact_method: sanitizedData.phone ? 'phone_and_email' : 'email_only',
+          form_completion_time_ms: validatedData.elapsed || 0,
+          source: 'server_api',
+          user_agent: request.headers.get('user-agent') || 'unknown',
+          referrer: request.headers.get('referer') || 'direct',
+          is_internal: isInternalUser,
+          company_domain: emailDomain,
+          lead_source: 'contact_form',
+        }
+      );
+      
+      // Additional internal user tracking
+      if (isInternalUser) {
+        await captureServerEvent(
+          distinctId,
+          'internal_user_detected',
+          {
+            detection_method: 'email_domain',
+            email_domain: emailDomain,
+            source: 'contact_form_server',
+          }
+        );
+      }
+    } catch (error) {
+      logger.error('Failed to track contact submission:', error);
+    }
+
     const slackService = createSlackService();
     if (slackService) {
-      const processingTime = Date.now() - startTime;
       const slackMessage = slackService.createContactFormMessage({
         name: sanitizedData.name,
         email: sanitizedData.email,
