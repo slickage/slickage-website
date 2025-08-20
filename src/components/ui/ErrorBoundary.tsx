@@ -2,6 +2,7 @@
 
 import React, { Component, type ReactNode } from 'react';
 import { logger } from '@/lib/utils/logger';
+import posthog from 'posthog-js';
 
 interface Props {
   children: ReactNode;
@@ -25,6 +26,18 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     logger.error('ErrorBoundary caught an error:', error, errorInfo);
+    
+    // Track error boundary activation
+    if (typeof window !== 'undefined' && posthog.__loaded) {
+      posthog.capture('error_boundary_triggered', {
+        error_type: 'component_error',
+        error_message: error.message,
+        error_stack: error.stack?.slice(0, 500),
+        component_stack: errorInfo.componentStack?.slice(0, 500),
+        page_path: window.location.pathname,
+        timestamp: new Date().toISOString(),
+      });
+    }
   }
 
   handleReset = () => {
