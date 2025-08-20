@@ -17,12 +17,8 @@ interface AnimatedSectionProps {
 export default function AnimatedSection({
   children,
   variant = 'fadeIn',
-  delay = 0,
-  duration = 0.3,
   className = '',
 }: AnimatedSectionProps) {
-  const transition = useMotionTransition('contentEntrance');
-
   const getVariantMapping = () => {
     switch (variant) {
       case 'fadeIn':
@@ -41,6 +37,7 @@ export default function AnimatedSection({
   };
 
   const animationVariants = getVariantMapping();
+  const transition = useMotionTransition('contentEntrance');
 
   return (
     <m.div
@@ -48,16 +45,7 @@ export default function AnimatedSection({
       initial="hidden"
       whileInView="visible"
       exit="exit"
-      viewport={{
-        once: true,
-        margin: '-50px',
-        amount: 0.3,
-      }}
-      transition={{
-        ...transition,
-        delay,
-        duration,
-      }}
+      transition={transition}
       className={className}
       style={{ willChange: 'transform, opacity' }}
     >

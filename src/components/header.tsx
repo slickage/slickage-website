@@ -8,8 +8,6 @@ import { Button } from '@/components/ui/button';
 import { useScrollPosition } from '@/lib/hooks/useScrollPosition';
 import { useEventTracking } from '@/lib/hooks/useEventTracking';
 
-const HEADER_ITEMS = [''];
-
 export default function Header() {
   const { isScrolled } = useScrollPosition({ threshold: 10 });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -57,16 +55,6 @@ export default function Header() {
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">
-            {HEADER_ITEMS.map((item) => (
-              <Link
-                key={item}
-                href={`/${item.toLowerCase()}`}
-                className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
-                aria-label={item || 'Navigation link'}
-              >
-                {item}
-              </Link>
-            ))}
             <Link href="/contact" onClick={handleContactClick}>
               <Button variant="default" size="lg">
                 Get in Touch
@@ -91,22 +79,12 @@ export default function Header() {
       {isMobileMenuOpen && (
         <div
           id="mobile-menu"
-          className="md:hidden absolute top-full left-0 right-0 bg-gradient-to-r from-blue-500/10 to-violet-500/10 border-b border-gray-800"
+          className="md:hidden absolute top-full left-0 right-0 bg-gray-900/95 backdrop-blur-md border-b border-white/10 transition-all duration-100"
           role="menu"
           aria-label="Mobile navigation"
         >
-          <nav className="container mx-auto px-4 py-4">
+          <nav className="container mx-auto px-4 py-8">
             <div className="flex flex-col space-y-4">
-              {HEADER_ITEMS.map((item) => (
-                <Link
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="text-gray-300 hover:text-white text-sm font-medium transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item}
-                </Link>
-              ))}
               <Link
                 href="/contact"
                 onClick={() => {
