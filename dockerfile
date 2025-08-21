@@ -37,10 +37,3 @@ COPY --from=prerelease /app/drizzle.config.ts ./
 USER bun
 EXPOSE 3000/tcp
 CMD  ["bun", "run", "start"]
-
-# FROM oven/bun:1.2.16
-# WORKDIR /src/
-# COPY package.json bun.lock ./
-# RUN bun install --frozen-lockfile
-# COPY . .
-# RUN bun run build
