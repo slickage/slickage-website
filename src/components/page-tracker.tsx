@@ -1,6 +1,6 @@
 'use client';
 
-import { usePageTracking } from '@/lib/hooks/usePageTracking';
+import { usePageTracking } from '@/lib/hooks/use-page-tracking';
 
 /**
  * Client component to track page views

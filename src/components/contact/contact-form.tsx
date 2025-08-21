@@ -2,10 +2,12 @@
 
 import React, { useState, useRef } from 'react';
 import { Send } from 'lucide-react';
-import { useRecaptcha } from '@/lib/hooks/useRecaptcha';
-import { useEventTracking } from '@/lib/hooks/useEventTracking';
-import { useUserIdentification } from '@/lib/hooks/useUserIdentification';
-import { Button, Input, Textarea } from '@/components/ui';
+import { useRecaptcha } from '@/lib/hooks/use-recaptcha';
+import { useEventTracking } from '@/lib/hooks/use-event-tracking';
+import { useUserIdentification } from '@/lib/hooks/use-user-identification';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { logger } from '@/lib/utils/logger';
 
 declare global {

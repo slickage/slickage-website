@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { logger } from '@/lib/utils/logger';
-import { useEventTracking } from '@/lib/hooks/useEventTracking';
+import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 
 export default function Error({
   error,

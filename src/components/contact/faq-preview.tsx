@@ -1,4 +1,4 @@
-import TrackedFAQLink from './TrackedFAQLink';
+import TrackedFAQLink from './tracked-faq-link';
 
 export default function FaqPreview() {
   return (

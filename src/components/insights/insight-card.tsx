@@ -5,11 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { m } from 'motion/react';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
-import { useEventTracking } from '@/lib/hooks/useEventTracking';
+import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 import type { Insight } from '@/types/insight';
 import { getS3ImageUrl } from '@/lib/utils';
 import { logger } from '@/lib/utils/logger';
-import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
+import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 
 interface InsightCardProps {
   insight: Insight;

@@ -5,11 +5,11 @@ import { m } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { getS3ImageUrl } from '@/lib/utils';
 import { logger } from '@/lib/utils/logger';
-import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
+import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
-import { useEventTracking } from '@/lib/hooks/useEventTracking';
+import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 
-const ImageLightboxComponent = dynamic(() => import('../ui/ImageLightbox'));
+const ImageLightboxComponent = dynamic(() => import('../ui/image-lightbox'));
 
 export default function CaseStudyImage({
   src,

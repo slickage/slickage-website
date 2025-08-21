@@ -1,11 +1,9 @@
-import {
-  ContactHero,
-  ContactForm,
-  ContactInfo,
-  FaqSection,
-  FaqPreview,
-} from '@/components/contact';
-import AnimatedSection from '@/components/ui/AnimatedSection';
+import ContactHero from '@/components/contact/contact-hero';
+import ContactForm from '@/components/contact/contact-form';
+import ContactInfo from '@/components/contact/contact-info';
+import FaqSection from '@/components/contact/faq-section';
+import FaqPreview from '@/components/contact/faq-preview';
+import AnimatedSection from '@/components/ui/animated-section';
 
 export const metadata = {
   title: 'Contact Slickage | Get in Touch',

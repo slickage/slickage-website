@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { m } from 'motion/react';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
-import { useAnalyticsConsent } from '@/lib/hooks/useAnalyticsConsent';
+import { useAnalyticsConsent } from '@/lib/hooks/use-analytics-consent';
 import { Button } from '@/components/ui/button';
 
 /**

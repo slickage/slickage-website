@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useClientConfig } from './useClientConfig';
+import { useClientConfig } from './use-client-config';
 import { logger } from '@/lib/utils/logger';
 
 type RecaptchaLoadStrategy = 'immediate' | 'in-viewport' | 'interaction';

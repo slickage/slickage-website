@@ -3,7 +3,7 @@
 import posthog from 'posthog-js';
 import { PostHogProvider as PHProvider } from 'posthog-js/react';
 import { useEffect } from 'react';
-import { useClientConfig } from '@/lib/hooks/useClientConfig';
+import { useClientConfig } from '@/lib/hooks/use-client-config';
 import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
 import { logger } from '@/lib/utils/logger';
 

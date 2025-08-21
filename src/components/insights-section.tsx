@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Insight } from '@/types/insight';
 import { getFeaturedInsights } from '@/data/insights';
-import { InsightCard } from '@/components/insights';
+import InsightCard from '@/components/insights/insight-card';
 
 export const revalidate = 3600; // Revalidate every hour
 

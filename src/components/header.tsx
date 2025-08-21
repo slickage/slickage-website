@@ -5,8 +5,8 @@ import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { useScrollPosition } from '@/lib/hooks/useScrollPosition';
-import { useEventTracking } from '@/lib/hooks/useEventTracking';
+import { useScrollPosition } from '@/lib/hooks/use-scroll-position';
+import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 
 export default function Header() {
   const { isScrolled } = useScrollPosition({ threshold: 10 });

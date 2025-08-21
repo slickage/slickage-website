@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useEventTracking } from '@/lib/hooks/useEventTracking';
+import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 
 interface LegalLinksProps {
   items: { name: string; href: string }[];
