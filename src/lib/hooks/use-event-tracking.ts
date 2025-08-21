@@ -59,7 +59,7 @@ export function useEventTracking() {
     (
       formType: string,
       action: 'viewed' | 'started' | 'submitted' | 'error',
-      details?: { field?: string; error?: string; completionTime?: number },
+      details?: { field?: string; error?: string; completionTime?: number; submissionId?: string },
     ) => {
       const eventMap = {
         viewed: 'CONTACT_FORM_VIEWED',
@@ -75,6 +75,7 @@ export function useEventTracking() {
       if (details?.field) properties.FORM_FIELD = details.field;
       if (details?.error) properties.ERROR_MESSAGE = details.error;
       if (details?.completionTime) properties.FORM_COMPLETION_TIME = details.completionTime;
+      if (details?.submissionId) properties.SUBMISSION_ID = details.submissionId;
 
       trackEvent(eventMap[action], properties);
     },

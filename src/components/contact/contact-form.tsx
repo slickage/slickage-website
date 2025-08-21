@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { logger } from '@/lib/utils/logger';
+import type { ContactFormErrorResponse, ContactFormSuccessResponse } from '@/lib/types/contact-api';
 
 declare global {
   interface Window {
@@ -17,17 +18,6 @@ declare global {
       ready: (callback: () => void) => void;
     };
   }
-}
-
-interface ValidationError {
-  field: string;
-  message: string;
-}
-
-interface ApiError {
-  error: string;
-  details?: ValidationError[];
-  retryAfter?: number;
 }
 
 interface ContactFormProps {
@@ -135,33 +125,49 @@ export function ContactForm({ standalone = false }: ContactFormProps) {
         }),
       });
 
-      const data: ApiError | { message: string; submissionId: string } = await res.json();
-
       if (res.ok) {
-        await identifyUser({
-          email: formData.email,
-          company: formData.subject,
-          leadSource: standalone ? 'contact_page' : 'homepage_contact_form',
-          formType: 'contact',
-        });
+        try {
+          const successData: ContactFormSuccessResponse = await res.json();
+          const extractedSubmissionId = successData.data?.submissionId;
 
-        trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'submitted', {
-          completionTime: elapsed,
-        });
+          if (extractedSubmissionId) {
+            logger.info(`Contact form submitted successfully: ID ${extractedSubmissionId}`);
+          } else {
+            logger.warn('Contact form submitted but no submissionId received');
+          }
 
-        setIsSubmitted(true);
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          subject: '',
-          message: '',
-          website: '',
-        });
-        setStartTime(Date.now());
-        setHasStartedTyping(false);
+          trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'submitted', {
+            completionTime: elapsed,
+            ...(extractedSubmissionId && { submissionId: extractedSubmissionId }),
+          });
+
+          await identifyUser({
+            email: formData.email,
+            company: formData.subject,
+            leadSource: standalone ? 'contact_page' : 'homepage_contact_form',
+            formType: 'contact',
+          });
+
+          setIsSubmitted(true);
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            subject: '',
+            message: '',
+            website: '',
+          });
+          setStartTime(Date.now());
+          setHasStartedTyping(false);
+        } catch (parseError) {
+          logger.error('Failed to parse success response:', parseError);
+
+          trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'submitted', {
+            completionTime: elapsed,
+          });
+        }
       } else {
-        const errorData = data as ApiError;
+        const errorData: ContactFormErrorResponse = await res.json();
 
         if (errorData.details && Array.isArray(errorData.details)) {
           const newFieldErrors: Record<string, string> = {};

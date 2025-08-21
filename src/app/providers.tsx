@@ -52,6 +52,7 @@ export const PROPERTIES = {
   FORM_TYPE: 'form_type',
   FORM_FIELD: 'form_field',
   FORM_COMPLETION_TIME: 'form_completion_time',
+  SUBMISSION_ID: 'submission_id',
 
   CASE_STUDY_ID: 'case_study_id',
   CASE_STUDY_TITLE: 'case_study_title',
