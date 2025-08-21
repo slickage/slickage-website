@@ -1,9 +1,8 @@
-import React from 'react';
-import SocialButtons from './footer/SocialButtons';
-import TrackedNavigation from './footer/TrackedNavigation';
-import LegalLinks from './footer/LegalLinks';
+import { SocialButtons } from './footer/social-buttons';
+import { TrackedNavigation } from './footer/tracked-navigation';
+import { LegalLinks } from './footer/legal-links';
 
-export default function Footer() {
+export function Footer() {
   const companyNavigation = [
     { name: 'Insights', href: '/#insights' },
     { name: 'Contact Us', href: '/contact' },

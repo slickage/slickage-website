@@ -1,12 +1,13 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 import { Inter } from 'next/font/google';
-import Header from '@/components/header';
-import Footer from '@/components/footer';
-import { LazyMotionWrapper } from '@/components/ui/LazyMotionWrapper';
+import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
+import { LazyMotionWrapper } from '@/components/ui/lazy-motion-wrapper';
 import { PostHogProvider } from './providers';
-import { PageTracker } from '../components/PageTracker';
-import { AnalyticsConsentBanner } from '@/components/ui/AnalyticsConsentBanner';
+import { PageTracker } from '../components/page-tracker';
+import { AnalyticsConsentBanner } from '@/components/ui/analytics-consent-banner';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -65,7 +66,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>

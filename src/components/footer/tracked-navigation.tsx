@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
-import { useEventTracking } from '@/lib/hooks/useEventTracking';
+import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 
 interface NavigationItem {
   name: string;
@@ -15,11 +14,7 @@ interface TrackedNavigationProps {
   className?: string;
 }
 
-export default function TrackedNavigation({
-  items,
-  context,
-  className = '',
-}: TrackedNavigationProps) {
+export function TrackedNavigation({ items, context, className = '' }: TrackedNavigationProps) {
   const { trackNavigation } = useEventTracking();
 
   return (

@@ -1,9 +1,9 @@
 'use client';
 
-import posthog from 'posthog-js';
+import { posthog } from 'posthog-js';
 import { PostHogProvider as PHProvider } from 'posthog-js/react';
-import { useEffect } from 'react';
-import { useClientConfig } from '@/lib/hooks/useClientConfig';
+import { useEffect, type ReactNode } from 'react';
+import { useClientConfig } from '@/lib/hooks/use-client-config';
 import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
 import { logger } from '@/lib/utils/logger';
 
@@ -79,7 +79,7 @@ export const PROPERTIES = {
   PREVIOUS_ID: 'previous_id',
 } as const;
 
-export function PostHogProvider({ children }: { children: React.ReactNode }) {
+export function PostHogProvider({ children }: { children: ReactNode }) {
   const { config: posthogConfig, isLoading } = useClientConfig('posthog');
 
   useEffect(() => {

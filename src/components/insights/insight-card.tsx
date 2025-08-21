@@ -1,22 +1,21 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { m } from 'motion/react';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
-import { useEventTracking } from '@/lib/hooks/useEventTracking';
+import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 import type { Insight } from '@/types/insight';
 import { getS3ImageUrl } from '@/lib/utils';
 import { logger } from '@/lib/utils/logger';
-import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
+import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 
 interface InsightCardProps {
   insight: Insight;
-  index?: number; // Add index prop to determine if card is above the fold
 }
 
-export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
+export function InsightCard({ insight }: InsightCardProps) {
   const [s3Url, setS3Url] = useState<string>('/placeholder.svg');
   const [isLoadingS3, setIsLoadingS3] = useState(false);
 
@@ -52,7 +51,7 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
       setS3Url('/placeholder.svg');
       setIsLoadingS3(false);
     }
-  }, [insight.imageSrc, index]);
+  }, [insight.imageSrc]);
 
   const imageSrc = isLoadingS3 ? '/placeholder.svg' : s3Url;
 
@@ -107,9 +106,9 @@ export default function InsightCard({ insight, index = 0 }: InsightCardProps) {
             {insight.description}
           </p>
           <div className="flex flex-wrap gap-1 mb-4">
-            {insight.tags.map((tech: string, index: number) => (
+            {insight.tags.map((tech: string) => (
               <m.span
-                key={index}
+                key={tech}
                 className="px-2 py-0.5 text-xs font-medium rounded-md bg-blue-900/20 backdrop-blur-sm text-blue-100 tracking-wide border border-blue-400/50"
                 variants={tagVariants}
                 initial="hidden"

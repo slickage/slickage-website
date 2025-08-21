@@ -1,20 +1,18 @@
 'use client';
 
 import { m } from 'motion/react';
-import React from 'react';
+import { type ReactNode } from 'react';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 
 type AnimationVariant = 'fadeIn' | 'slideUp' | 'slideDown' | 'slideLeft' | 'slideRight';
 
 interface AnimatedSectionProps {
-  children: React.ReactNode;
+  children: ReactNode;
   variant?: AnimationVariant;
-  delay?: number;
-  duration?: number;
   className?: string;
 }
 
-export default function AnimatedSection({
+export function AnimatedSection({
   children,
   variant = 'fadeIn',
   className = '',

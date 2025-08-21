@@ -1,6 +1,6 @@
-import TrackedFAQLink from './TrackedFAQLink';
+import { TrackedFAQLink } from './tracked-faq-link';
 
-export default function FaqPreview() {
+export function FaqPreview() {
   return (
     <div className="container mx-auto px-4 mb-8">
       <h2 className="text-2xl font-bold text-center mb-6 text-white">Quick FAQ</h2>

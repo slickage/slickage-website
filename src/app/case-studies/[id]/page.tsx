@@ -1,13 +1,11 @@
 import { notFound } from 'next/navigation';
 import { getCaseStudyById } from '@/data/case-studies';
-import {
-  CaseStudyHero,
-  CaseStudyOverview,
-  CaseStudySection,
-  CaseStudyImage,
-  CaseStudyQuote,
-} from '@/components/case-study';
-import AnimatedSection from '@/components/ui/AnimatedSection';
+import { CaseStudyHero } from '@/components/case-study/case-study-hero';
+import { CaseStudyOverview } from '@/components/case-study/case-study-overview';
+import { CaseStudySection } from '@/components/case-study/case-study-section';
+import { CaseStudyImage } from '@/components/case-study/case-study-image';
+import { CaseStudyQuote } from '@/components/case-study/case-study-quote';
+import { AnimatedSection } from '@/components/ui/animated-section';
 import type { CaseStudy } from '@/types/case-study';
 
 export default async function CaseStudyDetailPage({ params }: { params: Promise<{ id: string }> }) {

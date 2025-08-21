@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { m } from 'motion/react';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
-import { useAnalyticsConsent } from '@/lib/hooks/useAnalyticsConsent';
+import { useAnalyticsConsent } from '@/lib/hooks/use-analytics-consent';
 import { Button } from '@/components/ui/button';
 
 /**
@@ -83,5 +83,3 @@ export function AnalyticsConsentBanner() {
     </div>
   );
 }
-
-export default AnalyticsConsentBanner;

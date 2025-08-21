@@ -1,6 +1,6 @@
 import type { CaseStudy } from '@/types/case-study';
 
-export default function CaseStudyOverview({
+export function CaseStudyOverview({
   overview,
   tags,
   quickFacts,

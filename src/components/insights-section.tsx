@@ -1,11 +1,10 @@
-import React from 'react';
 import type { Insight } from '@/types/insight';
 import { getFeaturedInsights } from '@/data/insights';
-import { InsightCard } from '@/components/insights';
+import { InsightCard } from '@/components/insights/insight-card';
 
 export const revalidate = 3600; // Revalidate every hour
 
-export default async function Insights() {
+export async function InsightsSection() {
   const insights: Insight[] = await getFeaturedInsights();
 
   return (
@@ -20,8 +19,8 @@ export default async function Insights() {
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-          {insights.map((insight: Insight, index: number) => (
-            <InsightCard key={insight.id} insight={insight} index={index} />
+          {insights.map((insight: Insight) => (
+            <InsightCard key={insight.id} insight={insight} />
           ))}
         </div>
       </div>

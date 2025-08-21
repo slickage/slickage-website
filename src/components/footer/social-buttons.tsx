@@ -1,11 +1,10 @@
 'use client';
 
-import React from 'react';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
-import { IconButton } from '@/components/ui';
-import { useEventTracking } from '@/lib/hooks/useEventTracking';
+import { IconButton } from '@/components/ui/icon-button';
+import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 
-export default function SocialButtons() {
+export function SocialButtons() {
   const { trackNavigation } = useEventTracking();
 
   const handleSocialClick = (platform: string, url: string) => {
@@ -16,13 +15,15 @@ export default function SocialButtons() {
     <div className="flex space-x-6">
       <IconButton
         icon={<FaLinkedin />}
-        href="https://linkedin.com/company/slickage"
+        href="https://www.linkedin.com/company/slickage-studios/"
         target="_blank"
         rel="noopener noreferrer"
         variant="blue"
         size="lg"
         aria-label="LinkedIn"
-        onClick={() => handleSocialClick('LinkedIn', 'https://linkedin.com/company/slickage')}
+        onClick={() =>
+          handleSocialClick('LinkedIn', 'https://www.linkedin.com/company/slickage-studios/')
+        }
       />
       <IconButton
         icon={<FaGithub />}

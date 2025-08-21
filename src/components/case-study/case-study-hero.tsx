@@ -5,14 +5,13 @@ import Image from 'next/image';
 import type { CaseStudy } from '@/types/case-study';
 import { getS3ImageUrl } from '@/lib/utils';
 import { logger } from '@/lib/utils/logger';
-import { LoadingSpinnerOverlay } from '@/components/ui/LoadingSpinner';
+import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 
-export default function CaseStudyHero({
+export function CaseStudyHero({
   title,
   subtitle,
   heroImage,
 }: Pick<CaseStudy, 'title' | 'subtitle'> & { heroImage: string }) {
-  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
   const [s3Url, setS3Url] = useState<string>('/placeholder.svg');
   const [isLoadingS3, setIsLoadingS3] = useState(false);
 
@@ -36,20 +35,6 @@ export default function CaseStudyHero({
   }, [heroImage]);
 
   const imageSrc = isLoadingS3 ? '/placeholder.svg' : s3Url;
-
-  useEffect(() => {
-    if (expandedIdx === null) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setExpandedIdx(null);
-    };
-    const handleScroll = () => setExpandedIdx(null);
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [expandedIdx]);
 
   return (
     <section className="relative min-h-[30vh] flex items-center">

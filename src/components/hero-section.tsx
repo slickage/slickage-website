@@ -1,12 +1,11 @@
 'use client';
 
-import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useEventTracking } from '@/lib/hooks/useEventTracking';
+import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 import Link from 'next/link';
 
-export default function HeroSection() {
+export function HeroSection() {
   const { trackCTAClick } = useEventTracking();
 
   const handleViewWorkClick = () => {
