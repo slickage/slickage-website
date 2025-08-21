@@ -15,13 +15,15 @@ export function SocialButtons() {
     <div className="flex space-x-6">
       <IconButton
         icon={<FaLinkedin />}
-        href="https://linkedin.com/company/slickage"
+        href="https://www.linkedin.com/company/slickage-studios/"
         target="_blank"
         rel="noopener noreferrer"
         variant="blue"
         size="lg"
         aria-label="LinkedIn"
-        onClick={() => handleSocialClick('LinkedIn', 'https://linkedin.com/company/slickage')}
+        onClick={() =>
+          handleSocialClick('LinkedIn', 'https://www.linkedin.com/company/slickage-studios/')
+        }
       />
       <IconButton
         icon={<FaGithub />}
