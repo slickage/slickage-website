@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import { useState, useRef, useEffect, type ChangeEvent, type FormEvent } from 'react';
 import { Send } from 'lucide-react';
 import { useRecaptcha } from '@/lib/hooks/use-recaptcha';
 import { useEventTracking } from '@/lib/hooks/use-event-tracking';
@@ -34,7 +34,7 @@ interface ContactFormProps {
   standalone?: boolean;
 }
 
-export default function ContactForm({ standalone = false }: ContactFormProps) {
+export function ContactForm({ standalone = false }: ContactFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -64,7 +64,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
   const { trackFormInteraction } = useEventTracking();
   const { identifyUser } = useUserIdentification();
 
-  React.useEffect(() => {
+  useEffect(() => {
     trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'viewed');
   }, [trackFormInteraction, standalone]);
 
@@ -82,7 +82,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
 
     if (!hasStartedTyping && value.trim().length > 0) {
@@ -106,7 +106,7 @@ export default function ContactForm({ standalone = false }: ContactFormProps) {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);

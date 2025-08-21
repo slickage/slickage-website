@@ -1,4 +1,4 @@
-export default function CaseStudySection({ title, content }: { title: string; content: string }) {
+export function CaseStudySection({ title, content }: { title: string; content: string }) {
   return (
     <section className="py-8">
       <div className="container mx-auto px-4">

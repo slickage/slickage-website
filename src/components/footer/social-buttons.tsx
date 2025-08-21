@@ -1,11 +1,10 @@
 'use client';
 
-import React from 'react';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import { IconButton } from '@/components/ui/icon-button';
 import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 
-export default function SocialButtons() {
+export function SocialButtons() {
   const { trackNavigation } = useEventTracking();
 
   const handleSocialClick = (platform: string, url: string) => {

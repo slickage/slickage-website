@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
+import { type ReactNode } from 'react';
 import { LazyMotion, domAnimation } from 'motion/react';
 
 interface LazyMotionWrapperProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function LazyMotionWrapper({ children }: LazyMotionWrapperProps) {

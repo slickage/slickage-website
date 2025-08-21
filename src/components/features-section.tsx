@@ -1,7 +1,6 @@
-import React from 'react';
 import { Globe, Smartphone, Palette, RefreshCw, GraduationCap, Server } from 'lucide-react';
 
-export default function Features() {
+export function FeaturesSection() {
   const features = [
     {
       icon: <Globe className="h-5 w-5" />,
@@ -54,7 +53,7 @@ export default function Features() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <div key={index} className="flex">
-              <div className="">
+              <div>
                 <div className="flex items-center gap-3 mb-2">
                   <div className="text-blue-400">{feature.icon}</div>
                   <h3 className="text-lg font-semibold text-white">{feature.title}</h3>

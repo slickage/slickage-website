@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Mail, MapPin } from 'lucide-react';
 
-export default function ContactInfo() {
+export function ContactInfo() {
   return (
     <Card className="border-0 shadow-xl bg-white/5 rounded-xl mb-4">
       <CardContent className="p-6">

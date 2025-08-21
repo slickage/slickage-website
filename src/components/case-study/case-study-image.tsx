@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { m } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { getS3ImageUrl } from '@/lib/utils';
@@ -9,9 +9,11 @@ import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 
-const ImageLightboxComponent = dynamic(() => import('../ui/image-lightbox'));
+const ImageLightbox = dynamic(() =>
+  import('@/components/ui/image-lightbox').then((mod) => mod.ImageLightbox),
+);
 
-export default function CaseStudyImage({
+export function CaseStudyImage({
   src,
   alt,
   caption,
@@ -78,7 +80,7 @@ export default function CaseStudyImage({
           onClick={handleImageClick}
         >
           {isLoadingS3 && <LoadingSpinnerOverlay />}
-          <ImageLightboxComponent
+          <ImageLightbox
             src={imageSrc}
             alt={alt}
             className="w-full h-auto"
@@ -86,7 +88,9 @@ export default function CaseStudyImage({
           />
         </div>
         {caption && (
-          <div className="px-4 py-2 text-center text-gray-400 text-sm bg-opacity-80">{caption}</div>
+          <div className="px-4 py-2 text-center text-gray-400 text-sm bg-gray-800/80">
+            {caption}
+          </div>
         )}
       </m.div>
     </div>

@@ -1,13 +1,20 @@
 'use client';
 
-import React from 'react';
+import {
+  forwardRef,
+  type ButtonHTMLAttributes,
+  type ReactNode,
+  type Ref,
+  type AnchorHTMLAttributes,
+  type HTMLAttributes,
+} from 'react';
 import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   variant?: 'default' | 'blue' | 'green' | 'purple' | 'red' | 'gray' | 'white';
-  icon: React.ReactNode;
+  icon: ReactNode;
   href?: string;
   asChild?: boolean;
   target?: string;
@@ -48,7 +55,7 @@ const iconSizes = {
   xl: 'h-8 w-8',
 };
 
-const IconButton = React.forwardRef<
+const IconButton = forwardRef<
   HTMLButtonElement | HTMLAnchorElement | HTMLDivElement,
   IconButtonProps
 >(({ className, size, variant, icon, href, asChild = false, ...props }, ref) => {
@@ -61,10 +68,10 @@ const IconButton = React.forwardRef<
   if (href) {
     return (
       <a
-        ref={ref as React.Ref<HTMLAnchorElement>}
+        ref={ref as Ref<HTMLAnchorElement>}
         href={href}
         className={baseClasses}
-        {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+        {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
         {iconContent}
       </a>
@@ -74,9 +81,9 @@ const IconButton = React.forwardRef<
   if (asChild) {
     return (
       <div
-        ref={ref as React.Ref<HTMLDivElement>}
+        ref={ref as Ref<HTMLDivElement>}
         className={baseClasses}
-        {...(props as React.HTMLAttributes<HTMLDivElement>)}
+        {...(props as HTMLAttributes<HTMLDivElement>)}
       >
         {iconContent}
       </div>
@@ -84,7 +91,7 @@ const IconButton = React.forwardRef<
   }
 
   return (
-    <button ref={ref as React.Ref<HTMLButtonElement>} className={baseClasses} {...props}>
+    <button ref={ref as Ref<HTMLButtonElement>} className={baseClasses} {...props}>
       {iconContent}
     </button>
   );

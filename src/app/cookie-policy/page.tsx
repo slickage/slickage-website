@@ -1,5 +1,3 @@
-import type React from 'react';
-
 export default function CookiePolicyPage() {
   return (
     <main className="container mx-auto my-12 px-4 py-8">

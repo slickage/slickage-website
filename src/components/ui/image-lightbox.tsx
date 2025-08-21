@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type SyntheticEvent } from 'react';
 import ReactDOM from 'react-dom';
 import Image, { ImageProps } from 'next/image';
 import { m, AnimatePresence } from 'motion/react';
@@ -10,13 +10,12 @@ import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 interface ImageLightboxProps extends Omit<ImageProps, 'ref'> {
   src: string;
   alt: string;
-  priority?: boolean;
   className?: string;
   modalClassName?: string;
   unoptimized?: boolean;
 }
 
-export default function ImageLightbox({
+export function ImageLightbox({
   src,
   alt,
   priority = false,
@@ -84,7 +83,7 @@ export default function ImageLightbox({
     };
   }, [expanded]);
 
-  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const handleImageLoad = (e: SyntheticEvent<HTMLImageElement>) => {
     const { naturalWidth, naturalHeight } = e.currentTarget;
     setIsPortrait(naturalHeight > naturalWidth);
     setIsLoading(false);

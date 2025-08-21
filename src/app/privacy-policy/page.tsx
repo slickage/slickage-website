@@ -1,5 +1,3 @@
-import type React from 'react';
-
 export default function PrivacyPolicyPage() {
   return (
     <main className="container mx-auto my-12 px-4 py-8">
@@ -366,14 +364,7 @@ export default function PrivacyPolicyPage() {
         <p>By using our website, you hereby consent to our disclaimer and agree to its terms.</p>
 
         <h3>Privacy Policy Updates</h3>
-        <p>
-          This Privacy Policy was last updated on:{' '}
-          {new Date().toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </p>
+        <p>This Privacy Policy was last updated on: July 1, 2025</p>
 
         <br></br>
         <em>

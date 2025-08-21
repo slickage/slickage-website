@@ -1,4 +1,4 @@
-export default function ContactHero() {
+export function ContactHero() {
   return (
     <section id="contact-hero" className="relative min-h-[30vh] flex items-center">
       <div className="container mx-auto px-4 py-24 relative z-10">

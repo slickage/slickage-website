@@ -1,16 +1,16 @@
 'use client';
 
-import React from 'react';
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 
 interface TrackedFAQLinkProps {
   href: string;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
 
-export default function TrackedFAQLink({ href, children, className }: TrackedFAQLinkProps) {
+export function TrackedFAQLink({ href, children, className }: TrackedFAQLinkProps) {
   const { trackNavigation } = useEventTracking();
 
   const handleClick = () => {

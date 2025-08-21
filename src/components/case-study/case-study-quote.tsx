@@ -1,4 +1,4 @@
-export default function CaseStudyQuote({
+export function CaseStudyQuote({
   quote,
   author,
   role,

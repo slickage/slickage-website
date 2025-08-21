@@ -1,8 +1,8 @@
-import HeroSection from '@/components/hero-section';
-import InsightsSection from '@/components/insights-section';
-import FeaturesSection from '@/components/features-section';
-import ContactSection from '@/components/contact-section';
-import AnimatedSection from '@/components/ui/animated-section';
+import { HeroSection } from '@/components/hero-section';
+import { InsightsSection } from '@/components/insights-section';
+import { FeaturesSection } from '@/components/features-section';
+import { ContactSection } from '@/components/contact-section';
+import { AnimatedSection } from '@/components/ui/animated-section';
 
 export default function Home() {
   return (

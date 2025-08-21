@@ -1,12 +1,6 @@
-import React from 'react';
+import { memo } from 'react';
 
-const FaqItem = React.memo(function FaqItem({
-  question,
-  answer,
-}: {
-  question: string;
-  answer: string;
-}) {
+const FaqItem = memo(function FaqItem({ question, answer }: { question: string; answer: string }) {
   return (
     <div className="space-y-2">
       <h3 className="text-lg font-bold text-white">{question}</h3>
@@ -15,4 +9,4 @@ const FaqItem = React.memo(function FaqItem({
   );
 });
 
-export default FaqItem;
+export { FaqItem };

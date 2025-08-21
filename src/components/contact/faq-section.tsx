@@ -1,6 +1,6 @@
-import FaqItem from './faq-item';
+import { FaqItem } from './faq-item';
 
-export default function FaqSection() {
+export function FaqSection() {
   const faqs = [
     {
       question: 'What is your typical process for a new project?',

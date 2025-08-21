@@ -1,10 +1,9 @@
 'use client';
 
-import React from 'react';
 import { Handshake, Mail, MapPin } from 'lucide-react';
-import ContactForm from './contact/contact-form';
+import { ContactForm } from './contact/contact-form';
 
-export default function ContactSection() {
+export function ContactSection() {
   return (
     <section id="contact" className="py-24">
       <div className="container px-4 max-w-7xl mx-auto">

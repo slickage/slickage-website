@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import { Fragment } from 'react';
 import Link from 'next/link';
 import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 
@@ -8,13 +8,13 @@ interface LegalLinksProps {
   items: { name: string; href: string }[];
 }
 
-export default function LegalLinks({ items }: LegalLinksProps) {
+export function LegalLinks({ items }: LegalLinksProps) {
   const { trackNavigation } = useEventTracking();
 
   return (
     <>
       {items.map((item, index) => (
-        <React.Fragment key={item.name}>
+        <Fragment key={item.name}>
           <Link
             href={item.href}
             onClick={() => trackNavigation(item.name, item.href, 'footer_legal')}
@@ -23,7 +23,7 @@ export default function LegalLinks({ items }: LegalLinksProps) {
             {item.name}
           </Link>
           {index < items.length - 1 && <span className="mx-6"></span>}
-        </React.Fragment>
+        </Fragment>
       ))}
     </>
   );
