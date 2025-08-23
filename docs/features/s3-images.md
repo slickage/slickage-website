@@ -15,7 +15,7 @@ Located at `src/app/api/s3-url/route.ts`, this generates secure presigned URLs f
 **Key Features:**
 
 - Secure presigned URL generation with 1-hour expiration
-- Automatic bucket name extraction from S3_BUCKET_URL
+- Direct bucket name configuration via S3_BUCKET_NAME
 - Error handling and fallback responses
 - AWS SDK v3 integration
 
@@ -50,12 +50,12 @@ Required environment variables for S3 functionality:
 
 ```bash
 # S3 Configuration
-S3_BUCKET_URL=https://your-bucket-name.s3.amazonaws.com
+S3_BUCKET_NAME=your-bucket-name
 AWS_ACCESS_KEY_ID=your_access_key_id
 AWS_SECRET_ACCESS_KEY=your_secret_access_key
 AWS_REGION=us-west-2
 
-# Optional: Custom bucket name (if different from S3_BUCKET_URL)
+# Required: S3 bucket name
 S3_BUCKET_NAME=your-custom-bucket-name
 ```
 
@@ -401,7 +401,7 @@ export default function ImageGallery({ images }: { images: Array<{ src: string; 
 ### Common Issues
 
 1. **Images not loading**
-   - Check S3_BUCKET_URL environment variable
+   - Check S3_BUCKET_NAME environment variable
    - Verify AWS credentials have S3 read permissions
    - Check if image path exists in S3 bucket
    - Verify Next.js image configuration

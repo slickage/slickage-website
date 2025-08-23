@@ -4,7 +4,7 @@
  */
 
 type ServerEnv = {
-  S3_BUCKET_URL: string;
+  S3_BUCKET_NAME: string;
   AWS_ACCESS_KEY_ID: string;
   AWS_SECRET_ACCESS_KEY: string;
   AWS_REGION: string;
@@ -24,29 +24,29 @@ type ServerEnv = {
 function getServerEnv(): ServerEnv {
   // Return empty values on client-side
   if (typeof window !== 'undefined') {
-    return {
-      S3_BUCKET_URL: '',
-      AWS_ACCESS_KEY_ID: '',
-      AWS_SECRET_ACCESS_KEY: '',
-      AWS_REGION: '',
-      RECAPTCHA_SITE_KEY: '',
-      RECAPTCHA_SECRET_KEY: '',
-      DATABASE_URL: '',
-      SLACK_WEBHOOK_URL: '',
-      NODE_ENV: process.env.NODE_ENV || 'production',
-      REDIS_URL: '',
-      POSTHOG_KEY: '',
-      POSTHOG_HOST: '',
-      isDevelopment: process.env.NODE_ENV === 'development',
-      isProduction: process.env.NODE_ENV === 'production',
-      isTest: process.env.NODE_ENV === 'test',
-    };
+          return {
+        S3_BUCKET_NAME: '',
+        AWS_ACCESS_KEY_ID: '',
+        AWS_SECRET_ACCESS_KEY: '',
+        AWS_REGION: '',
+        RECAPTCHA_SITE_KEY: '',
+        RECAPTCHA_SECRET_KEY: '',
+        DATABASE_URL: '',
+        SLACK_WEBHOOK_URL: '',
+        NODE_ENV: process.env.NODE_ENV || 'production',
+        REDIS_URL: '',
+        POSTHOG_KEY: '',
+        POSTHOG_HOST: '',
+        isDevelopment: process.env.NODE_ENV === 'development',
+        isProduction: process.env.NODE_ENV === 'production',
+        isTest: process.env.NODE_ENV === 'test',
+      };
   }
 
   // Only validate at runtime, not during build
   if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PHASE) {
     const requiredVars = [
-      'S3_BUCKET_URL',
+      'S3_BUCKET_NAME',
       'AWS_ACCESS_KEY_ID',
       'AWS_SECRET_ACCESS_KEY',
       'AWS_REGION',
@@ -68,7 +68,7 @@ function getServerEnv(): ServerEnv {
   }
 
   return {
-    S3_BUCKET_URL: process.env.S3_BUCKET_URL || '',
+    S3_BUCKET_NAME: process.env.S3_BUCKET_NAME || '',
     AWS_ACCESS_KEY_ID: process.env.NETLIFY_AWS_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID || '',
     AWS_SECRET_ACCESS_KEY:
       process.env.NETLIFY_AWS_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY || '',

@@ -26,11 +26,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'No key provided' }, { status: 400 });
     }
 
-    const bucketName = env.S3_BUCKET_URL.split('.')[0];
-
-    if (!bucketName) {
-      throw new Error('S3 bucket URL is not configured correctly');
-    }
+    const bucketName = env.S3_BUCKET_NAME;
 
     const command = new GetObjectCommand({
       Bucket: bucketName,
@@ -39,11 +35,7 @@ export async function GET(request: Request) {
 
     const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
 
-    // Add cache headers for the response
-    const response = NextResponse.json({ url });
-    response.headers.set('Cache-Control', 'public, s-maxage=1800, stale-while-revalidate=300');
-
-    return response;
+    return NextResponse.json({ url });
   } catch (error) {
     logger.error('Error generating presigned URL:', error);
     return NextResponse.json({ error: 'Failed to generate URL' }, { status: 500 });

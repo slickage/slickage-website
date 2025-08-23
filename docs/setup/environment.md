@@ -48,7 +48,7 @@ Edit the `.env` file with your configuration:
 
 ```env
 # Required Environment Variables
-S3_BUCKET_URL=your-s3-bucket-url
+S3_BUCKET_NAME=your-s3-bucket-name
 AWS_ACCESS_KEY_ID=your-aws-access-key
 AWS_SECRET_ACCESS_KEY=your-aws-secret-key
 AWS_REGION=your-aws-region
@@ -76,7 +76,7 @@ The application will be available at [http://localhost:3000](http://localhost:30
 
 | Variable                | Description                                 |
 | ----------------------- | ------------------------------------------- |
-| `S3_BUCKET_URL`         | S3 bucket hostname for private image assets |
+| `S3_BUCKET_NAME`         | S3 bucket name for private image assets |
 | `AWS_ACCESS_KEY_ID`     | AWS access key for S3 operations            |
 | `AWS_SECRET_ACCESS_KEY` | AWS secret key for S3 operations            |
 | `AWS_REGION`            | AWS region for S3 bucket                    |
@@ -351,7 +351,7 @@ Ensure all required environment variables are set in your production environment
 
 ```env
 NODE_ENV=production
-S3_BUCKET_URL=your-production-s3-bucket
+S3_BUCKET_NAME=your-production-s3-bucket
 AWS_ACCESS_KEY_ID=your-production-aws-key
 AWS_SECRET_ACCESS_KEY=your-production-aws-secret
 AWS_REGION=us-west-2
@@ -377,7 +377,7 @@ bun start
 
 The following environment variables are required for full functionality:
 
-- `S3_BUCKET_URL` - S3 bucket hostname for private image assets (server-side only)
+- `S3_BUCKET_NAME` - S3 bucket name for private image assets (server-side only)
 - `AWS_ACCESS_KEY_ID` - AWS access key for S3 operations
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key for S3 operations
 - `AWS_REGION` - AWS region for S3 bucket

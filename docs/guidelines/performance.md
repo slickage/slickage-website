@@ -423,7 +423,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'No key provided' }, { status: 400 });
     }
 
-    const bucketName = env.S3_BUCKET_URL.split('.')[0];
+    const bucketName = env.S3_BUCKET_NAME;
     const command = new GetObjectCommand({
       Bucket: bucketName,
       Key: key,
