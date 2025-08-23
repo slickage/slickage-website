@@ -81,8 +81,10 @@ export const PROPERTIES = {
 } as const;
 
 export function PostHogProvider({ children }: { children: ReactNode }) {
-  const { config: posthogConfig, isLoading } = useClientConfig('posthog');
+  const { config } = useClientConfig('posthog');
 
+  const posthogConfig = config?.posthog;
+  
   useEffect(() => {
     if (posthogConfig?.enabled && posthogConfig.key && posthogConfig.host) {
       posthog.init(posthogConfig.key, {
@@ -125,9 +127,9 @@ export function PostHogProvider({ children }: { children: ReactNode }) {
     }
   }, [posthogConfig]);
 
-  if (isLoading || !posthogConfig?.enabled) {
-    return <>{children}</>;
+  if (posthogConfig?.enabled) {
+    return <PHProvider client={posthog}>{children}</PHProvider>;
   }
-
-  return <PHProvider client={posthog}>{children}</PHProvider>;
+  
+  return <>{children}</>;
 }

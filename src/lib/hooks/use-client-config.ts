@@ -17,36 +17,34 @@ interface ClientConfig {
   posthog: PostHogConfig;
 }
 
-export function useClientConfig<T extends keyof ClientConfig>(configKey: T) {
-  const [config, setConfig] = useState<ClientConfig[T] | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+type ConfigType = 'recaptcha' | 'posthog';
+
+export function useClientConfig(configType: ConfigType) {
+  const [config, setConfig] = useState<Partial<ClientConfig> | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchConfig = async () => {
-      try {
-        const response = await fetch('/api/client-config');
+      try {    
+        const response = await fetch(`/api/client-config?config=${configType}`);
 
         if (!response.ok) {
           throw new Error(`Failed to fetch client configuration: ${response.status}`);
         }
 
-        const data: ClientConfig = await response.json();
-        setConfig(data[configKey]);
+        const data: Partial<ClientConfig> = await response.json();
+        setConfig(data);
       } catch (err) {
-        logger.error(`useClientConfig: Failed to fetch ${configKey} config:`, err);
+        logger.error(`useClientConfig: Failed to fetch ${configType} config:`, err);
         setError(err instanceof Error ? err.message : 'Unknown error');
-      } finally {
-        setIsLoading(false);
       }
     };
 
     fetchConfig();
-  }, [configKey]);
+  }, [configType]);
 
   return {
     config,
-    isLoading,
     error,
   };
 }

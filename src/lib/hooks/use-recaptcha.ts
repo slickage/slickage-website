@@ -15,15 +15,17 @@ export function useRecaptcha(options?: UseRecaptchaOptions) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const recaptchaConfig = config?.recaptcha;
+
   useEffect(() => {
-    if (!config?.enabled || !config?.siteKey) {
+    if (!recaptchaConfig?.enabled || !recaptchaConfig?.siteKey) {
       return;
     }
 
     const loadRecaptcha = () => {
       if (isLoaded) return; // prevent duplicate loads
       const script = document.createElement('script');
-      script.src = `https://www.google.com/recaptcha/api.js?render=${config.siteKey}`;
+      script.src = `https://www.google.com/recaptcha/api.js?render=${recaptchaConfig.siteKey}`;
       script.async = true;
       script.defer = true;
 
@@ -79,10 +81,10 @@ export function useRecaptcha(options?: UseRecaptchaOptions) {
         scripts.forEach((script) => script.remove());
       }
     };
-  }, [config, options?.strategy, options?.triggerRef?.current, isLoaded]);
+  }, [recaptchaConfig, options?.strategy, options?.triggerRef?.current, isLoaded]);
 
-  const siteKey = config?.siteKey || '';
-  const isEnabled = config?.enabled || false;
+  const siteKey = recaptchaConfig?.siteKey || '';
+  const isEnabled = recaptchaConfig?.enabled || false;
 
   return {
     siteKey,

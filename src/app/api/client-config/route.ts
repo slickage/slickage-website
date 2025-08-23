@@ -1,53 +1,48 @@
 import { NextResponse } from 'next/server';
 import { env } from '@/lib/env';
 
-interface RecaptchaConfig {
-  siteKey: string;
-  enabled: boolean;
-}
+const configMap = {
+  recaptcha: {
+    required: ['RECAPTCHA_SITE_KEY'],
+    response: (env: any) => ({
+      recaptcha: {
+        siteKey: env.RECAPTCHA_SITE_KEY,
+        enabled: true,
+      }
+    })
+  },
+  posthog: {
+    required: ['POSTHOG_KEY', 'POSTHOG_HOST'],
+    response: (env: any) => ({
+      posthog: {
+        key: env.POSTHOG_KEY,
+        host: env.POSTHOG_HOST,
+        enabled: true,
+      }
+    })
+  }
+} as const;
 
-interface PostHogConfig {
-  key: string;
-  host: string;
-  enabled: boolean;
-}
-
-interface ClientConfig {
-  recaptcha: RecaptchaConfig;
-  posthog: PostHogConfig;
-}
-
-function createClientConfig(): ClientConfig {
-  return {
-    recaptcha: {
-      siteKey: env.RECAPTCHA_SITE_KEY,
-      enabled: !!env.RECAPTCHA_SITE_KEY,
-    },
-    posthog: {
-      key: env.POSTHOG_KEY,
-      host: env.POSTHOG_HOST,
-      enabled: !!env.POSTHOG_KEY,
-    },
-  } satisfies ClientConfig;
-}
-
-export async function GET() {
-  try {
-    const config = createClientConfig();
-    
-    // Validate critical configuration
-    if (!config.recaptcha.siteKey || !config.posthog.key) {
-      return NextResponse.json(
-        { error: 'Configuration incomplete' },
-        { status: 500 }
-      );
-    }
-    
-    return NextResponse.json(config);
-  } catch (error) {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const configType = searchParams.get('config');
+  
+  if (!configType) {
+    return NextResponse.json({ error: 'Config type is required' }, { status: 400 });
+  }
+  
+  const config = configMap[configType as keyof typeof configMap];
+  if (!config) {
+    return NextResponse.json({ error: 'Invalid config type' }, { status: 400 });
+  }
+  
+  const missingVars = config.required.filter(key => !env[key]);
+  if (missingVars.length > 0) {
     return NextResponse.json(
-      { error: 'Failed to load configuration' },
+      { error: `Missing environment variables` },
       { status: 500 }
     );
   }
+  
+  return NextResponse.json(config.response(env));
 }
