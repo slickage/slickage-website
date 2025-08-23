@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { usePostHog } from 'posthog-js/react';
 import { EVENTS, PROPERTIES } from '@/app/providers';
-import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
 
 /**
  * Hook for tracking user interactions with PostHog
@@ -25,9 +24,7 @@ export function useEventTracking() {
           });
         }
 
-        const enrichedProperties = addVersionMetadata(eventProperties);
-
-        posthog.capture(eventName, enrichedProperties);
+        posthog.capture(eventName, eventProperties);
       }
     },
     [],

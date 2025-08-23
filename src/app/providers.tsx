@@ -6,7 +6,6 @@ import { ReactNode, useEffect } from 'react';
 import { useClientConfig } from '@/lib/hooks/use-client-config';
 import { env } from '@/lib/env';
 import { logger } from '@/lib/utils/logger';
-import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
 
 export const EVENTS = {
   PAGE_VIEWED: 'navigation:page_view',
@@ -116,12 +115,12 @@ export function PostHogProvider({ children }: { children: ReactNode }) {
 
       posthog.capture(
         EVENTS.USER_SESSION_STARTED,
-        addVersionMetadata({
+        {
           [PROPERTIES.SESSION_ID]: posthog.get_session_id(),
           [PROPERTIES.REFERRER]: document.referrer ? 'referral' : 'direct',
           [PROPERTIES.IS_INTERNAL]: false,
           visitor_type: 'anonymous',
-        }),
+        },
       );
     }
   }, [posthogConfig]);
