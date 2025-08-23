@@ -1,12 +1,12 @@
 import { PostHog } from 'posthog-node';
+import { env } from './env';
 
 export function createPostHogServer() {
-  const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+  const posthogKey = env.POSTHOG_KEY;
 
   const posthogHost =
-    process.env.NODE_ENV === 'production'
-      ? 'https://beta.slickage.io/ingest'
-      : 'https://us.i.posthog.com';
+    env.POSTHOG_HOST ||
+    'https://us.i.posthog.com';
 
   if (!posthogKey) {
     throw new Error('PostHog API key not configured');

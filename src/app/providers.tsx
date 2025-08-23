@@ -2,10 +2,11 @@
 
 import { posthog } from 'posthog-js';
 import { PostHogProvider as PHProvider } from 'posthog-js/react';
-import { useEffect, type ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useClientConfig } from '@/lib/hooks/use-client-config';
-import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
+import { env } from '@/lib/env';
 import { logger } from '@/lib/utils/logger';
+import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
 
 export const EVENTS = {
   PAGE_VIEWED: 'navigation:page_view',
@@ -88,10 +89,10 @@ export function PostHogProvider({ children }: { children: ReactNode }) {
       posthog.init(posthogConfig.key, {
         api_host: '/ingest',
         ui_host: posthogConfig.host,
-        debug: process.env.NODE_ENV === 'development',
+        debug: env.isDevelopment,
 
         opt_out_capturing_by_default: false,
-        respect_dnt: process.env.NODE_ENV === 'production',
+        respect_dnt: env.isProduction,
 
         session_recording: {
           collectFonts: true,

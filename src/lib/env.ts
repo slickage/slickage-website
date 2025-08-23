@@ -14,6 +14,11 @@ type ServerEnv = {
   SLACK_WEBHOOK_URL?: string;
   NODE_ENV: string;
   REDIS_URL?: string;
+  POSTHOG_KEY: string;
+  POSTHOG_HOST: string;
+  isDevelopment: boolean;
+  isProduction: boolean;
+  isTest: boolean;
 };
 
 function getServerEnv(): ServerEnv {
@@ -30,6 +35,11 @@ function getServerEnv(): ServerEnv {
       SLACK_WEBHOOK_URL: '',
       NODE_ENV: process.env.NODE_ENV || 'production',
       REDIS_URL: '',
+      POSTHOG_KEY: '',
+      POSTHOG_HOST: '',
+      isDevelopment: process.env.NODE_ENV === 'development',
+      isProduction: process.env.NODE_ENV === 'production',
+      isTest: process.env.NODE_ENV === 'test',
     };
   }
 
@@ -69,6 +79,11 @@ function getServerEnv(): ServerEnv {
     SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL || '',
     NODE_ENV: process.env.NODE_ENV || 'production',
     REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
+    POSTHOG_KEY: process.env.POSTHOG_KEY || '',
+    POSTHOG_HOST: process.env.POSTHOG_HOST || 'https://us.i.posthog.com',
+    isDevelopment: process.env.NODE_ENV === 'development',
+    isProduction: process.env.NODE_ENV === 'production',
+    isTest: process.env.NODE_ENV === 'test',
   };
 }
 

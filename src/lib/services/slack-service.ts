@@ -1,4 +1,5 @@
-import { logger } from '@/lib/utils/logger';
+import { env } from '../env';
+import { logger } from '../utils/logger';
 
 export interface SlackMessage {
   text?: string;
@@ -126,7 +127,7 @@ export class SlackService {
  * Create a Slack service instance
  */
 export function createSlackService(): SlackService | null {
-  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+  const webhookUrl = env.SLACK_WEBHOOK_URL;
 
   if (!webhookUrl) {
     logger.warn('SLACK_WEBHOOK_URL not configured, Slack notifications disabled');

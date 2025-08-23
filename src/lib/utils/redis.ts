@@ -1,4 +1,5 @@
 import Redis from 'ioredis';
+import { env } from '../env';
 import { logger } from './logger';
 
 // Redis connection configuration for optimal performance and reliability
@@ -24,7 +25,7 @@ let redis: Redis | null = null;
 
 export function getRedisClient(): Redis {
   if (!redis) {
-    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+    const redisUrl = env.REDIS_URL || 'redis://localhost:6379';
 
     try {
       redis = new Redis(redisUrl, redisOptions);
