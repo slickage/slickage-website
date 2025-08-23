@@ -1,7 +1,8 @@
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { validateContactRequest } from '@/lib/validation/contact-validation';
 import { submitContactForm } from '@/lib/services/contact-service';
-import { handleApiError } from '@/lib/utils/api-responses';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * Contact form submission endpoint
@@ -19,6 +20,13 @@ export async function POST(request: NextRequest) {
     const result = await submitContactForm(validationResult.data!, startTime);
     return result.response;
   } catch (error) {
-    return handleApiError(error, 'Contact form submission', startTime);
+    const processingTime = Date.now() - startTime;
+    
+    logger.error(`Contact form submission error: processing time ${processingTime}ms`, error);
+    
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

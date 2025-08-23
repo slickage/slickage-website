@@ -1,13 +1,8 @@
-import type { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { db, form_submissions } from '@/db';
 import { ContactFormData } from '../validation/contact-schema';
 import { sanitizeInput } from '../utils/sanitizers';
 import { logger } from '../utils/logger';
-import {
-  createSuccessResponse,
-  createRateLimitedResponse,
-  createServerErrorResponse,
-} from '../utils/api-responses';
 import { captureServerEvent } from '../posthog-server';
 import { createSafeDistinctId, extractEmailDomain, anonymizeIp } from '../utils/privacy';
 import { checkRateLimit, MAX_REQUESTS_PER_WINDOW } from '../security/rate-limiter';
@@ -43,7 +38,10 @@ export async function submitContactForm(
     const submissionResult = await processSubmission(formData, clientIp, startTime);
     if (!submissionResult.success) {
       return {
-        response: createServerErrorResponse(submissionResult.error),
+        response: NextResponse.json(
+          { error: submissionResult.error },
+          { status: 500 }
+        ),
       };
     }
 
@@ -61,18 +59,23 @@ export async function submitContactForm(
     };
 
     return {
-      response: createSuccessResponse(
-        'Form submitted successfully',
-        { submissionId: submissionResult.submissionId! },
-        200,
-        headers,
+      response: NextResponse.json(
+        { 
+          message: 'Form submitted successfully',
+          data: { submissionId: submissionResult.submissionId! }
+        },
+        { 
+          status: 200, 
+          headers 
+        }
       ),
     };
   } catch (error) {
     logger.error('Contact service error:', error);
     return {
-      response: createServerErrorResponse(
-        'Service temporarily unavailable. Please try again later.',
+      response: NextResponse.json(
+        { error: 'Service temporarily unavailable. Please try again later.' },
+        { status: 500 }
       ),
     };
   }
@@ -92,14 +95,17 @@ async function validateRateLimit(clientIp: string): Promise<{
 
   if (rateLimitResult.limited) {
     const minutesUntilReset = Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000 / 60);
-    return {
-      allowed: false,
-      response: createRateLimitedResponse(
-        `Too many submissions. Please try again in ${minutesUntilReset} minutes.`,
-        minutesUntilReset * 60,
-      ),
-      resetTime: rateLimitResult.resetTime,
-    };
+          return {
+        allowed: false,
+        response: NextResponse.json(
+          { error: `Too many submissions. Please try again in ${minutesUntilReset} minutes.` },
+          { 
+            status: 429,
+            headers: { 'Retry-After': (minutesUntilReset * 60).toString() }
+          }
+        ),
+        resetTime: rateLimitResult.resetTime,
+      };
   }
 
   return {

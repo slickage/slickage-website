@@ -1,10 +1,9 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { secureContactSchema } from '@/lib/validation/contact-schema';
 import { getClientIp } from '@/lib/utils/ip-utils';
 import { verifyRecaptcha, validateRecaptchaScore } from '@/lib/security/recaptcha';
 import { logger } from '@/lib/utils/logger';
-import { createBadRequestResponse, createServerErrorResponse } from '@/lib/utils/api-responses';
 import type {
   ContactFormRequest,
   ContactValidationResponse,
@@ -26,7 +25,10 @@ export async function validateContactRequest(
       if (!recaptchaResult.isValid) {
         return {
           success: false,
-          response: createBadRequestResponse(recaptchaResult.error!),
+          response: NextResponse.json(
+            { error: recaptchaResult.error! },
+            { status: 400 }
+          ),
         };
       }
     }
@@ -75,12 +77,18 @@ function handleValidationError(error: unknown): ContactValidationResponse {
     }));
     return {
       success: false,
-      response: createBadRequestResponse('Validation failed', details),
+      response: NextResponse.json(
+        { error: 'Validation failed', details },
+        { status: 400 }
+      ),
     };
   }
 
   return {
     success: false,
-    response: createServerErrorResponse('Internal server error'),
+    response: NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    ),
   };
 }
