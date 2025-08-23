@@ -63,7 +63,7 @@ posthog.init(posthogConfig.key, {
 
 ```typescript
 export function createPostHogServer() {
-  const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+  const posthogKey = process.env.POSTHOG_KEY;
 
   // Use reverse proxy in production, direct connection in development
   const posthogHost =
@@ -682,8 +682,8 @@ Required environment variables (`.env.example`):
 
 ```bash
 # PostHog Analytics
-NEXT_PUBLIC_POSTHOG_KEY=your_posthog_project_key_here
-NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+POSTHOG_KEY=your_posthog_project_key_here
+POSTHOG_HOST=https://us.i.posthog.com
 ```
 
 ### Client Configuration API
@@ -693,9 +693,9 @@ NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
 ```typescript
 const clientConfig = {
   posthog: {
-    key: process.env.NEXT_PUBLIC_POSTHOG_KEY,
-    host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-    enabled: !!process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    key: process.env.POSTHOG_KEY,
+    host: process.env.POSTHOG_HOST,
+    enabled: !!process.env.POSTHOG_KEY,
   },
 } as const;
 
