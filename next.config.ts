@@ -13,6 +13,7 @@ const nextConfig = {
         pathname: '/photos/**',
       },
     ],
+    qualities: [85],
   },
   allowedDevOrigins: ['us.posthog.com', 'us.i.posthog.com', 'us-assets.i.posthog.com'],
   // Reverse proxy for PostHog to bypass ad blockers and improve data collection
