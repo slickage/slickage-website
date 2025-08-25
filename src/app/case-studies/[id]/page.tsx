@@ -64,6 +64,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
     <main className="flex-1 py-8">
       <AnimatedSection variant="slideUp">
         <CaseStudyHero
+          type="hero"
           title={caseStudy.title}
           subtitle={caseStudy.subtitle}
           heroImage={caseStudy.heroImage}
@@ -84,7 +85,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
             <CaseStudySection title={item.title} content={item.content} />
           )}
           {item.type === 'image' && (
-            <CaseStudyImage src={item.src} alt={item.alt} caption={item.caption} />
+            <CaseStudyImage type="image" src={item.src} alt={item.alt} caption={item.caption} />
           )}
           {item.type === 'quote' && (
             <CaseStudyQuote quote={item.quote} author={item.author} role={item.role} />

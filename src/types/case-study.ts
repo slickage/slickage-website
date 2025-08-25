@@ -1,5 +1,6 @@
 export type CaseStudyContentItem =
   | { type: 'section'; title: string; content: string }
+  | { type: 'hero'; title: string; subtitle: string; heroImage: string }
   | { type: 'image'; src: string; alt: string; caption?: string }
   | { type: 'quote'; quote: string; author: string; role?: string };
 
