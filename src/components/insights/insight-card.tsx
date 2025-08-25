@@ -7,7 +7,7 @@ import { m } from 'motion/react';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 import { useEventTracking } from '@/lib/hooks/use-event-tracking';
 import type { Insight } from '@/types/insight';
-import { getS3ImageUrl } from '@/lib/utils';
+import { getS3ImageUrl } from '@/lib/services/s3-service';
 import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 
@@ -37,13 +37,13 @@ export function InsightCard({ insight }: InsightCardProps) {
       setIsLoadingS3(true);
       logger.info('Generating S3 URL for:', insight.imageSrc);
       getS3ImageUrl(insight.imageSrc)
-        .then((url) => {
+        .then((url: string) => {
           logger.info('S3 URL generated:', url);
           setS3Url(url);
           setIsLoadingS3(false);
         })
-        .catch((error) => {
-          logger.error('Error loading S3 image:', error);
+        .catch((error: unknown) => {
+          logger.error('Error loading insight image:', error);
           setS3Url('/placeholder.svg');
           setIsLoadingS3(false);
         });

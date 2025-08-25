@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { m } from 'motion/react';
 import dynamic from 'next/dynamic';
-import { getS3ImageUrl } from '@/lib/utils';
+import { getS3ImageUrl } from '@/lib/services/s3-service';
 import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
@@ -43,12 +43,12 @@ export function CaseStudyImage({
     if (src && src !== '/placeholder.svg') {
       setIsLoadingS3(true);
       getS3ImageUrl(src)
-        .then((url) => {
+        .then((url: string) => {
           setS3Url(url);
           setIsLoadingS3(false);
         })
-        .catch((error) => {
-          logger.error('Error loading S3 image:', error);
+        .catch((error: unknown) => {
+          logger.error('Error loading case study image:', error);
           setS3Url('/placeholder.svg');
           setIsLoadingS3(false);
         });

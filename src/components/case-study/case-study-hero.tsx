@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import type { CaseStudy } from '@/types/case-study';
-import { getS3ImageUrl } from '@/lib/utils';
+import { getS3ImageUrl } from '@/lib/services/s3-service';
 import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 
@@ -19,11 +19,11 @@ export function CaseStudyHero({
     if (heroImage && heroImage !== '/placeholder.svg') {
       setIsLoadingS3(true);
       getS3ImageUrl(heroImage)
-        .then((url) => {
+        .then((url: string) => {
           setS3Url(url);
           setIsLoadingS3(false);
         })
-        .catch((error) => {
+        .catch((error: unknown) => {
           logger.error('Error loading hero image:', error);
           setS3Url('/placeholder.svg');
           setIsLoadingS3(false);
