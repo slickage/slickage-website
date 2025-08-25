@@ -28,7 +28,7 @@ declare global {
 
 export function ContactForm({ standalone = false }: ContactFormProps) {
   const sectionRef = useRef<HTMLDivElement | null>(null);
-  
+
   const {
     formData,
     formStatus,
@@ -133,11 +133,7 @@ export function ContactForm({ standalone = false }: ContactFormProps) {
           />
         </div>
 
-        <FormFields
-          formData={formData}
-          errors={errors.fields}
-          onChange={handleChange}
-        />
+        <FormFields formData={formData} errors={errors.fields} onChange={handleChange} />
 
         <Button
           type="submit"
@@ -185,5 +181,3 @@ export function ContactForm({ standalone = false }: ContactFormProps) {
     </div>
   );
 }
-
-

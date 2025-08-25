@@ -9,7 +9,6 @@ import { logger } from '@/lib/utils/logger';
 
 export const EVENTS = {
   PAGE_VIEWED: 'navigation:page_view',
-  SECTION_VIEWED: 'content:section_view',
 
   CTA_CLICKED: 'navigation:cta_click',
   NAVIGATION_CLICKED: 'navigation:menu_click',
@@ -22,10 +21,8 @@ export const EVENTS = {
 
   CASE_STUDY_VIEWED: 'content:case_study_view',
   CASE_STUDY_IMAGE_CLICKED: 'content:case_study_image_click',
-  CASE_STUDY_SECTION_VIEWED: 'content:case_study_section_view',
 
   INSIGHT_CARD_CLICKED: 'content:insight_click',
-  INSIGHTS_SECTION_VIEWED: 'content:insights_section_view',
 
   EXTERNAL_LINK_CLICKED: 'navigation:external_link_click',
 
@@ -58,7 +55,6 @@ export const PROPERTIES = {
   CASE_STUDY_TITLE: 'case_study_title',
   INSIGHT_ID: 'insight_id',
   INSIGHT_TITLE: 'insight_title',
-  SECTION_NAME: 'section_name',
   IMAGE_SRC: 'image_src',
 
   MENU_TYPE: 'menu_type',
@@ -74,7 +70,6 @@ export const PROPERTIES = {
   LEAD_SOURCE: 'lead_source',
   LEAD_SCORE: 'lead_score',
   FIRST_VISIT: 'first_visit',
-  TOTAL_VISITS: 'total_visits',
   IS_INTERNAL: 'is_internal',
   COMPANY_DOMAIN: 'company_domain',
   PREVIOUS_ID: 'previous_id',

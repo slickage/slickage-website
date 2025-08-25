@@ -105,11 +105,9 @@ export const EVENTS = {
   // Case study events
   CASE_STUDY_VIEWED: 'case_study_viewed',
   CASE_STUDY_IMAGE_CLICKED: 'case_study_image_clicked',
-  CASE_STUDY_SECTION_VIEWED: 'case_study_section_viewed',
 
   // Insights events
   INSIGHT_CARD_CLICKED: 'insight_card_clicked',
-  INSIGHTS_SECTION_VIEWED: 'insights_section_viewed',
 
   // External link events
   EXTERNAL_LINK_CLICKED: 'external_link_clicked',
@@ -148,7 +146,6 @@ export const PROPERTIES = {
   CASE_STUDY_TITLE: 'case_study_title',
   INSIGHT_ID: 'insight_id',
   INSIGHT_TITLE: 'insight_title',
-  SECTION_NAME: 'section_name',
   IMAGE_SRC: 'image_src',
 
   // Navigation properties

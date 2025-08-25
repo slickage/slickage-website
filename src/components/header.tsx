@@ -25,7 +25,7 @@ export function Header() {
   }, []);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { trackCTAClick, trackNavigation } = useEventTracking();
+  const { trackCTAClick, trackNavigation, trackMobileMenuToggle } = useEventTracking();
 
   const handleContactClick = () => {
     trackCTAClick('Get in Touch', 'header', '/contact');
@@ -34,7 +34,7 @@ export function Header() {
   const handleMobileMenuToggle = () => {
     const newState = !isMobileMenuOpen;
     setIsMobileMenuOpen(newState);
-    trackNavigation('Mobile Menu', newState ? 'opened' : 'closed', 'mobile');
+    trackMobileMenuToggle(newState);
   };
 
   const handleLogoClick = () => {

@@ -88,6 +88,7 @@ export function useUserIdentification() {
           [PROPERTIES.LEAD_SOURCE]: leadSource,
           [PROPERTIES.PREVIOUS_ID]: currentDistinctId,
           [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
+          [PROPERTIES.USER_ID]: distinctId,
         });
       }
 
@@ -98,6 +99,7 @@ export function useUserIdentification() {
         [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
         [PROPERTIES.IS_INTERNAL]: false,
         [PROPERTIES.FIRST_VISIT]: !isReturning,
+        [PROPERTIES.USER_ID]: distinctId,
       });
     },
     [checkInternalUser],

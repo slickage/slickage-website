@@ -189,11 +189,46 @@ export function useEventTracking() {
     [trackEvent],
   );
 
+  const trackMobileMenuToggle = useCallback(
+    (isOpen: boolean) => {
+      trackEvent('MOBILE_MENU_TOGGLED', {
+        MENU_TYPE: 'mobile',
+        DESTINATION: isOpen ? 'opened' : 'closed',
+      });
+    },
+    [trackEvent],
+  );
+
+  const trackExternalLinkClick = useCallback(
+    (linkText: string, url: string, context: string) => {
+      trackEvent('EXTERNAL_LINK_CLICKED', {
+        LINK_TEXT: linkText,
+        LINK_URL: url,
+        DESTINATION: url,
+        MENU_TYPE: context,
+      });
+    },
+    [trackEvent],
+  );
+
+  const trackUserIdentification = useCallback(
+    (userId: string, isFirstVisit: boolean) => {
+      trackEvent('USER_SESSION_STARTED', {
+        USER_ID: userId,
+        FIRST_VISIT: isFirstVisit,
+      });
+    },
+    [trackEvent],
+  );
+
   return {
     trackEvent,
     trackCTAClick,
     trackNavigation,
     trackFormInteraction,
     trackContentInteraction,
+    trackMobileMenuToggle,
+    trackExternalLinkClick,
+    trackUserIdentification,
   };
 }

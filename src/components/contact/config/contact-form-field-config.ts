@@ -5,21 +5,21 @@ export const FORM_CONSTANTS = {
     AREA_CODE_LENGTH: 3,
     PREFIX_LENGTH: 6,
     LINE_NUMBER_LENGTH: 10,
-    MAX_LENGTH: 14
+    MAX_LENGTH: 14,
   },
   MESSAGE: {
     MIN_HEIGHT: 150,
-    MAX_LENGTH: 5000
+    MAX_LENGTH: 5000,
   },
   HTTP_STATUS: {
-    RATE_LIMITED: 429
+    RATE_LIMITED: 429,
   },
   RECAPTCHA: {
-    ACTION: 'contact_form'
-  }
+    ACTION: 'contact_form',
+  },
 } as const;
 
-  export interface ContactFormData {
+export interface ContactFormData {
   name: string;
   email: string;
   phone: string;
@@ -55,7 +55,7 @@ export const FORM_FIELDS: readonly FormFieldConfig[] = [
     type: 'text',
     placeholder: 'Your full name',
     required: true,
-    isGridField: false
+    isGridField: false,
   },
   {
     name: 'email',
@@ -63,7 +63,7 @@ export const FORM_FIELDS: readonly FormFieldConfig[] = [
     type: 'email',
     placeholder: 'your.email@example.com',
     required: true,
-    isGridField: true
+    isGridField: true,
   },
   {
     name: 'phone',
@@ -74,7 +74,7 @@ export const FORM_FIELDS: readonly FormFieldConfig[] = [
     maxLength: FORM_CONSTANTS.PHONE.MAX_LENGTH,
     autoComplete: 'tel',
     optional: true,
-    isGridField: true
+    isGridField: true,
   },
   {
     name: 'subject',
@@ -82,18 +82,19 @@ export const FORM_FIELDS: readonly FormFieldConfig[] = [
     type: 'text',
     placeholder: 'Your Company or Project Name',
     required: true,
-    isGridField: false
+    isGridField: false,
   },
   {
     name: 'message',
     label: 'How can we help you?',
     type: 'textarea',
-    placeholder: 'Please describe your company, project or what you need help with. (Maximum 2 links allowed)',
+    placeholder:
+      'Please describe your company, project or what you need help with. (Maximum 2 links allowed)',
     required: true,
     minHeight: FORM_CONSTANTS.MESSAGE.MIN_HEIGHT,
     maxLength: FORM_CONSTANTS.MESSAGE.MAX_LENGTH,
-    isGridField: false
-  }
+    isGridField: false,
+  },
 ] as const;
 
-export type FormFieldName = typeof FORM_FIELDS[number]['name'];
+export type FormFieldName = (typeof FORM_FIELDS)[number]['name'];

@@ -1,5 +1,3 @@
-'use client';
-
 import { Handshake, Mail, MapPin } from 'lucide-react';
 import { ContactForm } from '@/components/contact/contact-form';
 
