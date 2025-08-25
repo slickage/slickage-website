@@ -12,7 +12,7 @@ export function SocialButtons() {
   };
 
   return (
-    <div className="flex space-x-6">
+    <div className="flex space-x-6 min-h-[48px] w-[120px]">
       <IconButton
         icon={<FaLinkedin />}
         href="https://www.linkedin.com/company/slickage-studios/"

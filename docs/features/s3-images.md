@@ -161,7 +161,7 @@ export default function GalleryImage() {
 ### Direct S3 URL Generation
 
 ```tsx
-import { getS3ImageUrl } from '@/lib/utils';
+import { getS3ImageUrl } from '@/lib/services/s3-service';
 
 export default async function ServerComponent() {
   const imageUrl = await getS3ImageUrl('/images/hero.jpg', '/fallback.jpg');

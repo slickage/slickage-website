@@ -35,7 +35,12 @@ export async function GET(request: Request) {
 
     const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
 
-    return NextResponse.json({ url });
+    const response = NextResponse.json({ url });
+
+    response.headers.set('Cache-Control', 'public, max-age=1800, s-maxage=1800');
+    response.headers.set('Vary', 'Accept-Encoding');
+
+    return response;
   } catch (error) {
     logger.error('Error generating presigned URL:', error);
     return NextResponse.json({ error: 'Failed to generate URL' }, { status: 500 });

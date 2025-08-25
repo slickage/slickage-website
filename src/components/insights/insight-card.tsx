@@ -83,7 +83,7 @@ export function InsightCard({ insight }: InsightCardProps) {
             src={imageSrc}
             alt={insight.title}
             fill
-            priority={true}
+            priority={false}
             loading="eager"
             className="object-cover"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

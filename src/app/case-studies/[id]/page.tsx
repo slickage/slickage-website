@@ -7,6 +7,8 @@ import { CaseStudySection } from '@/components/case-study/case-study-section';
 import { CaseStudyImage } from '@/components/case-study/case-study-image';
 import { CaseStudyQuote } from '@/components/case-study/case-study-quote';
 import { AnimatedSection } from '@/components/ui/animated-section';
+import { Suspense } from 'react';
+import { CaseStudyContentSkeleton } from '@/components/case-study/case-study-content-skeleton';
 
 export async function generateStaticParams() {
   return caseStudies.map((caseStudy) => ({
@@ -61,37 +63,48 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
   if (!caseStudy) return notFound();
 
   return (
-    <main className="flex-1 py-8">
-      <AnimatedSection variant="slideUp">
-        <CaseStudyHero
-          type="hero"
-          title={caseStudy.title}
-          subtitle={caseStudy.subtitle}
-          heroImage={caseStudy.heroImage}
-        />
-      </AnimatedSection>
+    <>
+      <link rel="dns-prefetch" href="//slickage-website.s3.us-west-2.amazonaws.com" />
+      <link
+        rel="preconnect"
+        href="https://slickage-website.s3.us-west-2.amazonaws.com"
+        crossOrigin="anonymous"
+      />
 
-      <AnimatedSection variant="slideUp">
-        <CaseStudyOverview
-          overview={caseStudy.overview}
-          tags={caseStudy.tags}
-          quickFacts={caseStudy.quickFacts}
-        />
-      </AnimatedSection>
-
-      {caseStudy.content.map((item, idx) => (
-        <AnimatedSection key={idx} variant="slideUp">
-          {item.type === 'section' && (
-            <CaseStudySection title={item.title} content={item.content} />
-          )}
-          {item.type === 'image' && (
-            <CaseStudyImage type="image" src={item.src} alt={item.alt} caption={item.caption} />
-          )}
-          {item.type === 'quote' && (
-            <CaseStudyQuote quote={item.quote} author={item.author} role={item.role} />
-          )}
+      <main className="flex-1 py-8">
+        <AnimatedSection variant="slideUp">
+          <CaseStudyHero
+            type="hero"
+            title={caseStudy.title}
+            subtitle={caseStudy.subtitle}
+            heroImage={caseStudy.heroImage}
+          />
         </AnimatedSection>
-      ))}
-    </main>
+
+        <AnimatedSection variant="slideUp">
+          <CaseStudyOverview
+            overview={caseStudy.overview}
+            tags={caseStudy.tags}
+            quickFacts={caseStudy.quickFacts}
+          />
+        </AnimatedSection>
+
+        <Suspense fallback={<CaseStudyContentSkeleton contentLength={caseStudy.content.length} />}>
+          {caseStudy.content.map((item, idx) => (
+            <AnimatedSection key={idx} variant="slideUp">
+              {item.type === 'section' && (
+                <CaseStudySection title={item.title} content={item.content} />
+              )}
+              {item.type === 'image' && (
+                <CaseStudyImage type="image" src={item.src} alt={item.alt} caption={item.caption} />
+              )}
+              {item.type === 'quote' && (
+                <CaseStudyQuote quote={item.quote} author={item.author} role={item.role} />
+              )}
+            </AnimatedSection>
+          ))}
+        </Suspense>
+      </main>
+    </>
   );
 }
