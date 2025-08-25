@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { usePostHog } from 'posthog-js/react';
+import { logger } from '../utils/logger';
 
 type ConsentStatus = 'pending' | 'granted' | 'denied';
 
@@ -22,7 +23,7 @@ function saveConsentToStorage(consent: AnalyticsConsent, status: ConsentStatus):
       }),
     );
   } catch (error) {
-    console.warn('Failed to save analytics consent to storage:', error);
+    logger.warn('Failed to save analytics consent to storage:', error);
   }
 }
 
@@ -31,7 +32,7 @@ function loadConsentFromStorage() {
     const saved = localStorage.getItem(CONSENT_STORAGE_KEY);
     return saved ? JSON.parse(saved) : null;
   } catch (error) {
-    console.warn('Failed to parse analytics consent from storage:', error);
+    logger.warn('Failed to parse analytics consent from storage:', error);
     return null;
   }
 }
