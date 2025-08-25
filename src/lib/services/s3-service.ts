@@ -11,14 +11,17 @@ import { logger } from '../utils/logger';
  * @param fallbackUrl - Optional fallback URL (defaults to '/placeholder.svg')
  * @returns Promise that resolves to the presigned URL or fallback URL
  */
-export async function getS3ImageUrl(path: string, fallbackUrl: string = '/placeholder.svg'): Promise<string> {
+export async function getS3ImageUrl(
+  path: string,
+  fallbackUrl: string = '/placeholder.svg',
+): Promise<string> {
   try {
     if (!path || path === '/placeholder.svg') {
       return fallbackUrl;
     }
 
     const response = await fetch(`/api/s3-url?key=${encodeURIComponent(path)}`);
-    
+
     if (!response.ok) {
       throw new Error(`Failed to get S3 URL: ${response.status}`);
     }

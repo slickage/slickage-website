@@ -25,7 +25,7 @@ export function useClientConfig(configType: ConfigType) {
 
   useEffect(() => {
     const fetchConfig = async () => {
-      try {    
+      try {
         const response = await fetch(`/api/client-config?config=${configType}`);
 
         if (!response.ok) {

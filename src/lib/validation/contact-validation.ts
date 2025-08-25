@@ -25,10 +25,7 @@ export async function validateContactRequest(
       if (!recaptchaResult.isValid) {
         return {
           success: false,
-          response: NextResponse.json(
-            { error: recaptchaResult.error! },
-            { status: 400 }
-          ),
+          response: NextResponse.json({ error: recaptchaResult.error! }, { status: 400 }),
         };
       }
     }
@@ -77,18 +74,12 @@ function handleValidationError(error: unknown): ContactValidationResponse {
     }));
     return {
       success: false,
-      response: NextResponse.json(
-        { error: 'Validation failed', details },
-        { status: 400 }
-      ),
+      response: NextResponse.json({ error: 'Validation failed', details }, { status: 400 }),
     };
   }
 
   return {
     success: false,
-    response: NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    ),
+    response: NextResponse.json({ error: 'Internal server error' }, { status: 500 }),
   };
 }

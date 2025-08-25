@@ -46,16 +46,13 @@ export function useUserIdentification() {
       const internalCheck = checkInternalUser(email);
 
       if (internalCheck.isInternal) {
-        posthog.capture(
-          EVENTS.INTERNAL_USER_DETECTED,
-          {
-            email_hash: hashEmail(email),
-            [PROPERTIES.IS_INTERNAL]: true,
-            [PROPERTIES.ERROR_TYPE]: internalCheck.reason,
-            [PROPERTIES.LEAD_SOURCE]: leadSource,
-            [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
-          },
-        );
+        posthog.capture(EVENTS.INTERNAL_USER_DETECTED, {
+          email_hash: hashEmail(email),
+          [PROPERTIES.IS_INTERNAL]: true,
+          [PROPERTIES.ERROR_TYPE]: internalCheck.reason,
+          [PROPERTIES.LEAD_SOURCE]: leadSource,
+          [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
+        });
 
         posthog.setPersonProperties({
           [PROPERTIES.IS_INTERNAL]: true,
@@ -86,28 +83,22 @@ export function useUserIdentification() {
       }
 
       if (isReturning) {
-        posthog.capture(
-          EVENTS.RETURNING_VISITOR,
-          {
-            email_hash: hashEmail(email),
-            [PROPERTIES.LEAD_SOURCE]: leadSource,
-            [PROPERTIES.PREVIOUS_ID]: currentDistinctId,
-            [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
-          },
-        );
-      }
-
-      posthog.capture(
-        EVENTS.LEAD_IDENTIFIED,
-        {
+        posthog.capture(EVENTS.RETURNING_VISITOR, {
           email_hash: hashEmail(email),
           [PROPERTIES.LEAD_SOURCE]: leadSource,
-          [PROPERTIES.FORM_TYPE]: formType || 'contact',
+          [PROPERTIES.PREVIOUS_ID]: currentDistinctId,
           [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
-          [PROPERTIES.IS_INTERNAL]: false,
-          [PROPERTIES.FIRST_VISIT]: !isReturning,
-        },
-      );
+        });
+      }
+
+      posthog.capture(EVENTS.LEAD_IDENTIFIED, {
+        email_hash: hashEmail(email),
+        [PROPERTIES.LEAD_SOURCE]: leadSource,
+        [PROPERTIES.FORM_TYPE]: formType || 'contact',
+        [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
+        [PROPERTIES.IS_INTERNAL]: false,
+        [PROPERTIES.FIRST_VISIT]: !isReturning,
+      });
     },
     [checkInternalUser],
   );

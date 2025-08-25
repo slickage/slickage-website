@@ -84,7 +84,7 @@ export function PostHogProvider({ children }: { children: ReactNode }) {
   const { config } = useClientConfig('posthog');
 
   const posthogConfig = config?.posthog;
-  
+
   useEffect(() => {
     if (posthogConfig?.enabled && posthogConfig.key && posthogConfig.host) {
       posthog.init(posthogConfig.key, {
@@ -115,21 +115,18 @@ export function PostHogProvider({ children }: { children: ReactNode }) {
         cross_subdomain_cookie: false,
       });
 
-      posthog.capture(
-        EVENTS.USER_SESSION_STARTED,
-        {
-          [PROPERTIES.SESSION_ID]: posthog.get_session_id(),
-          [PROPERTIES.REFERRER]: document.referrer ? 'referral' : 'direct',
-          [PROPERTIES.IS_INTERNAL]: false,
-          visitor_type: 'anonymous',
-        },
-      );
+      posthog.capture(EVENTS.USER_SESSION_STARTED, {
+        [PROPERTIES.SESSION_ID]: posthog.get_session_id(),
+        [PROPERTIES.REFERRER]: document.referrer ? 'referral' : 'direct',
+        [PROPERTIES.IS_INTERNAL]: false,
+        visitor_type: 'anonymous',
+      });
     }
   }, [posthogConfig]);
 
   if (posthogConfig?.enabled) {
     return <PHProvider client={posthog}>{children}</PHProvider>;
   }
-  
+
   return <>{children}</>;
 }

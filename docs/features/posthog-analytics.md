@@ -315,81 +315,123 @@ export function useEventTracking() {
 
 **Hook** (`src/lib/hooks/useUserIdentification.ts`):
 
+The user identification hook follows PostHog best practices for user identification, including early identification and proper session management.
+
 ```typescript
 export function useUserIdentification() {
+  const posthog = usePostHog();
+
   const checkInternalUser = useCallback((email: string): InternalUserCheck => {
     // Check internal domains
-    const internalDomains = ['yourcompany.com', 'yourdomain.org'];
-    const domain = email.split('@')[1]?.toLowerCase();
+    const internalDomains = ['slickage.com', 'slickage.io'];
+    const domain = extractEmailDomain(email);
 
-    if (domain && internalDomains.includes(domain)) {
-      return { isInternal: true, reason: 'internal_domain' };
+    if (domain !== 'unknown' && internalDomains.includes(domain)) {
+      return { isInternal: true, reason: 'internal_email_domain' };
     }
 
     return { isInternal: false };
   }, []);
 
-  const identifyUser = useCallback(
+  // Early identification when user data becomes available
+  const identifyUserEarly = useCallback(
     async (userData: UserIdentificationData) => {
-      if (typeof window === 'undefined' || !posthog.__loaded) {
-        return;
-      }
-
+      // Identify users as soon as we have their information
+      // This follows PostHog's recommendation to "call identify as soon as you're able to"
       const { email, company, leadSource, formType } = userData;
-
-      // Check if this is an internal user
       const internalCheck = checkInternalUser(email);
 
       if (internalCheck.isInternal) {
-        // Track internal user but don't identify
-        posthog.capture(EVENTS.INTERNAL_USER_DETECTED, {
-          // Note: Consider hashing or anonymizing email addresses for privacy
-          [PROPERTIES.IS_INTERNAL]: true,
-          [PROPERTIES.ERROR_TYPE]: internalCheck.reason,
-          [PROPERTIES.LEAD_SOURCE]: leadSource,
-        });
-
-        // Set internal user property to filter in PostHog
         posthog.setPersonProperties({
           [PROPERTIES.IS_INTERNAL]: true,
           internal_detection_reason: internalCheck.reason,
         });
-
         return;
       }
 
-      // Create unique distinct ID for lead
-      const distinctId = `lead_${email.toLowerCase()}`;
+      const distinctId = createSafeDistinctId(email);
+      const currentDistinctId = posthog.get_distinct_id();
 
-      // Get current user properties to check if returning visitor
+      // Only identify if we haven't already identified this user in this session
+      if (currentDistinctId !== distinctId) {
+        posthog.identify(distinctId, {
+          email_hash: hashEmail(email),
+          company: company || userData.company,
+          lead_source: leadSource,
+          first_contact_form: formType || 'contact',
+          [PROPERTIES.IS_INTERNAL]: false,
+          [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
+        });
+
+        // Set properties that should only be set once
+        posthog.setPersonProperties({
+          first_identified: new Date().toISOString(),
+          [PROPERTIES.IS_INTERNAL]: false,
+        });
+      }
+    },
+    [checkInternalUser],
+  );
+
+  // Full identification with event tracking
+  const identifyUser = useCallback(
+    async (userData: UserIdentificationData) => {
+      // Full identification with comprehensive event tracking
+      const { email, company, leadSource, formType } = userData;
+      const internalCheck = checkInternalUser(email);
+
+      if (internalCheck.isInternal) {
+        posthog.capture(EVENTS.INTERNAL_USER_DETECTED, {
+          email_hash: hashEmail(email),
+          [PROPERTIES.IS_INTERNAL]: true,
+          [PROPERTIES.ERROR_TYPE]: internalCheck.reason,
+          [PROPERTIES.LEAD_SOURCE]: leadSource,
+          [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
+        });
+
+        posthog.setPersonProperties({
+          [PROPERTIES.IS_INTERNAL]: true,
+          internal_detection_reason: internalCheck.reason,
+        });
+        return;
+      }
+
+      const distinctId = createSafeDistinctId(email);
       const currentDistinctId = posthog.get_distinct_id();
       const isReturning = currentDistinctId && currentDistinctId !== distinctId;
 
-      if (isReturning) {
-        posthog.capture(EVENTS.RETURNING_VISITOR, {
-          // Note: Consider hashing or anonymizing email addresses for privacy
-          [PROPERTIES.LEAD_SOURCE]: leadSource,
-          [PROPERTIES.PREVIOUS_ID]: currentDistinctId,
+      // Identify user if not already identified
+      if (currentDistinctId !== distinctId) {
+        posthog.identify(distinctId, {
+          email_hash: hashEmail(email),
+          company: company || userData.company,
+          lead_source: leadSource,
+          first_contact_form: formType || 'contact',
+          [PROPERTIES.IS_INTERNAL]: false,
+          [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
+        });
+
+        // Set properties that should only be set once
+        posthog.setPersonProperties({
+          first_identified: new Date().toISOString(),
+          [PROPERTIES.IS_INTERNAL]: false,
         });
       }
 
-      // Identify the user
-      posthog.identify(distinctId, {
-        email: email,
-        company: company || userData.company,
-        lead_source: leadSource,
-        first_contact_form: formType || 'contact',
-        first_identified: new Date().toISOString(),
-        [PROPERTIES.IS_INTERNAL]: false,
-        [PROPERTIES.COMPANY_DOMAIN]: email.split('@')[1]?.toLowerCase(),
-      });
+      if (isReturning) {
+        posthog.capture(EVENTS.RETURNING_VISITOR, {
+          email_hash: hashEmail(email),
+          [PROPERTIES.LEAD_SOURCE]: leadSource,
+          [PROPERTIES.PREVIOUS_ID]: currentDistinctId,
+          [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
+        });
+      }
 
-      // Track identification event
       posthog.capture(EVENTS.LEAD_IDENTIFIED, {
-        [PROPERTIES.EMAIL]: email,
+        email_hash: hashEmail(email),
         [PROPERTIES.LEAD_SOURCE]: leadSource,
         [PROPERTIES.FORM_TYPE]: formType || 'contact',
-        [PROPERTIES.COMPANY_DOMAIN]: email.split('@')[1]?.toLowerCase(),
+        [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
         [PROPERTIES.IS_INTERNAL]: false,
         [PROPERTIES.FIRST_VISIT]: !isReturning,
       });
@@ -397,12 +439,48 @@ export function useUserIdentification() {
     [checkInternalUser],
   );
 
+  // Additional utility methods
+  const identifyAnonymousVisitor = useCallback(() => {
+    posthog.setPersonProperties({
+      [PROPERTIES.IS_INTERNAL]: false,
+      visitor_type: 'anonymous',
+      first_seen: new Date().toISOString(),
+    });
+  }, []);
+
+  const resetUserIdentification = useCallback(() => {
+    // Reset both user and device ID for complete session reset
+    posthog.reset(true);
+  }, []);
+
+  const isUserIdentified = useCallback(() => {
+    const currentId = posthog.get_distinct_id();
+    return currentId && !currentId.startsWith('anonymous_');
+  }, []);
+
+  const getCurrentUserId = useCallback(() => {
+    return posthog.get_distinct_id();
+  }, []);
+
   return {
     identifyUser,
+    identifyUserEarly,
+    identifyAnonymousVisitor,
+    resetUserIdentification,
     checkInternalUser,
+    isUserIdentified,
+    getCurrentUserId,
   };
 }
 ```
+
+**Key Features:**
+
+- **Early Identification**: Identifies users as soon as they start typing their email
+- **Session Management**: Prevents duplicate identification calls in the same session
+- **Property Optimization**: Uses `setPersonProperties` for properties that should only be set once
+- **Complete Reset**: Resets both user and device ID on logout
+- **Utility Methods**: Helper functions for checking user state and getting current user ID
 
 ## Component Integration
 

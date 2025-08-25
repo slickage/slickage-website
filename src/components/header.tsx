@@ -9,7 +9,7 @@ import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
-  
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -18,7 +18,7 @@ export function Header() {
 
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };

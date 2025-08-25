@@ -74,6 +74,44 @@ export async function POST(request: NextRequest) {
 - **Reusability**: Services can be used by other parts of the application
 - **Error Handling**: Centralized error handling with consistent responses
 
+### PostHog Analytics Integration
+
+The contact form integrates with PostHog analytics to track user behavior and lead generation. It follows PostHog best practices for user identification by implementing early identification.
+
+**Early Identification:**
+
+- Users are identified as soon as they start typing their email address
+- This follows PostHog's recommendation to "call identify as soon as you're able to"
+- Prevents loss of user data from anonymous sessions
+
+**Implementation:**
+
+```typescript
+// Early identification when user types email
+if (name === 'email' && value.includes('@') && value.includes('.')) {
+  identifyUserEarly({
+    email: value,
+    leadSource: standalone ? 'contact_page' : 'homepage_contact_form',
+    formType: 'contact',
+  });
+}
+
+// Full identification on form submission
+await identifyUser({
+  email: formData.email,
+  company: formData.subject,
+  leadSource: standalone ? 'contact_page' : 'homepage_contact_form',
+  formType: 'contact',
+});
+```
+
+**Benefits:**
+
+- Better user journey tracking from first interaction
+- Improved analytics accuracy for lead generation
+- Follows PostHog best practices for user identification
+- Maintains user context across form interactions
+
 ### Form Fields
 
 The contact form includes the following fields:

@@ -38,10 +38,7 @@ export async function submitContactForm(
     const submissionResult = await processSubmission(formData, clientIp, startTime);
     if (!submissionResult.success) {
       return {
-        response: NextResponse.json(
-          { error: submissionResult.error },
-          { status: 500 }
-        ),
+        response: NextResponse.json({ error: submissionResult.error }, { status: 500 }),
       };
     }
 
@@ -60,14 +57,14 @@ export async function submitContactForm(
 
     return {
       response: NextResponse.json(
-        { 
+        {
           message: 'Form submitted successfully',
-          data: { submissionId: submissionResult.submissionId! }
+          data: { submissionId: submissionResult.submissionId! },
         },
-        { 
-          status: 200, 
-          headers 
-        }
+        {
+          status: 200,
+          headers,
+        },
       ),
     };
   } catch (error) {
@@ -75,7 +72,7 @@ export async function submitContactForm(
     return {
       response: NextResponse.json(
         { error: 'Service temporarily unavailable. Please try again later.' },
-        { status: 500 }
+        { status: 500 },
       ),
     };
   }
@@ -95,17 +92,17 @@ async function validateRateLimit(clientIp: string): Promise<{
 
   if (rateLimitResult.limited) {
     const minutesUntilReset = Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000 / 60);
-          return {
-        allowed: false,
-        response: NextResponse.json(
-          { error: `Too many submissions. Please try again in ${minutesUntilReset} minutes.` },
-          { 
-            status: 429,
-            headers: { 'Retry-After': (minutesUntilReset * 60).toString() }
-          }
-        ),
-        resetTime: rateLimitResult.resetTime,
-      };
+    return {
+      allowed: false,
+      response: NextResponse.json(
+        { error: `Too many submissions. Please try again in ${minutesUntilReset} minutes.` },
+        {
+          status: 429,
+          headers: { 'Retry-After': (minutesUntilReset * 60).toString() },
+        },
+      ),
+      resetTime: rateLimitResult.resetTime,
+    };
   }
 
   return {

@@ -21,12 +21,9 @@ export async function POST(request: NextRequest) {
     return result.response;
   } catch (error) {
     const processingTime = Date.now() - startTime;
-    
+
     logger.error(`Contact form submission error: processing time ${processingTime}ms`, error);
-    
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

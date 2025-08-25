@@ -47,7 +47,10 @@ export function useRecaptcha(options?: UseRecaptchaOptions) {
     return config?.enabled && config?.siteKey;
   }
 
-  function setupLoadingStrategy(strategy: RecaptchaLoadStrategy, triggerRef?: RefObject<Element | null>) {
+  function setupLoadingStrategy(
+    strategy: RecaptchaLoadStrategy,
+    triggerRef?: RefObject<Element | null>,
+  ) {
     switch (strategy) {
       case 'in-viewport':
         return triggerRef?.current ? setupInViewportLoading(triggerRef.current) : undefined;
@@ -73,7 +76,7 @@ export function useRecaptcha(options?: UseRecaptchaOptions) {
           }
         }
       },
-      { threshold: INTERSECTION_THRESHOLD }
+      { threshold: INTERSECTION_THRESHOLD },
     );
 
     observer.observe(element);

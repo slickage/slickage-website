@@ -74,12 +74,12 @@ The application will be available at [http://localhost:3000](http://localhost:30
 
 #### Required Variables
 
-| Variable                | Description                                 |
-| ----------------------- | ------------------------------------------- |
-| `S3_BUCKET_NAME`         | S3 bucket name for private image assets |
-| `AWS_ACCESS_KEY_ID`     | AWS access key for S3 operations            |
-| `AWS_SECRET_ACCESS_KEY` | AWS secret key for S3 operations            |
-| `AWS_REGION`            | AWS region for S3 bucket                    |
+| Variable                | Description                             |
+| ----------------------- | --------------------------------------- |
+| `S3_BUCKET_NAME`        | S3 bucket name for private image assets |
+| `AWS_ACCESS_KEY_ID`     | AWS access key for S3 operations        |
+| `AWS_SECRET_ACCESS_KEY` | AWS secret key for S3 operations        |
+| `AWS_REGION`            | AWS region for S3 bucket                |
 
 #### Optional Variables
 

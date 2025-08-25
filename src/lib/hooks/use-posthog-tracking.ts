@@ -3,7 +3,6 @@ import { usePostHog } from 'posthog-js/react';
 import { usePathname } from 'next/navigation';
 import { EVENTS, PROPERTIES } from '@/app/providers';
 
-// Type Definitions
 interface EventProperties {
   [key: string]: string | number | boolean;
 }
@@ -31,17 +30,16 @@ interface InsightDetails {
   title?: string;
 }
 
-// Helper Functions
 function mapPropertiesToPostHogFormat(properties: EventProperties): PostHogProperties {
   const postHogProperties: PostHogProperties = {};
-  
+
   Object.entries(properties).forEach(([key, value]) => {
     const propertyKey = key as keyof typeof PROPERTIES;
     if (PROPERTIES[propertyKey]) {
       postHogProperties[PROPERTIES[propertyKey]] = value;
     }
   });
-  
+
   return postHogProperties;
 }
 
@@ -49,11 +47,11 @@ function buildCaseStudyProperties(details: CaseStudyDetails): EventProperties {
   const properties: EventProperties = {
     CASE_STUDY_ID: details.id,
   };
-  
+
   if (details.title) properties.CASE_STUDY_TITLE = details.title;
   if (details.section) properties.SECTION_NAME = details.section;
   if (details.imageSrc) properties.IMAGE_SRC = details.imageSrc;
-  
+
   return properties;
 }
 
@@ -61,20 +59,19 @@ function buildInsightProperties(details: InsightDetails): EventProperties {
   const properties: EventProperties = {
     INSIGHT_ID: details.id,
   };
-  
+
   if (details.title) properties.INSIGHT_TITLE = details.title;
-  
+
   return properties;
 }
 
 function normalizeEventKey(action: string): keyof typeof EVENTS {
   const normalizedKey = action.toUpperCase().replace(/\s+/g, '_');
-  
+
   if (isValidEventKey(normalizedKey)) {
     return normalizedKey;
   }
-  
-  // Fallback to a safe default if the key doesn't exist
+
   return 'PAGE_VIEWED';
 }
 
@@ -107,7 +104,7 @@ export function usePageTracking() {
  */
 export function useEventTracking() {
   const posthog = usePostHog();
-  
+
   const trackEvent = useCallback(
     (
       event: keyof typeof EVENTS,
@@ -116,7 +113,7 @@ export function useEventTracking() {
       if (typeof window !== 'undefined' && posthog.__loaded) {
         const eventName = EVENTS[event];
         const eventProperties = properties ? mapPropertiesToPostHogFormat(properties) : {};
-        
+
         posthog.capture(eventName, eventProperties);
       }
     },
@@ -179,7 +176,7 @@ export function useEventTracking() {
       details: CaseStudyDetails | InsightDetails,
     ) => {
       let properties: EventProperties;
-      
+
       if (contentType === 'case_study') {
         properties = buildCaseStudyProperties(details as CaseStudyDetails);
       } else {

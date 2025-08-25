@@ -13,11 +13,14 @@ const CONSENT_STORAGE_KEY = 'posthog_analytics_consent';
 
 function saveConsentToStorage(consent: AnalyticsConsent, status: ConsentStatus): void {
   try {
-    localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({
-      consent,
-      status,
-      timestamp: new Date().toISOString(),
-    }));
+    localStorage.setItem(
+      CONSENT_STORAGE_KEY,
+      JSON.stringify({
+        consent,
+        status,
+        timestamp: new Date().toISOString(),
+      }),
+    );
   } catch (error) {
     console.warn('Failed to save analytics consent to storage:', error);
   }
