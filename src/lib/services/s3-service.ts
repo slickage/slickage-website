@@ -1,4 +1,4 @@
-import { logger } from '../utils/logger';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * S3 Service

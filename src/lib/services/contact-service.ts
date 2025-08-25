@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
 import { db, form_submissions } from '@/db';
-import { ContactFormData } from '../validation/contact-schema';
-import { sanitizeInput } from '../utils/sanitizers';
-import { logger } from '../utils/logger';
-import { captureServerEvent } from '../posthog-server';
-import { createSafeDistinctId, extractEmailDomain, anonymizeIp } from '../utils/privacy';
-import { checkRateLimit, MAX_REQUESTS_PER_WINDOW } from '../security/rate-limiter';
-import { createSlackService } from './slack-service';
+import { ContactFormData } from '@/lib/validation/contact-schema';
+import { sanitizeInput } from '@/lib/utils/sanitizers';
+import { logger } from '@/lib/utils/logger';
+import { captureServerEvent } from '@/lib/posthog-server';
+import { createSafeDistinctId, extractEmailDomain, anonymizeIp } from '@/lib/utils/privacy';
+import { checkRateLimit, MAX_REQUESTS_PER_WINDOW } from '@/lib/security/rate-limiter';
+import { createSlackService } from '@/lib/services/slack-service';
 import type {
   ValidatedContactData,
   ContactSubmissionResult,
   ContactSubmissionResponse,
   ContactAnalyticsEvent,
 } from '@/lib/types/contact-api';
-import type { SlackMessage } from './slack-service';
+import type { SlackMessage } from '@/lib/services/slack-service';
 
 /**
  * Complete contact form submission flow

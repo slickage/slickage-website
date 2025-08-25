@@ -5,8 +5,8 @@ import { Inter } from 'next/font/google';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { LazyMotionWrapper } from '@/components/ui/lazy-motion-wrapper';
-import { PostHogProvider } from './providers';
-import { PageTracker } from '../components/page-tracker';
+import { PostHogProvider } from '@/app/providers';
+import { PageTracker } from '@/components/page-tracker';
 import { AnalyticsConsentBanner } from '@/components/ui/analytics-consent-banner';
 
 const inter = Inter({ subsets: ['latin'] });

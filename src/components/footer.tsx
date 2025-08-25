@@ -1,6 +1,6 @@
-import { SocialButtons } from './footer/social-buttons';
-import { TrackedNavigation } from './footer/tracked-navigation';
-import { LegalLinks } from './footer/legal-links';
+import { SocialButtons } from '@/components/footer/social-buttons';
+import { TrackedNavigation } from '@/components/footer/tracked-navigation';
+import { LegalLinks } from '@/components/footer/legal-links';
 
 export function Footer() {
   const companyNavigation = [

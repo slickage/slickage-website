@@ -1,5 +1,5 @@
 import { PostHog } from 'posthog-node';
-import { env } from './env';
+import { env } from '@/lib/env';
 
 export function createPostHogServer() {
   const posthogKey = env.POSTHOG_KEY;

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, type SyntheticEvent } from 'react';
 import ReactDOM from 'react-dom';
 import Image, { ImageProps } from 'next/image';
 import { m, AnimatePresence } from 'motion/react';
-import { LoadingSpinnerOverlay } from './loading-spinner';
+import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 
 interface ImageLightboxProps extends Omit<ImageProps, 'ref'> {

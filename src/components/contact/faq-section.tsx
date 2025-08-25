@@ -1,4 +1,4 @@
-import { FaqItem } from './faq-item';
+import { FaqItem } from '@/components/contact/faq-item';
 
 export function FaqSection() {
   const faqs = [

@@ -1,5 +1,5 @@
-import { logger } from '../utils/logger';
-import { getRedisClient, isRedisAvailable } from '../utils/redis';
+import { logger } from '@/lib/utils/logger';
+import { getRedisClient, isRedisAvailable } from '@/lib/utils/redis';
 
 const MAX_REQUESTS_PER_WINDOW = 3;
 const WINDOW_SIZE_SECONDS = 60 * 60; // 1 hour in seconds
