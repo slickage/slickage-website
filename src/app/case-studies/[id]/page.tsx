@@ -1,38 +1,62 @@
-'use client';
-
 import { notFound } from 'next/navigation';
-import { getCaseStudyById } from '@/data/case-studies';
+import { Metadata } from 'next';
+import { getCaseStudyById, caseStudies } from '@/data/case-studies';
 import { CaseStudyHero } from '@/components/case-study/case-study-hero';
 import { CaseStudyOverview } from '@/components/case-study/case-study-overview';
 import { CaseStudySection } from '@/components/case-study/case-study-section';
 import { CaseStudyImage } from '@/components/case-study/case-study-image';
 import { CaseStudyQuote } from '@/components/case-study/case-study-quote';
 import { AnimatedSection } from '@/components/ui/animated-section';
-import type { CaseStudy } from '@/types/case-study';
-import { useEffect, useState } from 'react';
 
-export default function CaseStudyDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const [caseStudy, setCaseStudy] = useState<CaseStudy | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(true);
+export async function generateStaticParams() {
+  return caseStudies.map((caseStudy) => ({
+    id: caseStudy.id,
+  }));
+}
 
-  useEffect(() => {
-    const loadCaseStudy = async () => {
-      try {
-        const { id } = await params;
-        const data = await getCaseStudyById(id);
-        setCaseStudy(data);
-      } catch (error) {
-        console.error('Error loading case study:', error);
-      } finally {
-        setIsLoading(false);
-      }
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const caseStudy = await getCaseStudyById(id);
+
+  if (!caseStudy) {
+    return {
+      title: 'Case Study Not Found',
+      description: 'The requested case study could not be found.',
     };
-    loadCaseStudy();
-  }, [params]);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
   }
+
+  return {
+    title: `${caseStudy.title} | Slickage`,
+    description: caseStudy.overview,
+    openGraph: {
+      title: caseStudy.title,
+      description: caseStudy.overview,
+      type: 'article',
+      images: [
+        {
+          url: caseStudy.heroImage,
+          width: 1200,
+          height: 630,
+          alt: caseStudy.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: caseStudy.title,
+      description: caseStudy.overview,
+      images: [caseStudy.heroImage],
+    },
+  };
+}
+
+export default async function CaseStudyDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const caseStudy = await getCaseStudyById(id);
 
   if (!caseStudy) return notFound();
 
