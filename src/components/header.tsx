@@ -1,17 +1,31 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { useScrollPosition } from '@/lib/hooks/use-scroll-position';
-import { useEventTracking } from '@/lib/hooks/use-event-tracking';
+import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
 
 export function Header() {
-  const { isScrolled } = useScrollPosition({ threshold: 10 });
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setIsScrolled(scrollY > 10);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { trackCTAClick, trackNavigation } = useEventTracking();
+  const { trackCTAClick, trackNavigation, trackMobileMenuToggle } = useEventTracking();
 
   const handleContactClick = () => {
     trackCTAClick('Get in Touch', 'header', '/contact');
@@ -20,7 +34,7 @@ export function Header() {
   const handleMobileMenuToggle = () => {
     const newState = !isMobileMenuOpen;
     setIsMobileMenuOpen(newState);
-    trackNavigation('Mobile Menu', newState ? 'opened' : 'closed', 'mobile');
+    trackMobileMenuToggle(newState);
   };
 
   const handleLogoClick = () => {

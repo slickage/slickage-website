@@ -1,7 +1,5 @@
-'use client';
-
 import { Handshake, Mail, MapPin } from 'lucide-react';
-import { ContactForm } from './contact/contact-form';
+import { ContactForm } from '@/components/contact/contact-form';
 
 export function ContactSection() {
   return (

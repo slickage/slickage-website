@@ -5,8 +5,8 @@ import { Inter } from 'next/font/google';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { LazyMotionWrapper } from '@/components/ui/lazy-motion-wrapper';
-import { PostHogProvider } from './providers';
-import { PageTracker } from '../components/page-tracker';
+import { PostHogProvider } from '@/app/providers';
+import { PageTracker } from '@/components/page-tracker';
 import { AnalyticsConsentBanner } from '@/components/ui/analytics-consent-banner';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -70,12 +70,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
-        <link
-          rel="preload"
-          href="/logo-slickage-lines-blue-light.svg"
-          as="image"
-          type="image/svg+xml"
-        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>

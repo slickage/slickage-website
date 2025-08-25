@@ -1,4 +1,4 @@
-import { TrackedFAQLink } from './tracked-faq-link';
+import { TrackedFAQLink } from '@/components/contact/tracked-faq-link';
 
 export function FaqPreview() {
   return (

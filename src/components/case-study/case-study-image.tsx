@@ -3,11 +3,12 @@
 import { useState, useEffect } from 'react';
 import { m } from 'motion/react';
 import dynamic from 'next/dynamic';
-import { getS3ImageUrl } from '@/lib/utils';
+import { getS3ImageUrl } from '@/lib/services/s3-service';
 import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
-import { useEventTracking } from '@/lib/hooks/use-event-tracking';
+import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
+import type { CaseStudyContentItem } from '@/types/case-study';
 
 const ImageLightbox = dynamic(() =>
   import('@/components/ui/image-lightbox').then((mod) => mod.ImageLightbox),
@@ -17,11 +18,7 @@ export function CaseStudyImage({
   src,
   alt,
   caption,
-}: {
-  src: string;
-  alt: string;
-  caption?: string;
-}) {
+}: Extract<CaseStudyContentItem, { type: 'image' }>) {
   const [s3Url, setS3Url] = useState<string>('/placeholder.svg');
   const [isLoadingS3, setIsLoadingS3] = useState(false);
 
@@ -43,12 +40,12 @@ export function CaseStudyImage({
     if (src && src !== '/placeholder.svg') {
       setIsLoadingS3(true);
       getS3ImageUrl(src)
-        .then((url) => {
+        .then((url: string) => {
           setS3Url(url);
           setIsLoadingS3(false);
         })
-        .catch((error) => {
-          logger.error('Error loading S3 image:', error);
+        .catch((error: unknown) => {
+          logger.error('Error loading case study image:', error);
           setS3Url('/placeholder.svg');
           setIsLoadingS3(false);
         });
@@ -85,6 +82,11 @@ export function CaseStudyImage({
             alt={alt}
             className="w-full h-auto"
             unoptimized={src?.toLowerCase().includes('.gif')}
+            priority={false}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            quality={85}
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
           />
         </div>
         {caption && (

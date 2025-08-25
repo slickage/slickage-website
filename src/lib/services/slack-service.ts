@@ -1,3 +1,4 @@
+import { env } from '@/lib/env';
 import { logger } from '@/lib/utils/logger';
 
 export interface SlackMessage {
@@ -76,94 +77,6 @@ export class SlackService {
   }
 
   /**
-   * Create a formatted contact form submission message
-   */
-  createContactFormMessage(data: {
-    name: string;
-    email: string;
-    phone?: string;
-    subject: string;
-    message: string;
-    submissionId: string;
-    clientIp: string;
-    processingTime: number;
-  }): SlackMessage {
-    const { name, email, phone, subject, message, submissionId, clientIp, processingTime } = data;
-
-    return {
-      blocks: [
-        {
-          type: 'header',
-          text: {
-            type: 'plain_text',
-            text: '📧 New Contact Form Submission',
-            emoji: true,
-          },
-        },
-        {
-          type: 'section',
-          fields: [
-            {
-              type: 'mrkdwn',
-              text: `*Name:*\n${name}`,
-            },
-            {
-              type: 'mrkdwn',
-              text: `*Email:*\n${email}`,
-            },
-          ],
-        },
-        ...(phone
-          ? [
-              {
-                type: 'section' as const,
-                fields: [
-                  {
-                    type: 'mrkdwn' as const,
-                    text: `*Phone:*\n${phone}`,
-                  },
-                  {
-                    type: 'mrkdwn' as const,
-                    text: `*Subject:*\n${subject}`,
-                  },
-                ],
-              },
-            ]
-          : [
-              {
-                type: 'section' as const,
-                fields: [
-                  {
-                    type: 'mrkdwn' as const,
-                    text: `*Subject:*\n${subject}`,
-                  },
-                ],
-              },
-            ]),
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `*Message:*\n${message}`,
-          },
-        },
-        {
-          type: 'context' as const,
-          elements: [
-            {
-              type: 'mrkdwn' as const,
-              text: `🆔 *Submission ID:* ${submissionId} | 🌐 *IP:* ${clientIp} | ⏱️ *Processing:* ${processingTime}ms`,
-            },
-          ],
-        },
-        {
-          type: 'divider' as const,
-        },
-      ],
-    };
-  }
-
-  /**
    * Create a simple text message
    */
   createTextMessage(text: string): SlackMessage {
@@ -214,7 +127,7 @@ export class SlackService {
  * Create a Slack service instance
  */
 export function createSlackService(): SlackService | null {
-  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+  const webhookUrl = env.SLACK_WEBHOOK_URL;
 
   if (!webhookUrl) {
     logger.warn('SLACK_WEBHOOK_URL not configured, Slack notifications disabled');

@@ -4,7 +4,7 @@ import { FeaturesSection } from '@/components/features-section';
 import { ContactSection } from '@/components/contact-section';
 import { AnimatedSection } from '@/components/ui/animated-section';
 
-export default function Home() {
+export default async function Home() {
   return (
     <main className="flex-1">
       <AnimatedSection variant="slideUp">

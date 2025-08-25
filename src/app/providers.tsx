@@ -2,14 +2,13 @@
 
 import { posthog } from 'posthog-js';
 import { PostHogProvider as PHProvider } from 'posthog-js/react';
-import { useEffect, type ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useClientConfig } from '@/lib/hooks/use-client-config';
-import { addVersionMetadata } from '@/lib/utils/analytics-versioning';
+import { env } from '@/lib/env';
 import { logger } from '@/lib/utils/logger';
 
 export const EVENTS = {
   PAGE_VIEWED: 'navigation:page_view',
-  SECTION_VIEWED: 'content:section_view',
 
   CTA_CLICKED: 'navigation:cta_click',
   NAVIGATION_CLICKED: 'navigation:menu_click',
@@ -22,10 +21,8 @@ export const EVENTS = {
 
   CASE_STUDY_VIEWED: 'content:case_study_view',
   CASE_STUDY_IMAGE_CLICKED: 'content:case_study_image_click',
-  CASE_STUDY_SECTION_VIEWED: 'content:case_study_section_view',
 
   INSIGHT_CARD_CLICKED: 'content:insight_click',
-  INSIGHTS_SECTION_VIEWED: 'content:insights_section_view',
 
   EXTERNAL_LINK_CLICKED: 'navigation:external_link_click',
 
@@ -52,12 +49,12 @@ export const PROPERTIES = {
   FORM_TYPE: 'form_type',
   FORM_FIELD: 'form_field',
   FORM_COMPLETION_TIME: 'form_completion_time',
+  SUBMISSION_ID: 'submission_id',
 
   CASE_STUDY_ID: 'case_study_id',
   CASE_STUDY_TITLE: 'case_study_title',
   INSIGHT_ID: 'insight_id',
   INSIGHT_TITLE: 'insight_title',
-  SECTION_NAME: 'section_name',
   IMAGE_SRC: 'image_src',
 
   MENU_TYPE: 'menu_type',
@@ -73,24 +70,25 @@ export const PROPERTIES = {
   LEAD_SOURCE: 'lead_source',
   LEAD_SCORE: 'lead_score',
   FIRST_VISIT: 'first_visit',
-  TOTAL_VISITS: 'total_visits',
   IS_INTERNAL: 'is_internal',
   COMPANY_DOMAIN: 'company_domain',
   PREVIOUS_ID: 'previous_id',
 } as const;
 
 export function PostHogProvider({ children }: { children: ReactNode }) {
-  const { config: posthogConfig, isLoading } = useClientConfig('posthog');
+  const { config } = useClientConfig('posthog');
+
+  const posthogConfig = config?.posthog;
 
   useEffect(() => {
     if (posthogConfig?.enabled && posthogConfig.key && posthogConfig.host) {
       posthog.init(posthogConfig.key, {
         api_host: '/ingest',
         ui_host: posthogConfig.host,
-        debug: process.env.NODE_ENV === 'development',
+        debug: env.isDevelopment,
 
         opt_out_capturing_by_default: false,
-        respect_dnt: process.env.NODE_ENV === 'production',
+        respect_dnt: env.isProduction,
 
         session_recording: {
           collectFonts: true,
@@ -112,21 +110,18 @@ export function PostHogProvider({ children }: { children: ReactNode }) {
         cross_subdomain_cookie: false,
       });
 
-      posthog.capture(
-        EVENTS.USER_SESSION_STARTED,
-        addVersionMetadata({
-          [PROPERTIES.SESSION_ID]: posthog.get_session_id(),
-          [PROPERTIES.REFERRER]: document.referrer ? 'referral' : 'direct',
-          [PROPERTIES.IS_INTERNAL]: false,
-          visitor_type: 'anonymous',
-        }),
-      );
+      posthog.capture(EVENTS.USER_SESSION_STARTED, {
+        [PROPERTIES.SESSION_ID]: posthog.get_session_id(),
+        [PROPERTIES.REFERRER]: document.referrer ? 'referral' : 'direct',
+        [PROPERTIES.IS_INTERNAL]: false,
+        visitor_type: 'anonymous',
+      });
     }
   }, [posthogConfig]);
 
-  if (isLoading || !posthogConfig?.enabled) {
-    return <>{children}</>;
+  if (posthogConfig?.enabled) {
+    return <PHProvider client={posthog}>{children}</PHProvider>;
   }
 
-  return <PHProvider client={posthog}>{children}</PHProvider>;
+  return <>{children}</>;
 }

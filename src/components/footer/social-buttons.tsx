@@ -2,17 +2,17 @@
 
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import { IconButton } from '@/components/ui/icon-button';
-import { useEventTracking } from '@/lib/hooks/use-event-tracking';
+import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
 
 export function SocialButtons() {
-  const { trackNavigation } = useEventTracking();
+  const { trackExternalLinkClick } = useEventTracking();
 
   const handleSocialClick = (platform: string, url: string) => {
-    trackNavigation(`${platform} Social`, url, 'footer_social');
+    trackExternalLinkClick(`${platform} Social`, url, 'footer_social');
   };
 
   return (
-    <div className="flex space-x-6">
+    <div className="flex space-x-6 min-h-[48px] w-[120px]">
       <IconButton
         icon={<FaLinkedin />}
         href="https://www.linkedin.com/company/slickage-studios/"

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEventTracking } from '@/lib/hooks/use-event-tracking';
+import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
 
 interface NavigationItem {
   name: string;
