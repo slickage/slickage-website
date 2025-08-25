@@ -6,9 +6,11 @@ type RecaptchaLoadStrategy = 'immediate' | 'in-viewport' | 'interaction';
 
 interface UseRecaptchaOptions {
   strategy?: RecaptchaLoadStrategy;
-  // Allow null to match common React refs like useRef<HTMLDivElement | null>(null)
   triggerRef?: RefObject<Element | null>;
 }
+
+const INTERSECTION_THRESHOLD = 0.1;
+const IMMEDIATE_LOAD_DELAY = 0;
 
 export function useRecaptcha(options?: UseRecaptchaOptions) {
   const { config, error: configError } = useClientConfig('recaptcha');
@@ -18,68 +20,16 @@ export function useRecaptcha(options?: UseRecaptchaOptions) {
   const recaptchaConfig = config?.recaptcha;
 
   useEffect(() => {
-    if (!recaptchaConfig?.enabled || !recaptchaConfig?.siteKey) {
+    if (!shouldLoadRecaptcha(recaptchaConfig)) {
       return;
     }
 
-    const loadRecaptcha = () => {
-      if (isLoaded) return; // prevent duplicate loads
-      const script = document.createElement('script');
-      script.src = `https://www.google.com/recaptcha/api.js?render=${recaptchaConfig.siteKey}`;
-      script.async = true;
-      script.defer = true;
-
-      script.onload = () => {
-        if (window.grecaptcha) {
-          window.grecaptcha.ready(() => {
-            setIsLoaded(true);
-          });
-        } else {
-          setError('reCAPTCHA object not available');
-        }
-      };
-
-      script.onerror = (error) => {
-        logger.error('useRecaptcha: Failed to load reCAPTCHA script:', error);
-        setError('Failed to load reCAPTCHA');
-      };
-
-      document.head.appendChild(script);
-    };
-
-    const strategy: RecaptchaLoadStrategy = options?.strategy || 'immediate';
-
-    let cleanup: (() => void) | undefined;
-
-    if (strategy === 'in-viewport' && options?.triggerRef?.current) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              loadRecaptcha();
-              observer.disconnect();
-              break;
-            }
-          }
-        },
-        { threshold: 0.1 },
-      );
-
-      observer.observe(options.triggerRef.current);
-      cleanup = () => observer.disconnect();
-    } else {
-      // immediate load
-      const timeoutId = setTimeout(loadRecaptcha, 0);
-      cleanup = () => clearTimeout(timeoutId);
-    }
+    const strategy = options?.strategy || 'immediate';
+    const cleanup = setupLoadingStrategy(strategy, options?.triggerRef);
 
     return () => {
-      try {
-        cleanup && cleanup();
-      } finally {
-        const scripts = document.querySelectorAll('script[src*="recaptcha"]');
-        scripts.forEach((script) => script.remove());
-      }
+      cleanup?.();
+      cleanupScripts();
     };
   }, [recaptchaConfig, options?.strategy, options?.triggerRef?.current, isLoaded]);
 
@@ -92,4 +42,76 @@ export function useRecaptcha(options?: UseRecaptchaOptions) {
     isLoaded,
     error: error || configError,
   };
+
+  function shouldLoadRecaptcha(config: any): boolean {
+    return config?.enabled && config?.siteKey;
+  }
+
+  function setupLoadingStrategy(strategy: RecaptchaLoadStrategy, triggerRef?: RefObject<Element | null>) {
+    switch (strategy) {
+      case 'in-viewport':
+        return triggerRef?.current ? setupInViewportLoading(triggerRef.current) : undefined;
+      case 'immediate':
+      default:
+        return setupImmediateLoading();
+    }
+  }
+
+  function setupImmediateLoading() {
+    const timeoutId = setTimeout(loadRecaptchaScript, IMMEDIATE_LOAD_DELAY);
+    return () => clearTimeout(timeoutId);
+  }
+
+  function setupInViewportLoading(element: Element) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            loadRecaptchaScript();
+            observer.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold: INTERSECTION_THRESHOLD }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }
+
+  function loadRecaptchaScript() {
+    if (isLoaded) return;
+
+    const script = createRecaptchaScript();
+    script.onload = handleScriptLoad;
+    script.onerror = handleScriptError;
+    document.head.appendChild(script);
+  }
+
+  function createRecaptchaScript(): HTMLScriptElement {
+    const script = document.createElement('script');
+    script.src = `https://www.google.com/recaptcha/api.js?render=${recaptchaConfig!.siteKey}`;
+    script.async = true;
+    script.defer = true;
+    return script;
+  }
+
+  function handleScriptLoad() {
+    if (window.grecaptcha) {
+      window.grecaptcha.ready(() => setIsLoaded(true));
+    } else {
+      setError('reCAPTCHA object not available');
+    }
+  }
+
+  function handleScriptError(error: any) {
+    logger.error('useRecaptcha: Failed to load reCAPTCHA script:', error);
+    setError('Failed to load reCAPTCHA');
+  }
+
+  function cleanupScripts() {
+    const scripts = document.querySelectorAll('script[src*="recaptcha"]');
+    scripts.forEach((script) => script.remove());
+  }
 }

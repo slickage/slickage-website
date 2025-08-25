@@ -20,6 +20,7 @@ const INTERNAL_DOMAINS = ['slickage.com', 'slickage.io'] as const;
 /**
  * Hook for user identification and internal user filtering
  * Handles lead tracking and removes internal team data
+ * Follows PostHog best practices for user identification
  */
 export function useUserIdentification() {
   const posthog = usePostHog();
@@ -42,7 +43,6 @@ export function useUserIdentification() {
       }
 
       const { email, company, leadSource, formType } = userData;
-
       const internalCheck = checkInternalUser(email);
 
       if (internalCheck.isInternal) {
@@ -66,9 +66,24 @@ export function useUserIdentification() {
       }
 
       const distinctId = createSafeDistinctId(email);
-
       const currentDistinctId = posthog.get_distinct_id();
       const isReturning = currentDistinctId && currentDistinctId !== distinctId;
+
+      if (currentDistinctId !== distinctId) {
+        posthog.identify(distinctId, {
+          email_hash: hashEmail(email),
+          company: company || userData.company,
+          lead_source: leadSource,
+          first_contact_form: formType || 'contact',
+          [PROPERTIES.IS_INTERNAL]: false,
+          [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
+        });
+
+        posthog.setPersonProperties({
+          first_identified: new Date().toISOString(),
+          [PROPERTIES.IS_INTERNAL]: false,
+        });
+      }
 
       if (isReturning) {
         posthog.capture(
@@ -81,16 +96,6 @@ export function useUserIdentification() {
           },
         );
       }
-
-      posthog.identify(distinctId, {
-        email_hash: hashEmail(email),
-        company: company || userData.company,
-        lead_source: leadSource,
-        first_contact_form: formType || 'contact',
-        first_identified: new Date().toISOString(),
-        [PROPERTIES.IS_INTERNAL]: false,
-        [PROPERTIES.COMPANY_DOMAIN]: extractEmailDomain(email),
-      });
 
       posthog.capture(
         EVENTS.LEAD_IDENTIFIED,
@@ -124,7 +129,24 @@ export function useUserIdentification() {
       return;
     }
 
-    posthog.reset();
+    posthog.reset(true);
+  }, []);
+
+  const isUserIdentified = useCallback(() => {
+    if (typeof window === 'undefined' || !posthog) {
+      return false;
+    }
+
+    const currentId = posthog.get_distinct_id();
+    return currentId && !currentId.startsWith('anonymous_');
+  }, []);
+
+  const getCurrentUserId = useCallback(() => {
+    if (typeof window === 'undefined' || !posthog) {
+      return null;
+    }
+
+    return posthog.get_distinct_id();
   }, []);
 
   return {
@@ -132,5 +154,7 @@ export function useUserIdentification() {
     identifyAnonymousVisitor,
     resetUserIdentification,
     checkInternalUser,
+    isUserIdentified,
+    getCurrentUserId,
   };
 }
