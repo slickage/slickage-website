@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, type ChangeEvent, type FormEvent } from 'react';
 import { Send } from 'lucide-react';
 import { useRecaptcha } from '@/lib/hooks/use-recaptcha';
-import { useEventTracking } from '@/lib/hooks/use-event-tracking';
+import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
 import { useUserIdentification } from '@/lib/hooks/use-user-identification';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

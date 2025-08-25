@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Home } from 'lucide-react';
 import { useEffect } from 'react';
-import { useEventTracking } from '@/lib/hooks/use-event-tracking';
+import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
 
 export default function NotFound() {
   const { trackEvent } = useEventTracking();

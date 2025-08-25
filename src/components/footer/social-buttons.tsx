@@ -2,7 +2,7 @@
 
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import { IconButton } from '@/components/ui/icon-button';
-import { useEventTracking } from '@/lib/hooks/use-event-tracking';
+import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
 
 export function SocialButtons() {
   const { trackNavigation } = useEventTracking();
