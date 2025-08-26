@@ -19,6 +19,8 @@ type ServerEnv = {
   isDevelopment: boolean;
   isProduction: boolean;
   isTest: boolean;
+  isRecaptchaConfigured: boolean;
+  isPostHogConfigured: boolean;
 };
 
 function getServerEnv(): ServerEnv {
@@ -40,6 +42,8 @@ function getServerEnv(): ServerEnv {
       isDevelopment: process.env.NODE_ENV === 'development',
       isProduction: process.env.NODE_ENV === 'production',
       isTest: process.env.NODE_ENV === 'test',
+      isRecaptchaConfigured: false,
+      isPostHogConfigured: false,
     };
   }
 
@@ -53,6 +57,8 @@ function getServerEnv(): ServerEnv {
       'RECAPTCHA_SITE_KEY',
       'RECAPTCHA_SECRET_KEY',
       'DATABASE_URL',
+      'POSTHOG_KEY',
+      'POSTHOG_HOST',
     ];
 
     const missingVars = requiredVars.filter(
@@ -67,23 +73,30 @@ function getServerEnv(): ServerEnv {
     }
   }
 
+  const recaptchaSiteKey = process.env.RECAPTCHA_SITE_KEY || '';
+  const recaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY || '';
+  const posthogKey = process.env.POSTHOG_KEY || '';
+  const posthogHost = process.env.POSTHOG_HOST || 'https://us.i.posthog.com';
+
   return {
     S3_BUCKET_NAME: process.env.S3_BUCKET_NAME || '',
     AWS_ACCESS_KEY_ID: process.env.NETLIFY_AWS_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID || '',
     AWS_SECRET_ACCESS_KEY:
       process.env.NETLIFY_AWS_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY || '',
     AWS_REGION: process.env.NETLIFY_AWS_REGION || process.env.AWS_REGION || 'us-west-2',
-    RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY || '',
-    RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY || '',
+    RECAPTCHA_SITE_KEY: recaptchaSiteKey,
+    RECAPTCHA_SECRET_KEY: recaptchaSecretKey,
     DATABASE_URL: process.env.DATABASE_URL || '',
     SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL || '',
     NODE_ENV: process.env.NODE_ENV || 'production',
     REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
-    POSTHOG_KEY: process.env.POSTHOG_KEY || '',
-    POSTHOG_HOST: process.env.POSTHOG_HOST || 'https://us.i.posthog.com',
+    POSTHOG_KEY: posthogKey,
+    POSTHOG_HOST: posthogHost,
     isDevelopment: process.env.NODE_ENV === 'development',
     isProduction: process.env.NODE_ENV === 'production',
     isTest: process.env.NODE_ENV === 'test',
+    isRecaptchaConfigured: !!(recaptchaSiteKey && recaptchaSecretKey),
+    isPostHogConfigured: !!posthogKey,
   };
 }
 

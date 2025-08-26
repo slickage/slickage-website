@@ -6,8 +6,8 @@ const configMap = {
     required: ['RECAPTCHA_SITE_KEY'],
     response: (env: any) => ({
       recaptcha: {
-        siteKey: env.RECAPTCHA_SITE_KEY,
-        enabled: true,
+        siteKey: env.RECAPTCHA_SITE_KEY || '',
+        enabled: env.isRecaptchaConfigured,
       },
     }),
   },
@@ -15,9 +15,9 @@ const configMap = {
     required: ['POSTHOG_KEY', 'POSTHOG_HOST'],
     response: (env: any) => ({
       posthog: {
-        key: env.POSTHOG_KEY,
-        host: env.POSTHOG_HOST,
-        enabled: true,
+        key: env.POSTHOG_KEY || '',
+        host: env.POSTHOG_HOST || 'https://us.i.posthog.com',
+        enabled: env.isPostHogConfigured,
       },
     }),
   },
@@ -36,6 +36,12 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Invalid config type' }, { status: 400 });
   }
 
+  // In development, allow missing environment variables and return fallback config
+  if (env.isDevelopment) {
+    return NextResponse.json(config.response(env));
+  }
+
+  // In production, require all environment variables
   const missingVars = config.required.filter((key) => !env[key]);
   if (missingVars.length > 0) {
     return NextResponse.json({ error: `Missing environment variables` }, { status: 500 });

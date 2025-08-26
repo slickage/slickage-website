@@ -1,7 +1,27 @@
 import { PostHog } from 'posthog-node';
 import { env } from '@/lib/env';
 
+// Mock PostHog client for development when not configured
+class MockPostHogClient {
+  async getAllFlags() {
+    return {};
+  }
+  
+  async capture() {
+    // No-op in development
+  }
+  
+  async shutdown() {
+    // No-op in development
+  }
+}
+
 export function createPostHogServer() {
+  // In development, return mock client if PostHog is not configured
+  if (env.isDevelopment && !env.isPostHogConfigured) {
+    return new MockPostHogClient() as any;
+  }
+
   const posthogKey = env.POSTHOG_KEY;
 
   const posthogHost = env.POSTHOG_HOST || 'https://us.i.posthog.com';
