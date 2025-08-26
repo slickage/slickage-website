@@ -25,9 +25,9 @@ export default function CaseStudyError({
       ERROR_MESSAGE: error.message,
       ERROR_STACK: error.stack?.slice(0, 500),
       PAGE_PATH: window.location.pathname,
-      CASE_STUDY_ID: params.id as string,
+      CASE_STUDY_ID: params.slug as string,
     });
-  }, [error, trackEvent, params.id]);
+      }, [error, trackEvent, params.slug]);
 
   return (
     <main className="flex-1 py-8">

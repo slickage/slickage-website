@@ -1,7 +1,8 @@
 'use client';
 
-import { useRef, useEffect, type ChangeEvent, type FormEvent } from 'react';
+import { useRef, useEffect, type ChangeEvent } from 'react';
 import { Send } from 'lucide-react';
+import Form from 'next/form';
 import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
 
 import { Button } from '@/components/ui/button';
@@ -87,8 +88,7 @@ export function ContactForm({ standalone = false }: ContactFormProps) {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleFormAction = async () => {
     await submitForm();
   };
 
@@ -111,7 +111,7 @@ export function ContactForm({ standalone = false }: ContactFormProps) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit}>
+      <Form action={handleFormAction}>
         <div
           style={{
             position: 'absolute',
@@ -177,7 +177,7 @@ export function ContactForm({ standalone = false }: ContactFormProps) {
             apply.
           </p>
         )}
-      </form>
+      </Form>
     </div>
   );
 }

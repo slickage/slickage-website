@@ -6,11 +6,11 @@ class MockPostHogClient {
   async getAllFlags() {
     return {};
   }
-  
+
   async capture() {
     // No-op in development
   }
-  
+
   async shutdown() {
     // No-op in development
   }

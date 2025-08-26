@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { getS3ImageUrl } from '@/lib/services/s3-service';
 import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
-import type { CaseStudyContentItem } from '@/types/case-study';
+import type { CaseStudyContentItem } from '@/server/db/schema';
 
 export function CaseStudyHero({
   title,

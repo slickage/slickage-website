@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { m } from 'motion/react';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
-import type { Insight } from '@/types/insight';
+import type { Insight } from '@/server/db/schema';
 import { getS3ImageUrl } from '@/lib/services/s3-service';
 import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
@@ -65,7 +65,7 @@ export function InsightCard({ insight }: InsightCardProps) {
 
   return (
     <Link
-      href={`/case-studies/${insight.id}`}
+      href={`/case-studies/${insight.slug}`}
       onClick={handleInsightClick}
       className="block focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-500/50 rounded-xl"
     >

@@ -1,7 +1,9 @@
+import 'server-only';
+
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import * as schema from '@/db/schema';
+import * as schema from '@/server/db/schema';
 import { env } from '@/lib/env';
 
 const isLocalDatabase =

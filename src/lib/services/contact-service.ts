@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db, form_submissions } from '@/db';
+import { db, form_submissions } from '@/server/db';
 import { ContactFormData } from '@/lib/validation/contact-schema';
 import { sanitizeInput } from '@/lib/utils/sanitizers';
 import { logger } from '@/lib/utils/logger';

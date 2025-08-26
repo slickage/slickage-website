@@ -1,8 +1,6 @@
-import type { Insight } from '@/types/insight';
-import { getFeaturedInsights } from '@/data/insights';
+import type { Insight } from '@/server/db/schema';
+import { getFeaturedInsights } from '@/server/db/queries';
 import { InsightCard } from '@/components/insights/insight-card';
-
-export const revalidate = 3600; // Revalidate every hour
 
 export async function InsightsSection() {
   const insights: Insight[] = await getFeaturedInsights();

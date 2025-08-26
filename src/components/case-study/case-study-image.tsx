@@ -8,7 +8,7 @@ import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
-import type { CaseStudyContentItem } from '@/types/case-study';
+import type { CaseStudyContentItem } from '@/server/db/schema';
 
 const ImageLightbox = dynamic(() =>
   import('@/components/ui/image-lightbox').then((mod) => mod.ImageLightbox),

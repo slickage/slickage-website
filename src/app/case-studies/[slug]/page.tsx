@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { getCaseStudyById, caseStudies } from '@/data/case-studies';
+import { getCaseStudyBySlug, getAllCaseStudies } from '@/server/db/queries';
 import { CaseStudyHero } from '@/components/case-study/case-study-hero';
 import { CaseStudyOverview } from '@/components/case-study/case-study-overview';
 import { CaseStudySection } from '@/components/case-study/case-study-section';
@@ -11,18 +11,19 @@ import { Suspense } from 'react';
 import { CaseStudyContentSkeleton } from '@/components/case-study/case-study-content-skeleton';
 
 export async function generateStaticParams() {
+  const caseStudies = await getAllCaseStudies();
   return caseStudies.map((caseStudy) => ({
-    id: caseStudy.id,
+    slug: caseStudy.slug,
   }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
-  const caseStudy = await getCaseStudyById(id);
+  const slug = (await params).slug;
+  const caseStudy = await getCaseStudyBySlug(slug);
 
   if (!caseStudy) {
     return {
@@ -56,9 +57,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function CaseStudyDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const caseStudy = await getCaseStudyById(id);
+export default async function CaseStudyDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const slug = (await params).slug;
+  const caseStudy = await getCaseStudyBySlug(slug);
 
   if (!caseStudy) return notFound();
 
@@ -90,7 +91,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
         </AnimatedSection>
 
         <Suspense fallback={<CaseStudyContentSkeleton contentLength={caseStudy.content.length} />}>
-          {caseStudy.content.map((item, idx) => (
+          {caseStudy.content.map((item: any, idx: number) => (
             <AnimatedSection key={idx} variant="slideUp">
               {item.type === 'section' && (
                 <CaseStudySection title={item.title} content={item.content} />

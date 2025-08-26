@@ -1,4 +1,4 @@
-import type { CaseStudy } from '@/types/case-study';
+import type { CaseStudy } from '@/server/db/schema';
 
 export function CaseStudyOverview({
   overview,

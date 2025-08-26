@@ -1,16 +1,18 @@
-import type { CaseStudy } from '@/types/case-study';
+import 'server-only';
 
-export const caseStudies: CaseStudy[] = [
+import type { NewCaseStudy } from '@/server/db/schema';
+
+export const caseStudies: NewCaseStudy[] = [
   {
-    id: 'beam',
+    slug: 'beam',
     title: 'BEAM Cloud',
     subtitle: 'Redesigning medical image collaboration for radiologists',
     heroImage: '/placeholder.svg',
     overview: `BEAM was originally developed to address a persistent operational challenge in healthcare: the manual, time-intensive process of transferring large medical imaging studies—such as MRIs and CT scans—between facilities. Through a secure point-to-point hardware network, BEAM enabled imaging librarians to move studies digitally, eliminating the need to burn and mail physical DVDs.
 
-    However, while the system improved workflows for imaging staff, it was not optimized for physicians—particularly radiologists—who needed to view and share studies for consultations. Recognizing this opportunity, BEAM’s leadership engaged our team to design and build BEAM Cloud: a modern, cloud-based application specifically tailored to the needs of medical professionals.
+    However, while the system improved workflows for imaging staff, it was not optimized for physicians—particularly radiologists—who needed to view and share studies for consultations. Recognizing this opportunity, BEAM's leadership engaged our team to design and build BEAM Cloud: a modern, cloud-based application specifically tailored to the needs of medical professionals.
 
-    Our goal was to create an intuitive, doctor-friendly platform for viewing, organizing, and securely sharing imaging studies—while integrating with BEAM’s existing infrastructure.
+    Our goal was to create an intuitive, doctor-friendly platform for viewing, organizing, and securely sharing imaging studies—while integrating with BEAM's existing infrastructure.
 `,
     tags: [],
     quickFacts: {},
@@ -18,7 +20,7 @@ export const caseStudies: CaseStudy[] = [
       {
         type: 'section',
         title: 'Discovery & Strategy',
-        content: `We began by conducting user research to better understand radiologists’ workflows. Through interviews and process mapping, we identified two primary use cases: reviewing studies at the request of a hospital, and initiating a consultation with another specialist. In both scenarios, the process was heavily manual—typically involving DVDs, follow-up calls, and separate DICOM viewers.
+        content: `We began by conducting user research to better understand radiologists' workflows. Through interviews and process mapping, we identified two primary use cases: reviewing studies at the request of a hospital, and initiating a consultation with another specialist. In both scenarios, the process was heavily manual—typically involving DVDs, follow-up calls, and separate DICOM viewers.
 
 Simultaneously, we evaluated the existing BEAM system. While it enabled bulk transfers between hospitals equipped with BEAM hardware, it lacked the ability to support external consultations. Its APIs were also inconsistent, slow to respond, and poorly suited for building modern, interactive applications.
 
@@ -37,7 +39,7 @@ These findings shaped the product strategy:
 
 We adopted a familiar three-panel layout, inspired by email clients, to help physicians quickly browse, review, and act on studies. This interface allowed users to bookmark, share, request, and archive studies with minimal effort. We also designed key workflows around importing, requesting, and securely sharing studies—ensuring a seamless experience from start to finish.
 
-Interactive prototypes were reviewed with stakeholders, including radiologists, engineering leads, and business leaders. The proposed interface was well-received and aligned with the product’s goals: practical, approachable, and well-suited to real-world clinical use.`,
+Interactive prototypes were reviewed with stakeholders, including radiologists, engineering leads, and business leaders. The proposed interface was well-received and aligned with the product's goals: practical, approachable, and well-suited to real-world clinical use.`,
       },
       {
         type: 'section',
@@ -55,17 +57,17 @@ These architectural improvements:
       {
         type: 'section',
         title: 'Outcomes and Impact',
-        content: `BEAM Cloud was successfully launched and adopted as part of BEAM’s product offering. While detailed usage metrics remain confidential due to privacy constraints, feedback from leadership and the sales team indicated that the platform significantly enhanced product appeal, improved radiologist engagement, and supported new sales opportunities.
+        content: `BEAM Cloud was successfully launched and adopted as part of BEAM's product offering. While detailed usage metrics remain confidential due to privacy constraints, feedback from leadership and the sales team indicated that the platform significantly enhanced product appeal, improved radiologist engagement, and supported new sales opportunities.
 
 BEAM Cloud was successfully deployed to many hospitals and imaging centers in the US, and across the entire healthcare system of Ireland.
 
-The success of BEAM Cloud also influenced the company’s broader product roadmap, including the redesign of its core image librarian interface—further extending the impact of this initiative across the BEAM ecosystem.
+The success of BEAM Cloud also influenced the company's broader product roadmap, including the redesign of its core image librarian interface—further extending the impact of this initiative across the BEAM ecosystem.
 `,
       },
     ],
   },
   {
-    id: 'epochtalk',
+    slug: 'epochtalk',
     title: 'Epochtalk Forum Administration',
     subtitle: 'Redesigning a powerful—but unwieldy—admin interface',
     heroImage: 'images/case-studies/epochtalk/Epochtalk-Settings.png',
@@ -106,7 +108,7 @@ The success of BEAM Cloud also influenced the company’s broader product roadma
         title: 'Navigation Overhaul',
         content: `The first step was rethinking how users moved through the admin interface. The original horizontal tab structure was replaced with a vertical sidebar, using compact icons with tooltips to save space and stay accessible as users scrolled. Sub-navigation elements were moved to a clearly defined header area at the top of each view, making it easier to orient within the interface.
 
-To improve usability, primary actions like “Save” and “Reset” were relocated to a persistent action bar fixed to the bottom of the screen—ensuring they were always within reach, regardless of scroll depth.`,
+To improve usability, primary actions like "Save" and "Reset" were relocated to a persistent action bar fixed to the bottom of the screen—ensuring they were always within reach, regardless of scroll depth.`,
       },
       {
         type: 'image',
@@ -167,7 +169,7 @@ Form fields were redesigned to include persistent labels, embedded helper text, 
     ],
   },
   {
-    id: 'pharmgkb',
+    slug: 'pharmgkb',
     title: 'DDrX: Pharmacogenomic knowledgebase',
     subtitle: 'Building a  mobile interface to pharmacogenomic research data',
     heroImage: '/placeholder.svg',
@@ -204,7 +206,7 @@ Filter drug sources (CPIC, DPWG, FDA)
     ],
   },
   {
-    id: 'raisegiving',
+    slug: 'raisegiving',
     title: 'Raisegiving Checkout Flow Redesign',
     subtitle: 'Streamlining the donor experience for a nonprofit fundraising platform',
     heroImage: 'images/case-studies/raisegiving/Raisegiving-Overview.gif',
@@ -222,9 +224,9 @@ Filter drug sources (CPIC, DPWG, FDA)
         title: 'Identifying the problem',
         content: `Working closely with the CEO, Head of Customer Success, and engineering team, we identified the Campaign and Checkout pages as the most critical to redesign. User feedback and analytics showed that the checkout form was overwhelming: all options were presented at once in a single, lengthy page with little guidance.
 
-The existing checkout was dense: a single long page with all options exposed by default—payment methods, recurring schedules, donation plans, team selections, dedication messages, and more. It was too much too soon, and people didn’t know where to start.
+The existing checkout was dense: a single long page with all options exposed by default—payment methods, recurring schedules, donation plans, team selections, dedication messages, and more. It was too much too soon, and people didn't know where to start.
 
-We confirmed the issue through interviews with the Head of Customer Success, user feedback, and a deeper look into analytics. Most donors weren’t confused about why to donate—they were just struggling with how.`,
+We confirmed the issue through interviews with the Head of Customer Success, user feedback, and a deeper look into analytics. Most donors weren't confused about why to donate—they were just struggling with how.`,
       },
       {
         type: 'image',
@@ -300,12 +302,12 @@ We confirmed the issue through interviews with the Head of Customer Success, use
         title: 'Results & Impact',
         content: `We ran several review rounds with internal stakeholders and previewed the redesign with a handful of trusted customers. The feedback was clear: this version was dramatically easier to use and better aligned with how people actually give.
 
-Unfortunately, the company ran out of funding before the new flow could go live, so we didn’t get a chance to collect post-launch metrics. But the project served as a great example of how thoughtful UX, clean information architecture, and a mobile-first mindset can turn a frustrating experience into a seamless one.`,
+Unfortunately, the company ran out of funding before the new flow could go live, so we didn't get a chance to collect post-launch metrics. But the project served as a great example of how thoughtful UX, clean information architecture, and a mobile-first mindset can turn a frustrating experience into a seamless one.`,
       },
     ],
   },
 ] as const;
 
 export async function getCaseStudyById(id: string) {
-  return caseStudies.find((cs) => cs.id === id);
+  return caseStudies.find((cs) => cs.slug === id);
 }
