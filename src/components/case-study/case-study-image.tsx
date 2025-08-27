@@ -76,21 +76,17 @@ export function CaseStudyImage({
         style={{ willChange: 'transform' }}
       >
         <div
-          className="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
+          className="relative group cursor-pointer overflow-hidden rounded-lg"
           onClick={handleImageClick}
         >
           {isLoadingS3 && <LoadingSpinnerOverlay />}
           <ImageLightbox
             src={s3Url}
             alt={alt}
-            fill
-            className="object-cover"
             unoptimized={src?.toLowerCase().includes('.gif')}
             priority={false}
-            loading="lazy"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             quality={85}
-            placeholder="blur"
           />
         </div>
         {caption && (

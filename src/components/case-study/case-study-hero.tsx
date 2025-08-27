@@ -43,15 +43,13 @@ export function CaseStudyHero({
         <Image
           src={imageSrc}
           alt={`${title} - ${subtitle}`}
-          className="blur-[3px] w-full h-full md:h-auto sm:object-cover"
+          className="blur-[3px] sm:object-cover"
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
+          sizes="100vw"
           priority={Boolean(heroImage && heroImage !== '/placeholder.svg')}
           unoptimized={isGif}
           quality={85}
-          placeholder="blur"
-          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-          fetchPriority="high"
+          loading="eager"
         />
         <div className="h-full flex items-center justify-center px-4 py-16 bg-gradient-to-t from-slate-950/95 via-slate-900/80 to-transparent absolute w-full bottom-0">
           <div className="container mx-auto flex flex-col items-center text-center">
