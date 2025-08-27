@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { m } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { m } from 'motion/react';
-import { useMotionVariant, useMotionTransition } from '@/lib/animations';
-import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
-import type { Insight } from '@/server/db/schema';
 import { getS3ImageUrl } from '@/lib/services/s3-service';
 import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
+import { useMotionVariant, useMotionTransition } from '@/lib/animations';
+import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
+import { useIntersectionObserver } from '@/lib/hooks/use-intersection-observer';
+import type { Insight } from '@/server/db/schema';
 
 interface InsightCardProps {
   insight: Insight;
@@ -18,12 +19,16 @@ interface InsightCardProps {
 export function InsightCard({ insight }: InsightCardProps) {
   const [s3Url, setS3Url] = useState<string>('/placeholder.svg');
   const [isLoadingS3, setIsLoadingS3] = useState(false);
+  const hasLoadedS3Ref = useRef(false);
 
   const cardVariants = useMotionVariant('card');
   const cardTransition = useMotionTransition('card');
   const tagVariants = useMotionVariant('tag');
   const tagTransition = useMotionTransition('tag');
   const { trackContentInteraction } = useEventTracking();
+
+
+  const { elementRef, isIntersecting } = useIntersectionObserver();
 
   const handleInsightClick = () => {
     trackContentInteraction('insight', 'INSIGHT_CARD_CLICKED', {
@@ -33,27 +38,23 @@ export function InsightCard({ insight }: InsightCardProps) {
   };
 
   useEffect(() => {
-    if (insight.imageSrc && insight.imageSrc !== '/placeholder.svg') {
+    if (isIntersecting && insight.imageSrc && insight.imageSrc !== '/placeholder.svg' && !hasLoadedS3Ref.current) {
       setIsLoadingS3(true);
-      logger.info('Generating S3 URL for:', insight.imageSrc);
+      hasLoadedS3Ref.current = true;
+      
       getS3ImageUrl(insight.imageSrc)
         .then((url: string) => {
-          logger.info('S3 URL generated:', url);
           setS3Url(url);
           setIsLoadingS3(false);
+          logger.info(`S3 URL loaded successfully for insight: ${insight.imageSrc}`);
         })
         .catch((error: unknown) => {
           logger.error('Error loading insight image:', error);
           setS3Url('/placeholder.svg');
           setIsLoadingS3(false);
         });
-    } else {
-      setS3Url('/placeholder.svg');
-      setIsLoadingS3(false);
     }
-  }, [insight.imageSrc]);
-
-  const imageSrc = isLoadingS3 ? '/placeholder.svg' : s3Url;
+  }, [isIntersecting, insight.imageSrc]);
 
   const motionProps = {
     variants: cardVariants,
@@ -70,6 +71,7 @@ export function InsightCard({ insight }: InsightCardProps) {
       className="block focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-500/50 rounded-xl"
     >
       <m.div
+        ref={elementRef}
         className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-xl hover:shadow-xl transition-shadow duration-200 hover:border-blue-500/50"
         {...motionProps}
         whileHover="hover"
@@ -77,21 +79,22 @@ export function InsightCard({ insight }: InsightCardProps) {
         style={{ willChange: 'transform' }}
       >
         <div className="relative w-full h-full">
-          {isLoadingS3 && <LoadingSpinnerOverlay />}
-
-          <Image
-            src={imageSrc}
-            alt={insight.title}
-            fill
-            priority={false}
-            loading="eager"
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            unoptimized={insight.imageSrc?.toLowerCase().includes('.gif')}
-            quality={85}
-            placeholder="blur"
-            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-          />
+          {isLoadingS3 && !s3Url && <LoadingSpinnerOverlay />}
+          {!isLoadingS3 && s3Url && (
+            <Image
+              src={s3Url}
+              alt={insight.title}
+              fill
+              priority={false}
+              loading="eager"
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              unoptimized={insight.imageSrc?.toLowerCase().includes('.gif')}
+              quality={85}
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+            />
+          )}
         </div>
 
         <div className="absolute left-0 right-0 bottom-0 h-4/5 bg-gradient-to-t from-gray-900/95 via-gray-800/80 to-transparent opacity-95 group-hover:opacity-100 transition-opacity duration-150"></div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { m } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { getS3ImageUrl } from '@/lib/services/s3-service';
@@ -8,6 +8,7 @@ import { logger } from '@/lib/utils/logger';
 import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 import { useMotionVariant, useMotionTransition } from '@/lib/animations';
 import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
+import { useIntersectionObserver } from '@/lib/hooks/use-intersection-observer';
 import type { CaseStudyContentItem } from '@/server/db/schema';
 
 const ImageLightbox = dynamic(() =>
@@ -21,10 +22,13 @@ export function CaseStudyImage({
 }: Extract<CaseStudyContentItem, { type: 'image' }>) {
   const [s3Url, setS3Url] = useState<string>('/placeholder.svg');
   const [isLoadingS3, setIsLoadingS3] = useState(false);
+  const hasLoadedS3Ref = useRef(false);
 
   const imageVariants = useMotionVariant('image');
   const transition = useMotionTransition('image');
   const { trackContentInteraction } = useEventTracking();
+
+  const { elementRef, isIntersecting } = useIntersectionObserver();
 
   const handleImageClick = () => {
     const pathParts = window.location.pathname.split('/');
@@ -37,25 +41,24 @@ export function CaseStudyImage({
   };
 
   useEffect(() => {
-    if (src && src !== '/placeholder.svg') {
+    if (isIntersecting && src && src !== '/placeholder.svg' && !hasLoadedS3Ref.current) {
       setIsLoadingS3(true);
+      hasLoadedS3Ref.current = true;
+      logger.info(`Generating S3 URL for case study image: ${src}`);
+      
       getS3ImageUrl(src)
         .then((url: string) => {
           setS3Url(url);
           setIsLoadingS3(false);
+          logger.info(`S3 URL loaded successfully for case study image: ${src}`);
         })
         .catch((error: unknown) => {
           logger.error('Error loading case study image:', error);
           setS3Url('/placeholder.svg');
           setIsLoadingS3(false);
         });
-    } else {
-      setS3Url('/placeholder.svg');
-      setIsLoadingS3(false);
     }
-  }, [src]);
-
-  const imageSrc = isLoadingS3 ? '/placeholder.svg' : s3Url;
+  }, [isIntersecting, src]);
 
   const motionProps = {
     variants: imageVariants,
@@ -66,27 +69,28 @@ export function CaseStudyImage({
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div ref={elementRef} className="container mx-auto px-4 py-8">
       <m.div
         className="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-blue-500/10 bg-white/5 cursor-pointer relative"
         {...motionProps}
         style={{ willChange: 'transform' }}
       >
         <div
-          className="relative group cursor-pointer overflow-hidden rounded-lg"
+          className="relative group cursor-pointer overflow-hidden rounded-lg aspect-video"
           onClick={handleImageClick}
         >
           {isLoadingS3 && <LoadingSpinnerOverlay />}
           <ImageLightbox
-            src={imageSrc}
+            src={s3Url}
             alt={alt}
-            className="w-full h-auto"
+            fill
+            className="object-cover"
             unoptimized={src?.toLowerCase().includes('.gif')}
             priority={false}
+            loading="lazy"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             quality={85}
             placeholder="blur"
-            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
           />
         </div>
         {caption && (
