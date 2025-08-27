@@ -1,3 +1,14 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Cookie Policy | Slickage',
+  description: 'Learn about how Slickage uses cookies and similar technologies on our website. Understand your choices and how to manage cookie preferences.',
+  openGraph: {
+    title: 'Cookie Policy | Slickage',
+    description: 'Learn about how Slickage uses cookies and similar technologies on our website. Understand your choices and how to manage cookie preferences.',
+  },
+};
+
 export default function CookiePolicyPage() {
   return (
     <main className="container mx-auto my-12 px-4 py-8">

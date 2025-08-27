@@ -12,11 +12,6 @@ const s3 = new S3Client({
   },
 });
 
-export const dynamic = 'force-dynamic';
-
-// Cache presigned URLs for 30 minutes (less than the 1-hour expiration)
-export const revalidate = 1800; // 30 minutes in seconds
-
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);

@@ -3,6 +3,16 @@ import { InsightsSection } from '@/components/insights-section';
 import { FeaturesSection } from '@/components/features-section';
 import { ContactSection } from '@/components/contact-section';
 import { AnimatedSection } from '@/components/ui/animated-section';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Slickage - Software Development Company',
+  description: 'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
+  openGraph: {
+    title: 'Slickage - Software Development Company',
+    description: 'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
+  },
+};
 
 export default async function Home() {
   return (

@@ -1,3 +1,14 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy | Slickage',
+  description: 'Learn about how Slickage collects, uses, and protects your personal information. Read our comprehensive privacy policy and understand your rights.',
+  openGraph: {
+    title: 'Privacy Policy | Slickage',
+    description: 'Learn about how Slickage collects, uses, and protects your personal information. Read our comprehensive privacy policy and understand your rights.',
+  },
+};
+
 export default function PrivacyPolicyPage() {
   return (
     <main className="container mx-auto my-12 px-4 py-8">
