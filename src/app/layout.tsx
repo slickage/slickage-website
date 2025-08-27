@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import { Inter } from 'next/font/google';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { LazyMotionWrapper } from '@/components/ui/lazy-motion-wrapper';
+import { LazyMotion, domAnimation } from 'motion/react';
 import { PostHogProvider } from '@/app/providers';
 import { PageTracker } from '@/components/page-tracker';
 import { AnalyticsConsentBanner } from '@/components/ui/analytics-consent-banner';
@@ -68,20 +68,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
-      <body className={`${inter.className}`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${inter.className}`}>
+      <body>
         <PostHogProvider>
           <PageTracker />
-          <LazyMotionWrapper>
+          <LazyMotion features={domAnimation} strict>
             <Header />
             {children}
             <Footer />
             <AnalyticsConsentBanner />
-          </LazyMotionWrapper>
+          </LazyMotion>
         </PostHogProvider>
       </body>
     </html>
