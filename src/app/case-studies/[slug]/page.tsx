@@ -7,8 +7,6 @@ import { CaseStudySection } from '@/components/case-study/case-study-section';
 import { CaseStudyImage } from '@/components/case-study/case-study-image';
 import { CaseStudyQuote } from '@/components/case-study/case-study-quote';
 import { AnimatedSection } from '@/components/ui/animated-section';
-import { Suspense } from 'react';
-import { CaseStudyContentSkeleton } from '@/components/case-study/case-study-content-skeleton';
 
 export async function generateStaticParams() {
   const caseStudies = await getAllCaseStudies();
@@ -90,21 +88,19 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
           />
         </AnimatedSection>
 
-        <Suspense fallback={<CaseStudyContentSkeleton contentLength={caseStudy.content.length} />}>
-          {caseStudy.content.map((item: any, idx: number) => (
-            <AnimatedSection key={idx} variant="slideUp">
-              {item.type === 'section' && (
-                <CaseStudySection title={item.title} content={item.content} />
-              )}
-              {item.type === 'image' && (
-                <CaseStudyImage type="image" src={item.src} alt={item.alt} caption={item.caption} />
-              )}
-              {item.type === 'quote' && (
-                <CaseStudyQuote quote={item.quote} author={item.author} role={item.role} />
-              )}
-            </AnimatedSection>
-          ))}
-        </Suspense>
+        {caseStudy.content.map((item: any, idx: number) => (
+          <AnimatedSection key={idx} variant="slideUp">
+            {item.type === 'section' && (
+              <CaseStudySection title={item.title} content={item.content} />
+            )}
+            {item.type === 'image' && (
+              <CaseStudyImage type="image" src={item.src} alt={item.alt} caption={item.caption} />
+            )}
+            {item.type === 'quote' && (
+              <CaseStudyQuote quote={item.quote} author={item.author} role={item.role} />
+            )}
+          </AnimatedSection>
+        ))}
       </main>
     </>
   );
