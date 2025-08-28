@@ -1,87 +1,30 @@
-'use client';
-
-import { useState, useEffect, useRef } from 'react';
-import { m } from 'motion/react';
 import dynamic from 'next/dynamic';
 import { getS3ImageUrl } from '@/lib/services/s3-service';
-import { logger } from '@/lib/utils/logger';
-import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
-import { useMotionVariant, useMotionTransition } from '@/lib/animations';
-import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
-import { useIntersectionObserver } from '@/lib/hooks/use-intersection-observer';
 import type { CaseStudyContentItem } from '@/server/db/schema';
 
 const ImageLightbox = dynamic(() =>
   import('@/components/ui/image-lightbox').then((mod) => mod.ImageLightbox),
 );
 
-export function CaseStudyImage({
+export async function CaseStudyImage({
   src,
   alt,
   caption,
 }: Extract<CaseStudyContentItem, { type: 'image' }>) {
-  const [s3Url, setS3Url] = useState<string>('/placeholder.svg');
-  const [isLoadingS3, setIsLoadingS3] = useState(false);
-  const hasLoadedS3Ref = useRef(false);
-
-  const imageVariants = useMotionVariant('image');
-  const transition = useMotionTransition('image');
-  const { trackContentInteraction } = useEventTracking();
-
-  const { elementRef, isIntersecting } = useIntersectionObserver();
-
-  const handleImageClick = () => {
-    const pathParts = window.location.pathname.split('/');
-    const caseStudyId = pathParts[pathParts.length - 1] || 'unknown';
-
-    trackContentInteraction('case_study', 'CASE_STUDY_IMAGE_CLICKED', {
-      id: caseStudyId,
-      imageSrc: src,
-    });
-  };
-
-  useEffect(() => {
-    if (isIntersecting && src && src !== '/placeholder.svg' && !hasLoadedS3Ref.current) {
-      setIsLoadingS3(true);
-      hasLoadedS3Ref.current = true;
-      logger.info(`Generating S3 URL for case study image: ${src}`);
-      
-      getS3ImageUrl(src)
-        .then((url: string) => {
-          setS3Url(url);
-          setIsLoadingS3(false);
-          logger.info(`S3 URL loaded successfully for case study image: ${src}`);
-        })
-        .catch((error: unknown) => {
-          logger.error('Error loading case study image:', error);
-          setS3Url('/placeholder.svg');
-          setIsLoadingS3(false);
-        });
-    }
-  }, [isIntersecting, src]);
-
-  const motionProps = {
-    variants: imageVariants,
-    transition,
-    initial: 'hidden',
-    animate: 'visible',
-    whileHover: 'hover',
-  };
+  const imageSrc = src === '/placeholder.svg' 
+    ? '/placeholder.svg' 
+    : await getS3ImageUrl(src);
 
   return (
-    <div ref={elementRef} className="container mx-auto px-4 py-8">
-      <m.div
-        className="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-blue-500/10 bg-white/5 cursor-pointer relative"
-        {...motionProps}
-        style={{ willChange: 'transform' }}
+    <div className="container mx-auto px-4 py-8">
+      <div
+        className="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-blue-500/10 bg-white/5 cursor-pointer relative transition-all duration-200 ease-in-out hover:scale-105 hover:shadow-xl"
       >
         <div
           className="relative group cursor-pointer overflow-hidden rounded-lg"
-          onClick={handleImageClick}
         >
-          {isLoadingS3 && <LoadingSpinnerOverlay />}
           <ImageLightbox
-            src={s3Url}
+            src={imageSrc}
             alt={alt}
             unoptimized={src?.toLowerCase().includes('.gif')}
             priority={false}
@@ -94,7 +37,7 @@ export function CaseStudyImage({
             {caption}
           </div>
         )}
-      </m.div>
+      </div>
     </div>
   );
 }

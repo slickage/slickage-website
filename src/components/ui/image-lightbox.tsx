@@ -126,12 +126,10 @@ export function ImageLightbox({
                 aria-modal="true"
                 aria-label={alt}
                 tabIndex={-1}
-                style={{ willChange: 'opacity' }}
               >
                 <m.div
                   {...modalAnimationProps}
                   className="relative flex items-center justify-center p-4 rounded-xl"
-                  style={{ willChange: 'transform, opacity' }}
                 >
                   <Image
                     src={src}

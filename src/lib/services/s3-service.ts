@@ -1,58 +1,7 @@
 import { logger } from '@/lib/utils/logger';
-
-/**
- * S3 Service
- * Handles secure access to private S3 images via presigned URLs with enhanced caching
- */
-
-const s3UrlCache = new Map<string, { url: string; timestamp: number }>();
-const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes (half of 1-hour presigned URL expiration)
-const CACHE_STORAGE_KEY = 's3-url-cache';
-
-function loadCacheFromStorage() {
-  try {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(CACHE_STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        const now = Date.now();
-        for (const [key, value] of Object.entries(parsed)) {
-          if (now - (value as { timestamp: number }).timestamp < CACHE_DURATION) {
-            s3UrlCache.set(key, value as { url: string; timestamp: number });
-          }
-        }
-      }
-    }
-  } catch (error) {
-    console.warn('Failed to load cache from localStorage:', error);
-  }
-}
-
-function saveCacheToStorage() {
-  try {
-    if (typeof window !== 'undefined') {
-      const cacheData = Object.fromEntries(s3UrlCache.entries());
-      localStorage.setItem(CACHE_STORAGE_KEY, JSON.stringify(cacheData));
-    }
-  } catch (error) {
-    console.warn('Failed to save cache to localStorage:', error);
-  }
-}
-
-loadCacheFromStorage();
-
-/**
- * Clean up expired cache entries
- */
-function cleanupCache() {
-  const now = Date.now();
-  for (const [key, value] of s3UrlCache.entries()) {
-    if (now - value.timestamp > CACHE_DURATION) {
-      s3UrlCache.delete(key);
-    }
-  }
-  saveCacheToStorage();
-}
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { env } from '@/lib/env';
 
 /**
  * Gets a presigned S3 URL for an image path with enhanced caching
@@ -68,37 +17,25 @@ export async function getS3ImageUrl(
     return fallbackUrl;
   }
 
-  const cached = s3UrlCache.get(path);
-  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    logger.info(`Cache HIT for ${path}: ${cached.url.substring(0, 50)}...`);
-    return cached.url;
-  }
-
-  logger.info(`Cache MISS for ${path}, generating new presigned URL...`);
-
   try {
     const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-    const response = await fetch(`/api/s3-url?key=${encodeURIComponent(normalizedPath)}`, {
-      headers: {
-        'Cache-Control': 'public, max-age=1800', // 30 minutes
+    
+    const s3Client = new S3Client({
+      region: env.AWS_REGION,
+      credentials: {
+        accessKeyId: env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
       },
     });
 
-    if (!response.ok) {
-      logger.warn(`Failed to generate presigned URL for ${path}. Using fallback URL.`);
-      return fallbackUrl;
-    }
+    const command = new GetObjectCommand({
+      Bucket: env.S3_BUCKET_NAME,
+      Key: normalizedPath,
+    });
 
-    const { url } = await response.json();
+    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
 
-    s3UrlCache.set(path, { url, timestamp: Date.now() });
-    logger.info(`Cached S3 URL for ${path}, cache size: ${s3UrlCache.size}`);
-
-    saveCacheToStorage();
-
-    cleanupCache();
-
-    return url;
+    return signedUrl;
   } catch (error) {
     logger.error('Error generating presigned URL:', error);
     return fallbackUrl;

@@ -1,52 +1,28 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { getS3ImageUrl } from '@/lib/services/s3-service';
-import { logger } from '@/lib/utils/logger';
-import { LoadingSpinnerOverlay } from '@/components/ui/loading-spinner';
 import type { CaseStudyContentItem } from '@/server/db/schema';
 
-export function CaseStudyHero({
+export async function CaseStudyHero({
   title,
   subtitle,
   heroImage,
 }: Extract<CaseStudyContentItem, { type: 'hero' }>) {
-  const [imageSrc, setImageSrc] = useState<string>('/placeholder.svg');
-  const [isLoadingS3, setIsLoadingS3] = useState(false);
-
-  useEffect(() => {
-    if (heroImage && heroImage !== '/placeholder.svg') {
-      setIsLoadingS3(true);
-      getS3ImageUrl(heroImage)
-        .then((url: string) => {
-          setImageSrc(url);
-          setIsLoadingS3(false);
-        })
-        .catch((error: unknown) => {
-          logger.error('Error loading hero image:', error);
-          setImageSrc('/placeholder.svg');
-          setIsLoadingS3(false);
-        });
-    } else {
-      setImageSrc('/placeholder.svg');
-      setIsLoadingS3(false);
-    }
-  }, [heroImage]);
+  const imageSrc = heroImage === '/placeholder.svg' 
+  ? '/placeholder.svg' 
+  : await getS3ImageUrl(heroImage);
 
   const isGif = heroImage?.toLowerCase().includes('.gif');
 
   return (
     <section className="relative min-h-[30vh] flex items-center">
       <div className="hero-wide relative w-full h-dvh max-h-[75vh] md:max-h-[50vh] overflow-hidden">
-        {isLoadingS3 && <LoadingSpinnerOverlay />}
         <Image
           src={imageSrc}
           alt={`${title} - ${subtitle}`}
           className="blur-[3px] sm:object-cover"
           fill
           sizes="100vw"
-          priority={Boolean(heroImage && heroImage !== '/placeholder.svg')}
+          priority={imageSrc !== '/placeholder.svg'}
           unoptimized={isGif}
           quality={85}
           loading="eager"
