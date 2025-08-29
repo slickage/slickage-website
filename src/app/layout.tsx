@@ -5,7 +5,7 @@ import { Inter } from 'next/font/google';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { LazyMotion, domAnimation } from 'motion/react';
-import { PostHogProvider } from '@/app/providers';
+import { PostHogProvider } from '@/app/_providers/posthog-provider';
 import { PageTracker } from '@/components/page-tracker';
 import { AnalyticsConsentBanner } from '@/components/ui/analytics-consent-banner';
 

@@ -1,15 +1,7 @@
-'use client';
-
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import { IconButton } from '@/components/ui/icon-button';
-import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
 
 export function SocialButtons() {
-  const { trackExternalLinkClick } = useEventTracking();
-
-  const handleSocialClick = (platform: string, url: string) => {
-    trackExternalLinkClick(`${platform} Social`, url, 'footer_social');
-  };
 
   return (
     <div className="flex space-x-6 min-h-[48px] w-[120px]">
@@ -21,9 +13,6 @@ export function SocialButtons() {
         variant="blue"
         size="lg"
         aria-label="LinkedIn"
-        onClick={() =>
-          handleSocialClick('LinkedIn', 'https://www.linkedin.com/company/slickage-studios/')
-        }
       />
       <IconButton
         icon={<FaGithub />}
@@ -33,7 +22,6 @@ export function SocialButtons() {
         variant="blue"
         size="lg"
         aria-label="GitHub"
-        onClick={() => handleSocialClick('GitHub', 'https://github.com/slickage')}
       />
     </div>
   );

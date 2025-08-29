@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { usePostHog } from 'posthog-js/react';
-import { EVENTS, PROPERTIES } from '@/app/providers';
+import { EVENTS, PROPERTIES } from '@/app/_providers/posthog-provider';
 import { hashEmail, createSafeDistinctId, extractEmailDomain } from '@/lib/utils/privacy';
 
 interface UserIdentificationData {

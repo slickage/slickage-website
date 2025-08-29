@@ -19,15 +19,9 @@ export const EVENTS = {
   CONTACT_FORM_SUBMITTED: 'contact_flow:form_submit',
   CONTACT_FORM_ERROR: 'contact_flow:form_error',
 
-  CASE_STUDY_VIEWED: 'content:case_study_view',
-  CASE_STUDY_IMAGE_CLICKED: 'content:case_study_image_click',
-
-  INSIGHT_CARD_CLICKED: 'content:insight_click',
-
   EXTERNAL_LINK_CLICKED: 'navigation:external_link_click',
 
   ERROR_PAGE_VIEWED: 'system:error_page_view',
-  NOT_FOUND_PAGE_VIEWED: 'system:not_found_view',
   ERROR_BOUNDARY_TRIGGERED: 'system:error_boundary_trigger',
   USER_SESSION_STARTED: 'system:session_start',
 
@@ -68,7 +62,6 @@ export const PROPERTIES = {
   USER_AGENT: 'user_agent',
 
   LEAD_SOURCE: 'lead_source',
-  LEAD_SCORE: 'lead_score',
   FIRST_VISIT: 'first_visit',
   IS_INTERNAL: 'is_internal',
   COMPANY_DOMAIN: 'company_domain',

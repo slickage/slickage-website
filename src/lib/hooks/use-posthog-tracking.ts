@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { usePostHog } from 'posthog-js/react';
 import { usePathname } from 'next/navigation';
-import { EVENTS, PROPERTIES } from '@/app/providers';
+import { EVENTS, PROPERTIES } from '@/app/_providers/posthog-provider';
 
 interface EventProperties {
   [key: string]: string | number | boolean;

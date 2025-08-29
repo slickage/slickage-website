@@ -1,9 +1,8 @@
 'use client';
 
-import { useRef, useEffect, type ChangeEvent } from 'react';
+import { useRef, type ChangeEvent } from 'react';
 import { Send } from 'lucide-react';
 import Form from 'next/form';
-import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,11 +42,6 @@ export function ContactForm({ standalone = false }: ContactFormProps) {
     isRecaptchaEnabled,
     recaptchaLoaded,
   } = useContactForm({ standalone, triggerRef: sectionRef });
-  const { trackFormInteraction } = useEventTracking();
-
-  useEffect(() => {
-    trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'viewed');
-  }, [trackFormInteraction, standalone]);
 
   const formatPhoneNumber = (value: string): string => {
     const digits = value.replace(/\D/g, '');
@@ -69,7 +63,6 @@ export function ContactForm({ standalone = false }: ContactFormProps) {
 
     if (!formStatus.hasStartedTyping && value.trim().length > 0) {
       updateFormStatus({ hasStartedTyping: true });
-      trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'started', { field: name });
     }
 
     if (name === 'phone') {

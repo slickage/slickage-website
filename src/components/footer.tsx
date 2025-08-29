@@ -1,6 +1,6 @@
 import { SocialButtons } from '@/components/footer/social-buttons';
-import { TrackedNavigation } from '@/components/footer/tracked-navigation';
 import { LegalLinks } from '@/components/footer/legal-links';
+import Link from 'next/link';
 
 export function Footer() {
   const companyNavigation = [
@@ -30,11 +30,17 @@ export function Footer() {
           <div className="md:text-right md:col-span-1 md:col-start-6 md:col-end-7 min-h-[200px]">
             <h4 className="text-lg font-semibold mb-6">Company</h4>
             <ul className="space-y-4 min-h-[80px]">
-              <TrackedNavigation
-                items={companyNavigation}
-                context="footer_navigation"
-                className="text-gray-400 hover:text-blue-400 transition-colors"
-              />
+              {companyNavigation.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    className="text-gray-400 hover:text-blue-400 transition-colors"
+                  >
+                    {item.name}
+                  </Link>
+                
+                </li>
+              ))}
             </ul>
           </div>
         </div>
