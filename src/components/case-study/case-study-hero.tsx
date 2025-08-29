@@ -22,7 +22,7 @@ export async function CaseStudyHero({
           className="blur-[3px] sm:object-cover"
           fill
           sizes="100vw"
-          priority={imageSrc !== '/placeholder.svg'}
+          priority={true}
           unoptimized={isGif}
           quality={85}
           loading="eager"
