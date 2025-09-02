@@ -1,110 +1,101 @@
 'use client';
 
-import { useRef, type ChangeEvent } from 'react';
-import { Send } from 'lucide-react';
+import { useActionState, useRef, startTransition, useEffect, useCallback } from 'react';
+import { useFormStatus } from 'react-dom';
 import Form from 'next/form';
+import { Send } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { FormFields } from '@/components/contact/contact-form-fields';
-
-import type { ContactFormData } from '@/components/contact/config/contact-form-field-config';
-import { FORM_CONSTANTS } from '@/components/contact/config/contact-form-field-config';
+import { RecaptchaWrapper } from '@/components/contact/recaptcha-wrapper';
 import { ContactSuccess } from '@/components/contact/contact-success';
-import { useContactForm } from '@/lib/hooks/use-contact-form';
+
+import { submitContactFormAction } from '@/app/actions/contact';
+import { initialContactFormState, type ContactFormState } from '@/lib/types/contact-form-state';
+import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
+import { useUserIdentification } from '@/lib/hooks/use-user-identification';
 
 interface ContactFormProps {
   standalone?: boolean;
 }
 
-declare global {
-  interface Window {
-    grecaptcha: {
-      execute: (siteKey: string, options: { action: string }) => Promise<string>;
-      ready: (callback: () => void) => void;
-    };
-  }
-}
-
+/**
+ * Client component for the contact form
+ * Uses useActionState for form state management and server actions
+ * Implements form value persistence, proper state management, and PostHog analytics
+ */
 export function ContactForm({ standalone = false }: ContactFormProps) {
-  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const [state, formAction, isPending] = useActionState<ContactFormState, FormData>(
+    submitContactFormAction,
+    initialContactFormState
+  );
+  const isLoading = useFormStatus().pending || isPending;
 
-  const {
-    formData,
-    formStatus,
-    errors,
-    isSubmitting,
-    updateFormStatus,
-    updateErrors,
-    updateFormData,
-    clearFieldError,
-    submitForm,
-    isRecaptchaEnabled,
-    recaptchaLoaded,
-  } = useContactForm({ standalone, triggerRef: sectionRef });
+  const { trackFormInteraction } = useEventTracking();
+  const { identifyUser } = useUserIdentification();
 
-  const formatPhoneNumber = (value: string): string => {
-    const digits = value.replace(/\D/g, '');
-    const { AREA_CODE_LENGTH, PREFIX_LENGTH, LINE_NUMBER_LENGTH } = FORM_CONSTANTS.PHONE;
+  const formRef = useRef<HTMLFormElement>(null);
 
-    if (digits.length <= AREA_CODE_LENGTH) {
-      return digits;
-    } else if (digits.length <= PREFIX_LENGTH) {
-      return `(${digits.slice(0, AREA_CODE_LENGTH)}) ${digits.slice(AREA_CODE_LENGTH)}`;
-    } else if (digits.length <= LINE_NUMBER_LENGTH) {
-      return `(${digits.slice(0, AREA_CODE_LENGTH)}) ${digits.slice(AREA_CODE_LENGTH, PREFIX_LENGTH)}-${digits.slice(PREFIX_LENGTH)}`;
-    } else {
-      return `(${digits.slice(0, AREA_CODE_LENGTH)}) ${digits.slice(AREA_CODE_LENGTH, PREFIX_LENGTH)}-${digits.slice(PREFIX_LENGTH, LINE_NUMBER_LENGTH)}`;
+  useEffect(() => {
+    trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'viewed');
+  }, [trackFormInteraction, standalone]);
+
+  useEffect(() => {
+    if (state.success && state.values) {
+      const { email, subject } = state.values;
+      
+      trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'submitted', {
+        ...(state.submissionId && { submissionId: state.submissionId }),
+      });
+
+      if (email) {
+        identifyUser({
+          email,
+          company: subject || '',
+          leadSource: standalone ? 'contact_page' : 'homepage_contact_form',
+          formType: 'contact',
+        });
+      }
     }
-  };
+  }, [state.success, state.values, state.submissionId, trackFormInteraction, identifyUser, standalone]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-
-    if (!formStatus.hasStartedTyping && value.trim().length > 0) {
-      updateFormStatus({ hasStartedTyping: true });
+  const handleFormReset = useCallback(() => {
+    if (formRef.current) {
+      formRef.current.reset();
     }
+    startTransition(() => {
+      const resetFormData = new FormData();
+      resetFormData.set('reset', 'true');
+      formAction(resetFormData);
+    });
+  }, [formAction]);
 
-    if (name === 'phone') {
-      const formattedPhone = formatPhoneNumber(value);
-      updateFormData(name as keyof ContactFormData, formattedPhone);
-    } else {
-      updateFormData(name as keyof ContactFormData, value);
-    }
-
-    if (errors.fields[name]) {
-      clearFieldError(name);
-    }
-
-    if (errors.general) {
-      updateErrors({ general: null });
-    }
-  };
-
-  const handleFormAction = async () => {
-    await submitForm();
-  };
-
-  if (formStatus.isSubmitted) {
-    return <ContactSuccess onReset={() => updateFormStatus({ isSubmitted: false })} />;
+  if (state.success) {
+    return (
+      <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
+        <ContactSuccess onReset={handleFormReset} />
+      </div>
+    );
   }
 
   return (
     <div
-      ref={sectionRef}
       className={
         standalone
           ? 'bg-white/5 backdrop-blur-sm shadow-xl rounded-xl border border-gray-800 p-8 hover:border-blue-500/50 transition-all duration-300'
           : ''
       }
     >
-      {errors.general && (
+      {state.message && !state.success && (
         <div className="mb-6 p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
-          <p className="text-red-400 text-sm">{errors.general}</p>
+          <p className="text-red-400 text-sm" aria-live="polite" role="alert">
+            {state.message}
+          </p>
         </div>
       )}
 
-      <Form action={handleFormAction}>
+      <Form action={formAction} ref={formRef}>
         <div
           style={{
             position: 'absolute',
@@ -121,56 +112,41 @@ export function ContactForm({ standalone = false }: ContactFormProps) {
             name="website"
             tabIndex={-1}
             autoComplete="off"
-            value={formData.website}
-            onChange={handleChange}
+            defaultValue=""
           />
         </div>
 
-        <FormFields formData={formData} errors={errors.fields} onChange={handleChange} />
+        <FormFields 
+          errors={state.errors} 
+          values={state.values}
+        />
 
-        <Button
-          type="submit"
-          variant="default"
-          size="lg"
-          className="w-full group"
-          disabled={isSubmitting || !recaptchaLoaded}
-        >
-          {isSubmitting ? (
-            'Sending...'
-          ) : !recaptchaLoaded ? (
-            'Loading security check...'
-          ) : (
-            <>
-              Send Message
-              <Send className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </>
+        <RecaptchaWrapper>
+          {({ recaptchaLoaded }) => (
+            <Button
+              type="submit"
+              variant="default"
+              size="lg"
+              className="w-full group"
+              disabled={isLoading || !recaptchaLoaded}
+            >
+              {isLoading ? (
+                <>
+                  Sending...
+                  <div className="ml-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                </>
+              )
+              : (
+                <>
+                  Send Message
+                  <Send className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </>
+              )}
+            </Button>
           )}
-        </Button>
-
-        {isRecaptchaEnabled && (
-          <p className="mt-3 text-xs text-gray-500 text-center">
-            This site is protected by reCAPTCHA and the Google{' '}
-            <a
-              href="https://policies.google.com/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 underline"
-            >
-              Privacy Policy
-            </a>{' '}
-            and{' '}
-            <a
-              href="https://policies.google.com/terms"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 underline"
-            >
-              Terms of Service
-            </a>{' '}
-            apply.
-          </p>
-        )}
+        </RecaptchaWrapper>
       </Form>
     </div>
   );
 }
+

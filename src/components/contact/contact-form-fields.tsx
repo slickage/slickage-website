@@ -1,21 +1,19 @@
-import type { ChangeEvent } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { PhoneField } from '@/components/contact/phone-field';
 import {
   FORM_FIELDS,
   FORM_CONSTANTS,
   type FormFieldConfig,
-  type FormFieldProps,
-  type ContactFormData,
 } from '@/components/contact/config/contact-form-field-config';
+import type { ContactFormData } from '@/lib/validation/contact-schema';
 
 interface FormFieldsProps {
-  formData: ContactFormData;
-  errors: Record<string, string>;
-  onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  errors?: Record<string, string>;
+  values?: Partial<ContactFormData>;
 }
 
-export function FormFields({ formData, errors, onChange }: FormFieldsProps) {
+export function FormFields({ errors, values }: FormFieldsProps) {
   const renderFormFields = () => {
     const elements: React.ReactElement[] = [];
     let currentGridFields: FormFieldConfig[] = [];
@@ -38,9 +36,8 @@ export function FormFields({ formData, errors, onChange }: FormFieldsProps) {
                 <FormField
                   key={gridField.name}
                   field={gridField}
-                  value={formData[gridField.name]}
-                  error={errors[gridField.name]}
-                  onChange={onChange}
+                  error={errors?.[gridField.name]}
+                  value={String(values?.[gridField.name as keyof ContactFormData] || '')}
                 />
               ))}
             </div>,
@@ -52,9 +49,8 @@ export function FormFields({ formData, errors, onChange }: FormFieldsProps) {
           <FormField
             key={field.name}
             field={field}
-            value={formData[field.name]}
-            error={errors[field.name]}
-            onChange={onChange}
+            error={errors?.[field.name]}
+            value={String(values?.[field.name as keyof ContactFormData] || '')}
           />,
         );
       }
@@ -66,8 +62,15 @@ export function FormFields({ formData, errors, onChange }: FormFieldsProps) {
   return <>{renderFormFields()}</>;
 }
 
-function FormField({ field, value, error, onChange }: FormFieldProps) {
+interface FormFieldProps {
+  field: FormFieldConfig;
+  error?: string;
+  value?: string;
+}
+
+function FormField({ field, error, value }: FormFieldProps) {
   const isMessageField = field.name === 'message';
+  const isPhoneField = field.name === 'phone';
 
   return (
     <div className="mb-4">
@@ -86,12 +89,23 @@ function FormField({ field, value, error, onChange }: FormFieldProps) {
           id={field.name}
           name={field.name}
           placeholder={field.placeholder}
-          value={value}
-          onChange={onChange}
           required={field.required}
           error={!!error}
+          defaultValue={value || ''}
           className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-400"
           style={{ minHeight: `${FORM_CONSTANTS.MESSAGE.MIN_HEIGHT}px` }}
+        />
+      ) : isPhoneField ? (
+        <PhoneField
+          id={field.name}
+          name={field.name}
+          placeholder={field.placeholder}
+          required={field.required}
+          maxLength={'maxLength' in field ? field.maxLength : undefined}
+          autoComplete={'autoComplete' in field ? field.autoComplete : undefined}
+          error={!!error}
+          defaultValue={value || ''}
+          className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-400"
         />
       ) : (
         <Input
@@ -99,21 +113,24 @@ function FormField({ field, value, error, onChange }: FormFieldProps) {
           name={field.name}
           type={field.type}
           placeholder={field.placeholder}
-          value={value}
-          onChange={onChange}
           required={field.required}
           maxLength={'maxLength' in field ? field.maxLength : undefined}
           autoComplete={'autoComplete' in field ? field.autoComplete : undefined}
           error={!!error}
+          defaultValue={value || ''}
           className="w-full px-4 py-3 rounded-lg bg-gray-800 text-white placeholder-gray-400"
         />
       )}
 
-      {error && <p className="mt-1 text-sm text-red-400">{error}</p>}
+      {error && (
+        <p className="mt-1 text-sm text-red-400" aria-live="polite" role="alert">
+          {error}
+        </p>
+      )}
 
       {isMessageField && (
         <p className="mt-1 text-xs text-gray-500">
-          {value.length}/{FORM_CONSTANTS.MESSAGE.MAX_LENGTH} characters
+          <span id={`${field.name}-char-count`}>0</span>/{FORM_CONSTANTS.MESSAGE.MAX_LENGTH} characters
         </p>
       )}
     </div>
