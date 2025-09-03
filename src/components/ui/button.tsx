@@ -1,8 +1,9 @@
-import { type ComponentProps } from 'react';
+import { type ComponentProps, forwardRef } from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
+import { LoadingSpinner } from './loading-spinner';
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 hover:scale-[1.02] active:scale-95 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-ring/20 dark:aria-invalid:ring-ring/40 aria-invalid:border-ring cursor-pointer",
@@ -39,26 +40,45 @@ const buttonVariants = cva(
   },
 );
 
-function Button({
+interface ButtonProps extends ComponentProps<'button'>, VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+  loading?: boolean;
+  loadingText?: string;
+}
+
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
   className,
   variant,
   size,
   asChild = false,
+  loading = false,
+  loadingText,
+  children,
+  disabled,
   ...props
-}: ComponentProps<'button'> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
-  }) {
+}, ref) => {
   const Comp = asChild ? Slot : 'button';
   const isFullWidth = className?.includes('w-full');
+  const isDisabled = disabled || loading;
 
   return (
     <Comp
+      ref={ref}
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }), isFullWidth ? 'w-full' : '')}
+      disabled={isDisabled}
       {...props}
-    />
+    >
+      {loading ? (
+        <>
+          <LoadingSpinner size="sm" />
+          {loadingText || 'Loading...'}
+        </>
+      ) : (
+        children
+      )}
+    </Comp>
   );
-}
+});
 
 export { Button, buttonVariants };

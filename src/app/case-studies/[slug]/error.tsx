@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle } from 'lucide-react';
 import { logger } from '@/lib/utils/logger';
@@ -14,8 +14,17 @@ export default function CaseStudyError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const [isRetrying, setIsRetrying] = useState(false);
   const { trackEvent } = useEventTracking();
   const params = useParams();
+
+  const handleRetry = async () => {
+    setIsRetrying(true);  
+    setTimeout(() => {
+      reset();
+      setIsRetrying(false);
+    }, 300);
+  };
 
   useEffect(() => {
     logger.error('Case study error:', error);
@@ -29,8 +38,9 @@ export default function CaseStudyError({
     });
       }, [error, trackEvent, params.slug]);
 
+
   return (
-    <main className="flex-1 py-8">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="mb-8">
@@ -43,7 +53,13 @@ export default function CaseStudyError({
           </div>
 
           <div className="flex gap-4 justify-center">
-            <Button onClick={reset} variant="default">
+            <Button 
+              onClick={handleRetry} 
+              variant="default" 
+              loading={isRetrying}
+              loadingText="Retrying..."
+              className="min-w-[120px]"
+            >
               Try again
             </Button>
             <Button onClick={() => window.history.back()} variant="outline">
@@ -52,6 +68,6 @@ export default function CaseStudyError({
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

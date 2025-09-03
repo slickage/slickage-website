@@ -1,33 +1,28 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle } from 'lucide-react';
-import { logger } from '@/lib/utils/logger';
-import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
 
 export default function Error({
-  error,
+  error: _error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const { trackEvent } = useEventTracking();
+  const [isRetrying, setIsRetrying] = useState(false);
 
-  useEffect(() => {
-    logger.error('Global error:', error);
-
-    trackEvent('ERROR_PAGE_VIEWED', {
-      ERROR_TYPE: 'global_error',
-      ERROR_MESSAGE: error.message,
-      ERROR_STACK: error.stack?.slice(0, 500),
-      PAGE_PATH: window.location.pathname,
-    });
-  }, [error, trackEvent]);
+  const handleRetry = async () => {
+    setIsRetrying(true);  
+    setTimeout(() => {
+      reset();
+      setIsRetrying(false);
+    }, 300);
+  };
 
   return (
-    <main className="flex-1 py-8">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="mb-8">
@@ -40,7 +35,13 @@ export default function Error({
           </div>
 
           <div className="flex gap-4 justify-center">
-            <Button onClick={reset} variant="default">
+            <Button 
+              onClick={handleRetry} 
+              variant="default" 
+              loading={isRetrying}
+              loadingText="Retrying..."
+              className="min-w-[120px]"
+            >
               Try again
             </Button>
             <Button onClick={() => window.history.back()} variant="outline">
@@ -49,6 +50,6 @@ export default function Error({
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
