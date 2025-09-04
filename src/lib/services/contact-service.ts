@@ -300,7 +300,6 @@ function trackAnalytics(formData: ContactFormData, clientIp: string, startTime: 
       ? `internal_${anonymizeIp(clientIp)}`
       : createSafeDistinctId(formData.email);
 
-    // Track main contact submission event
     const analyticsEvent: ContactAnalyticsEvent = {
       form_type: 'contact',
       lead_source: 'website',

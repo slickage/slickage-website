@@ -59,9 +59,8 @@ export function AnalyticsConsentBanner() {
           <div className="flex-1">
             <h3 className="text-white font-semibold mb-2">Analytics & Privacy</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              We use analytics to improve our website and understand how visitors interact with our
-              content. Your data is anonymized and we respect your privacy. You can change your
-              preferences at any time.
+              We use analytics and cookies to improve our website and understand how you interact with our
+              content and help us improve your experience. Your data is anonymized and we respect your privacy.
             </p>
           </div>
 
