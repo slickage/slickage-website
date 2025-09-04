@@ -4,10 +4,9 @@ import type { ReactNode } from 'react';
 import { Inter } from 'next/font/google';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { LazyMotion, domAnimation } from 'motion/react';
 import { PostHogProvider } from '@/app/_providers/posthog-provider';
-import { PageTracker } from '@/components/page-tracker';
 import { AnalyticsConsentBanner } from '@/components/ui/analytics-consent-banner';
+import { MotionWrapper } from '@/components/motion-wrapper';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -71,13 +70,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" data-scroll-behavior="smooth" className={`${inter.className}`}>
       <body>
         <PostHogProvider>
-          <PageTracker />
-          <LazyMotion features={domAnimation} strict>
+          <MotionWrapper>
             <Header />
             {children}
             <Footer />
             <AnalyticsConsentBanner />
-          </LazyMotion>
+          </MotionWrapper>
         </PostHogProvider>
       </body>
     </html>

@@ -5,7 +5,6 @@ import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -25,20 +24,10 @@ export function Header() {
   }, []);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { trackCTAClick, trackNavigation, trackMobileMenuToggle } = useEventTracking();
-
-  const handleContactClick = () => {
-    trackCTAClick('Get in Touch', 'header', '/contact');
-  };
 
   const handleMobileMenuToggle = () => {
     const newState = !isMobileMenuOpen;
     setIsMobileMenuOpen(newState);
-    trackMobileMenuToggle(newState);
-  };
-
-  const handleLogoClick = () => {
-    trackNavigation('Logo', '/', 'header');
   };
 
   return (
@@ -54,7 +43,6 @@ export function Header() {
           <div className="flex items-center">
             <Link
               href="/"
-              onClick={handleLogoClick}
               className="font-bold tracking-tight gradient-text"
             >
               <Image
@@ -69,7 +57,7 @@ export function Header() {
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/contact" onClick={handleContactClick}>
+            <Link href="/contact">
               <Button variant="default" size="lg">
                 Get in Touch
               </Button>
@@ -103,7 +91,6 @@ export function Header() {
                 href="/contact"
                 onClick={() => {
                   setIsMobileMenuOpen(false);
-                  trackCTAClick('Get in Touch', 'mobile_menu', '/contact');
                 }}
               >
                 <Button variant="default" size="xl" className="w-full">

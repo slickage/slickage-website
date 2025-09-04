@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle } from 'lucide-react';
+import { logger } from '@/lib/utils/logger';
+import { usePostHog } from 'posthog-js/react';
 
 export default function Error({
-  error: _error,
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
@@ -21,6 +23,20 @@ export default function Error({
     }, 300);
   };
 
+  const posthog = usePostHog();
+  useEffect(() => {
+    logger.error('Global error:', error);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    posthog.capture('error_page_view', {
+      error_type: 'global_error',
+      error_message: error.message,
+      error_stack: error.stack?.slice(0, 500),
+      page_path: window.location.pathname,
+    });
+  }, [error, posthog]);
+
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="container mx-auto px-4">
@@ -29,7 +45,7 @@ export default function Error({
             <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
             <h1 className="text-3xl font-bold text-gray-200 mb-4">Something went wrong</h1>
             <p className="text-gray-400 mb-8">
-              We encountered an error while loading this page. Please try again or contact support
+              We encountered an error while loading this page. Please try again or contact us
               if the problem persists.
             </p>
           </div>

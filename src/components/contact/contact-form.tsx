@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useRef, startTransition, useEffect, useCallback } from 'react';
+import { useActionState, useRef, startTransition, useCallback } from 'react';
 import { useFormStatus } from 'react-dom';
 import Form from 'next/form';
 import { Send } from 'lucide-react';
@@ -13,8 +13,6 @@ import { ContactSuccess } from '@/components/contact/contact-success';
 
 import { submitContactFormAction } from '@/app/actions/contact';
 import { initialContactFormState, type ContactFormState } from '@/lib/types/contact-form-state';
-import { useEventTracking } from '@/lib/hooks/use-posthog-tracking';
-import { useUserIdentification } from '@/lib/hooks/use-user-identification';
 
 interface ContactFormProps {
   standalone?: boolean;
@@ -32,33 +30,7 @@ export function ContactForm({ standalone = false }: ContactFormProps) {
   );
   const isLoading = useFormStatus().pending || isPending;
 
-  const { trackFormInteraction } = useEventTracking();
-  const { identifyUser } = useUserIdentification();
-
   const formRef = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'viewed');
-  }, [trackFormInteraction, standalone]);
-
-  useEffect(() => {
-    if (state.success && state.values) {
-      const { email, subject } = state.values;
-      
-      trackFormInteraction(standalone ? 'contact_page' : 'homepage', 'submitted', {
-        ...(state.submissionId && { submissionId: state.submissionId }),
-      });
-
-      if (email) {
-        identifyUser({
-          email,
-          company: subject || '',
-          leadSource: standalone ? 'contact_page' : 'homepage_contact_form',
-          formType: 'contact',
-        });
-      }
-    }
-  }, [state.success, state.values, state.submissionId, trackFormInteraction, identifyUser, standalone]);
 
   const handleFormReset = useCallback(() => {
     if (formRef.current) {
