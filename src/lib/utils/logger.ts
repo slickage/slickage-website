@@ -1,6 +1,6 @@
-import { env } from '@/lib/env';
+import { env } from '@/env';
 
-const isDevelopment = env.NODE_ENV === 'development';
+const isDevelopment = env.isDevelopment;
 
 export const logger = {
   error: (message: string, ...args: any[]) => console.error(message, ...args),

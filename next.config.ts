@@ -2,13 +2,24 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   experimental: {
-    staleTimes: {
-      dynamic: 30,
-      static: 180,
-    },
-    optimizePackageImports: ['motion', 'lucide-react'],
+    optimizePackageImports: [
+      'motion',
+      'lucide-react',
+      'react-icons',
+      '@radix-ui/react-slot',
+      'class-variance-authority',
+      'clsx',
+      'tailwind-merge',
+      'tailwindcss-animate',
+      'zod',
+      '@aws-sdk/client-s3',
+      '@aws-sdk/s3-request-presigner',
+      'drizzle-orm',
+      'ioredis',
+      'posthog-js',
+      'posthog-node'
+    ],
   },
-
   images: {
     remotePatterns: [
       {

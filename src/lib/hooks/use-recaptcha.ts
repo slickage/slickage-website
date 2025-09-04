@@ -1,5 +1,4 @@
 import { useState, useEffect, type RefObject } from 'react';
-import { useClientConfig } from '@/lib/hooks/use-client-config';
 import { logger } from '@/lib/utils/logger';
 
 type RecaptchaLoadStrategy = 'immediate' | 'in-viewport' | 'interaction';
@@ -9,15 +8,17 @@ interface UseRecaptchaOptions {
   triggerRef?: RefObject<Element | null>;
 }
 
+interface RecaptchaConfig {
+  siteKey: string;
+  enabled: boolean;
+}
+
 const INTERSECTION_THRESHOLD = 0.1;
 const IMMEDIATE_LOAD_DELAY = 0;
 
-export function useRecaptcha(options?: UseRecaptchaOptions) {
-  const { config, error: configError } = useClientConfig('recaptcha');
+export function useRecaptcha(recaptchaConfig: RecaptchaConfig, options?: UseRecaptchaOptions) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const recaptchaConfig = config?.recaptcha;
 
   useEffect(() => {
     if (!shouldLoadRecaptcha(recaptchaConfig)) {
@@ -40,11 +41,11 @@ export function useRecaptcha(options?: UseRecaptchaOptions) {
     siteKey,
     isEnabled,
     isLoaded,
-    error: error || configError,
+    error,
   };
 
-  function shouldLoadRecaptcha(config: any): boolean {
-    return config?.enabled && config?.siteKey;
+  function shouldLoadRecaptcha(config: RecaptchaConfig): boolean {
+    return Boolean(config?.enabled && config?.siteKey);
   }
 
   function setupLoadingStrategy(

@@ -1,5 +1,5 @@
 import Redis from 'ioredis';
-import { env } from '@/lib/env';
+import { env } from '@/env';
 import { logger } from '@/lib/utils/logger';
 
 // Redis connection configuration for optimal performance and reliability

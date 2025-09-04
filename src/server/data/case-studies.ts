@@ -1,5 +1,3 @@
-import 'server-only';
-
 import type { NewCaseStudy } from '@/server/db/schema';
 
 export const caseStudies: NewCaseStudy[] = [

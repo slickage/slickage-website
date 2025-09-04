@@ -1,5 +1,5 @@
 import { logger } from '@/lib/utils/logger';
-import { env } from '@/lib/env';
+import { env } from '@/env';
 
 export interface RecaptchaResult {
   success: boolean;

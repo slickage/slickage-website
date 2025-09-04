@@ -3,21 +3,34 @@
 import { posthog } from 'posthog-js';
 import { PostHogProvider as PHProvider } from 'posthog-js/react';
 import { ReactNode, useEffect } from 'react';
-import { useClientConfig } from '@/lib/hooks/use-client-config';
-import { env } from '@/lib/env';
 import { logger } from '@/lib/utils/logger';
-import { PostHogPageTracker } from './page-tracker';
+import dynamic from 'next/dynamic';
+import { env } from '@/env';
 
-export function PostHogProvider({ children }: { children: ReactNode }) {
-  const { config } = useClientConfig('posthog');
+interface PostHogConfig {
+  key: string;
+  host: string;
+  enabled: boolean;
+}
 
-  const posthogConfig = config?.posthog;
+interface PostHogProviderProps {
+  config: PostHogConfig;
+  children: ReactNode;
+}
 
+const SuspensePostHogPageTracker = dynamic(
+  () => import('./page-tracker').then(mod => ({ default: mod.PostHogPageTracker })),
+  {
+    ssr: false,
+  },
+);
+
+export function PostHogProvider({ config, children }: PostHogProviderProps) {
   useEffect(() => {
-    if (posthogConfig?.enabled && posthogConfig.key && posthogConfig.host) {
-      posthog.init(posthogConfig.key, {
+    if (config?.enabled && config.key && config.host) {
+      posthog.init(config.key, {
         api_host: '/ingest',
-        ui_host: posthogConfig.host,
+        ui_host: config.host,
         debug: env.isDevelopment,
         cookieless_mode: 'on_reject',
 
@@ -29,12 +42,12 @@ export function PostHogProvider({ children }: { children: ReactNode }) {
         cross_subdomain_cookie: false,
       });
     }
-  }, [posthogConfig]);
+  }, [config]);
 
-  if (posthogConfig?.enabled) {
+  if (config?.enabled) {
     return (
       <PHProvider client={posthog}>
-        <PostHogPageTracker />
+        <SuspensePostHogPageTracker />
         {children}
       </PHProvider>
     );

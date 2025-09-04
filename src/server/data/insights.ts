@@ -1,5 +1,3 @@
-  import 'server-only';
-
   import type { NewInsight } from '@/server/db/schema';
 
   export const featuredInsights: NewInsight[] = [

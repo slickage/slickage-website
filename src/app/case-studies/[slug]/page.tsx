@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { getCaseStudyBySlug, getAllCaseStudies } from '@/server/db/queries';
+import { getCaseStudyBySlug } from '@/server/db/queries';
 import { CaseStudyHero } from '@/components/case-study/case-study-hero';
 import { CaseStudyOverview } from '@/components/case-study/case-study-overview';
 import { CaseStudySection } from '@/components/case-study/case-study-section';
@@ -8,12 +8,7 @@ import { CaseStudyImage } from '@/components/case-study/case-study-image';
 import { CaseStudyQuote } from '@/components/case-study/case-study-quote';
 import { AnimatedSection } from '@/components/ui/animated-section';
 
-export async function generateStaticParams() {
-  const caseStudies = await getAllCaseStudies();
-  return caseStudies.map((caseStudy) => ({
-    slug: caseStudy.slug,
-  }));
-}
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,

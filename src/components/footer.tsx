@@ -48,7 +48,7 @@ export function Footer() {
         <div className="border-t border-gray-800 mt-12 pt-8 min-h-[80px]">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-300 text-sm mb-4 md:mb-0">
-              © {new Date().getFullYear()} Slickage. All rights reserved.
+              © 2025 Slickage. All rights reserved.
             </p>
             <div className="flex space-x-6 min-h-[24px]">
               <LegalLinks items={legalNavigation} />

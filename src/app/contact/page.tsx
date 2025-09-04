@@ -4,6 +4,8 @@ import { ContactInfo } from '@/components/contact/contact-info';
 import { FaqSection } from '@/components/contact/faq-section';
 import { FaqPreview } from '@/components/contact/faq-preview';
 import { AnimatedSection } from '@/components/ui/animated-section';
+import { getClientConfig } from '@/lib/utils/client-config';
+import { connection } from 'next/server';
 
 export const metadata = {
   title: 'Contact Slickage | Get in Touch',
@@ -33,7 +35,10 @@ export const metadata = {
   },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  await connection();
+  const config = getClientConfig().recaptcha;
+  
   return (
     <main className="flex-1">
       <AnimatedSection variant="slideUp">
@@ -48,7 +53,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <ContactForm standalone={true} />
+              <ContactForm standalone={true} recaptchaConfig={config} />
             </div>
             <div>
               <ContactInfo />

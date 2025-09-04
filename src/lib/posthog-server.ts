@@ -1,5 +1,5 @@
 import { PostHog } from 'posthog-node';
-import { env } from '@/lib/env';
+import { env } from '@/env';
 
 // Mock PostHog client for development when not configured
 class MockPostHogClient {
@@ -23,7 +23,6 @@ export function createPostHogServer() {
   }
 
   const posthogKey = env.POSTHOG_KEY;
-
   const posthogHost = env.POSTHOG_HOST || 'https://us.i.posthog.com';
 
   if (!posthogKey) {

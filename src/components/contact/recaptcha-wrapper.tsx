@@ -4,7 +4,13 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { useRecaptcha } from '@/lib/hooks/use-recaptcha';
 import { FORM_CONSTANTS } from '@/components/contact/config/contact-form-field-config';
 
+interface RecaptchaConfig {
+  siteKey: string;
+  enabled: boolean;
+}
+
 interface RecaptchaWrapperProps {
+  config: RecaptchaConfig;
   children: (props: { recaptchaLoaded: boolean }) => ReactNode;
 }
 
@@ -21,9 +27,9 @@ declare global {
  * Client component wrapper for reCAPTCHA integration
  * Handles reCAPTCHA token generation and form submission
  */
-export function RecaptchaWrapper({ children }: RecaptchaWrapperProps) {
+export function RecaptchaWrapper({ config, children }: RecaptchaWrapperProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const { siteKey, isEnabled: isRecaptchaEnabled, isLoaded: recaptchaLoaded } = useRecaptcha({
+  const { siteKey, isEnabled: isRecaptchaEnabled, isLoaded: recaptchaLoaded } = useRecaptcha(config, {
     strategy: 'immediate',
   });
 

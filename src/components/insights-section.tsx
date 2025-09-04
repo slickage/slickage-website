@@ -1,8 +1,10 @@
 import type { Insight } from '@/server/db/schema';
 import { getFeaturedInsights } from '@/server/db/queries';
 import { InsightCard } from '@/components/insights/insight-card';
+import { connection } from 'next/server';
 
 export async function InsightsSection() {
+  await connection();
   const insights: Insight[] = await getFeaturedInsights();
 
   return (

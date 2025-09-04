@@ -1,5 +1,3 @@
-import 'server-only';
-
 import { pgTable, text, varchar, timestamp, uuid, index, jsonb } from 'drizzle-orm/pg-core';
 
 // Define the content item type here since it's specific to case studies

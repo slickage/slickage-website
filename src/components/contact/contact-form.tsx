@@ -14,8 +14,14 @@ import { ContactSuccess } from '@/components/contact/contact-success';
 import { submitContactFormAction } from '@/app/actions/contact';
 import { initialContactFormState, type ContactFormState } from '@/lib/types/contact-form-state';
 
+interface RecaptchaConfig {
+  siteKey: string;
+  enabled: boolean;
+}
+
 interface ContactFormProps {
   standalone?: boolean;
+  recaptchaConfig: RecaptchaConfig;
 }
 
 /**
@@ -23,7 +29,7 @@ interface ContactFormProps {
  * Uses useActionState for form state management and server actions
  * Implements form value persistence, proper state management, and PostHog analytics
  */
-export function ContactForm({ standalone = false }: ContactFormProps) {
+export function ContactForm({ standalone = false, recaptchaConfig }: ContactFormProps) {
   const [state, formAction, isPending] = useActionState<ContactFormState, FormData>(
     submitContactFormAction,
     initialContactFormState
@@ -93,7 +99,7 @@ export function ContactForm({ standalone = false }: ContactFormProps) {
           values={state.values}
         />
 
-        <RecaptchaWrapper>
+        <RecaptchaWrapper config={recaptchaConfig}>
           {({ recaptchaLoaded }) => (
             <Button
               type="submit"

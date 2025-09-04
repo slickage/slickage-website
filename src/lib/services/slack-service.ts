@@ -1,4 +1,4 @@
-import { env } from '@/lib/env';
+import { env } from '@/env';
 import { logger } from '@/lib/utils/logger';
 
 export interface SlackMessage {

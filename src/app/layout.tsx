@@ -7,6 +7,7 @@ import { Footer } from '@/components/footer';
 import { PostHogProvider } from '@/app/_providers/posthog-provider';
 import { AnalyticsConsentBanner } from '@/components/ui/analytics-consent-banner';
 import { MotionWrapper } from '@/components/motion-wrapper';
+import { getClientConfig } from '@/lib/utils/client-config';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -69,7 +70,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${inter.className}`}>
       <body>
-        <PostHogProvider>
+        <PostHogProvider config={getClientConfig().posthog}>
           <MotionWrapper>
             <Header />
             {children}

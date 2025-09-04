@@ -1,7 +1,11 @@
 import { Handshake, Mail, MapPin } from 'lucide-react';
 import { ContactForm } from '@/components/contact/contact-form';
+import { getClientConfig } from '@/lib/utils/client-config';
+
 
 export function ContactSection() {
+  const config = getClientConfig().recaptcha;
+  
   return (
     <section id="contact" className="py-24">
       <div className="container px-4 max-w-7xl mx-auto">
@@ -51,7 +55,7 @@ export function ContactSection() {
 
             <div className="relative lg:ml-8 lg:col-span-3">
               <div className="hidden lg:block absolute -left-4 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-gray-600 to-transparent"></div>
-              <ContactForm />
+              <ContactForm recaptchaConfig={config} />
             </div>
           </div>
         </div>

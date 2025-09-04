@@ -1,5 +1,3 @@
-import 'server-only';
-
 import { eq } from 'drizzle-orm';
 import { db } from './index';
 import { case_studies, insights, type CaseStudy, type Insight } from './schema';
