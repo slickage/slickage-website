@@ -2,12 +2,42 @@
 
 import { headers } from 'next/headers';
 import { z } from 'zod';
-import { secureContactSchema } from '@/lib/validation/contact-schema';
-import { submitContactForm } from '@/lib/services/contact-service';
+import { db, form_submissions } from '@/server/db';
+import { secureContactSchema, type ContactFormData } from '@/lib/validation/contact-schema';
 import { verifyRecaptcha, validateRecaptchaScore } from '@/lib/security/recaptcha';
+import { checkRateLimit } from '@/lib/security/rate-limiter';
+import { sanitizeInput } from '@/lib/utils/sanitizers';
 import { logger } from '@/lib/utils/logger';
-import type { ContactFormData } from '@/lib/validation/contact-schema';
-import { initialContactFormState, type ContactFormState } from '@/lib/types/contact-form-state';
+import { captureServerEvent } from '@/lib/posthog-server';
+import { createSafeDistinctId, extractEmailDomain, anonymizeIp } from '@/lib/utils/privacy';
+import { createSlackService, type SlackMessage } from '@/lib/services/slack-service';
+
+export interface ValidatedContactData extends ContactFormData {
+  clientIp: string;
+}
+
+export interface ContactAnalyticsEvent {
+  form_type: 'contact';
+  lead_source: 'website';
+  processing_time: number;
+  source: 'server_api';
+  user_agent: string;
+  referrer: string;
+  is_internal: boolean;
+  company_domain: string;
+}
+
+export interface ContactFormState {
+  success: boolean;
+  message?: string;
+  errors?: Record<string, string>;
+  values?: Partial<ContactFormData>; // Persist form values for better UX
+  submissionId?: string;
+}
+
+export const initialContactFormState: ContactFormState = {
+  success: false,
+};
 
 /**
  * Extract client IP address from headers (for server actions)
@@ -205,7 +235,8 @@ async function validateRecaptcha(
 }
 
 /**
- * Process contact submission using existing service
+ * Process contact submission with all business logic
+ * Handles rate limiting, database storage, notifications, and analytics
  */
 async function processContactSubmission(
   validatedData: ContactFormData & { clientIp: string },
@@ -216,35 +247,259 @@ async function processContactSubmission(
   errors?: Record<string, string>;
   submissionId?: string;
 }> {
+  const { clientIp, ...formData } = validatedData;
+
   try {
-    const result = await submitContactForm(validatedData, startTime);
-    
-    if (result.response.status === 200) {
-      const responseData = await result.response.json();
-      return {
-        success: true,
-        submissionId: responseData.data?.submissionId,
-      };
-    } else {
-      const errorData = await result.response.json();
+    // 1. Rate limiting check
+    const rateLimitResult = await checkRateLimit(clientIp);
+    if (rateLimitResult.limited) {
+      const minutesUntilReset = Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000 / 60);
+      logger.security(`Rate limit exceeded for IP ${clientIp}, remaining: ${rateLimitResult.remaining}, reset: ${new Date(rateLimitResult.resetTime).toISOString()}`);
       return {
         success: false,
-        message: errorData.error || 'Submission failed. Please try again.',
-        errors: errorData.details ? 
-          errorData.details.reduce(
-            (acc: Record<string, string>, detail: any) => ({
-              ...acc,
-              [detail.field]: detail.message,
-            }),
-            {},
-          ) : undefined,
+        message: `Too many submissions. Please try again in ${minutesUntilReset} minutes.`,
       };
     }
+
+    // 2. Process and store submission
+    const submissionResult = await storeContactSubmission(formData, clientIp, startTime);
+    if (!submissionResult.success) {
+      return {
+        success: false,
+        message: submissionResult.error || 'Failed to save submission',
+      };
+    }
+
+    // 3. Send notifications
+    sendSlackNotification(formData, submissionResult.submissionId!, clientIp, startTime);
+
+    // 4. Track analytics
+    trackContactAnalytics(formData, clientIp, startTime);
+
+    return {
+      success: true,
+      submissionId: submissionResult.submissionId,
+    };
   } catch (error) {
     logger.error('Contact submission processing error:', error);
     return {
       success: false,
       message: 'Service temporarily unavailable. Please try again later.',
     };
+  }
+}
+
+/**
+ * Store contact form submission in database
+ */
+async function storeContactSubmission(
+  formData: ContactFormData,
+  clientIp: string,
+  startTime: number,
+): Promise<{ success: boolean; submissionId?: string; error?: string }> {
+  try {
+    // Sanitize data
+    const sanitizedData = sanitizeContactData(formData);
+
+    // Save to database
+    const [submission] = await db
+      .insert(form_submissions)
+      .values(sanitizedData)
+      .returning({ id: form_submissions.id });
+
+    if (!submission?.id) {
+      throw new Error('Database insertion failed - no submission ID returned');
+    }
+
+    const processingTime = Date.now() - startTime;
+    logger.info(
+      `Form submission successful: ID ${submission.id}, IP ${clientIp}, processing time ${processingTime}ms`,
+    );
+
+    return {
+      success: true,
+      submissionId: submission.id,
+    };
+  } catch (error) {
+    logger.error('Database error during contact submission:', error);
+    return {
+      success: false,
+      error: 'Failed to save submission',
+    };
+  }
+}
+
+/**
+ * Sanitize contact form data for database storage
+ */
+function sanitizeContactData(data: ContactFormData): ContactFormData {
+  return {
+    name: sanitizeInput(data.name),
+    email: sanitizeInput(data.email),
+    phone: data.phone ? sanitizeInput(data.phone) : '',
+    subject: sanitizeInput(data.subject),
+    message: sanitizeInput(data.message),
+    website: data.website,
+    elapsed: data.elapsed,
+    recaptchaToken: data.recaptchaToken,
+  };
+}
+
+/**
+ * Send Slack notification (fire-and-forget)
+ */
+function sendSlackNotification(
+  formData: ContactFormData,
+  submissionId: string,
+  clientIp: string,
+  startTime: number,
+): void {
+  try {
+    const slackService = createSlackService();
+    if (!slackService) {
+      logger.debug('Slack service not available - skipping notification');
+      return;
+    }
+
+    const processingTime = Date.now() - startTime;
+    const slackMessage = createContactFormSlackMessage(
+      formData,
+      submissionId,
+      clientIp,
+      processingTime,
+    );
+
+    slackService.sendMessage(slackMessage).catch((error) => {
+      logger.error('Failed to send Slack notification:', error);
+    });
+  } catch (error) {
+    logger.error('Error setting up Slack notification:', error);
+  }
+}
+
+/**
+ * Create a formatted contact form submission message for Slack
+ */
+function createContactFormSlackMessage(
+  formData: ContactFormData,
+  submissionId: string,
+  clientIp: string,
+  processingTime: number,
+): SlackMessage {
+  const { name, email, phone, subject, message } = formData;
+
+  return {
+    blocks: [
+      {
+        type: 'header',
+        text: {
+          type: 'plain_text',
+          text: '📧 New Contact Form Submission',
+          emoji: true,
+        },
+      },
+      {
+        type: 'section',
+        fields: [
+          {
+            type: 'mrkdwn',
+            text: `*Name:*\n${name}`,
+          },
+          {
+            type: 'mrkdwn',
+            text: `*Email:*\n${email}`,
+          },
+        ],
+      },
+      ...(phone
+        ? [
+            {
+              type: 'section' as const,
+              fields: [
+                {
+                  type: 'mrkdwn' as const,
+                  text: `*Phone:*\n${phone}`,
+                },
+                {
+                  type: 'mrkdwn' as const,
+                  text: `*Subject:*\n${subject}`,
+                },
+              ],
+            },
+          ]
+        : [
+            {
+              type: 'section' as const,
+              fields: [
+                {
+                  type: 'mrkdwn' as const,
+                  text: `*Subject:*\n${subject}`,
+                },
+              ],
+            },
+          ]),
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*Message:*\n${message}`,
+        },
+      },
+      {
+        type: 'context' as const,
+        elements: [
+          {
+            type: 'mrkdwn' as const,
+            text: `🆔 *Submission ID:* ${submissionId} | 🌐 *IP:* ${clientIp} | ⏱️ *Processing:* ${processingTime}ms`,
+          },
+        ],
+      },
+      {
+        type: 'divider' as const,
+      },
+    ],
+  };
+}
+
+/**
+ * Track analytics events (fire-and-forget)
+ */
+function trackContactAnalytics(formData: ContactFormData, clientIp: string, startTime: number): void {
+  try {
+    const processingTime = Date.now() - startTime;
+    const emailDomain = extractEmailDomain(formData.email);
+    const isInternalUser = ['slickage.com'].includes(emailDomain);
+
+    const distinctId = isInternalUser
+      ? `internal_${anonymizeIp(clientIp)}`
+      : createSafeDistinctId(formData.email);
+
+    const analyticsEvent: ContactAnalyticsEvent = {
+      form_type: 'contact',
+      lead_source: 'website',
+      processing_time: processingTime,
+      source: 'server_api',
+      user_agent: 'server',
+      referrer: 'server',
+      is_internal: isInternalUser,
+      company_domain: emailDomain,
+    };
+
+    captureServerEvent(distinctId, 'contact_flow:form_submit', analyticsEvent).catch((error) => {
+      logger.error('Failed to track contact submission:', error);
+    });
+
+    // Track internal user detection if applicable
+    if (isInternalUser) {
+      captureServerEvent(distinctId, 'system:internal_user_detect', {
+        detection_method: 'email_domain',
+        company_domain: emailDomain,
+        source: 'contact_form_server',
+      }).catch((error) => {
+        logger.error('Failed to track internal user detection:', error);
+      });
+    }
+  } catch (error) {
+    logger.error('Failed to track contact submission:', error);
   }
 }

@@ -11,8 +11,7 @@ import { FormFields } from '@/components/contact/contact-form-fields';
 import { RecaptchaWrapper } from '@/components/contact/recaptcha-wrapper';
 import { ContactSuccess } from '@/components/contact/contact-success';
 
-import { submitContactFormAction } from '@/app/actions/contact';
-import { initialContactFormState, type ContactFormState } from '@/lib/types/contact-form-state';
+import { submitContactFormAction, initialContactFormState, type ContactFormState } from '@/app/actions/contact';
 
 interface RecaptchaConfig {
   siteKey: string;

@@ -16,7 +16,7 @@ class MockPostHogClient {
   }
 }
 
-export function createPostHogServer() {
+function createPostHogServer() {
   // In development, return mock client if PostHog is not configured
   if (env.isDevelopment && !env.isPostHogConfigured) {
     return new MockPostHogClient() as any;
@@ -34,20 +34,6 @@ export function createPostHogServer() {
     flushAt: 1,
     flushInterval: 0,
   });
-}
-
-export async function getServerFeatureFlags(userId: string, flagKeys?: string[]) {
-  const client = createPostHogServer();
-
-  try {
-    if (flagKeys) {
-      return await client.getAllFlags(userId, { flagKeys });
-    } else {
-      return await client.getAllFlags(userId);
-    }
-  } finally {
-    await client.shutdown();
-  }
 }
 
 export async function captureServerEvent(
