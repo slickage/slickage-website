@@ -7,7 +7,7 @@ import {
   MAX_REQUESTS_PER_WINDOW,
   WINDOW_SIZE_SECONDS,
   type RateLimitResult,
-} from '../../src/lib/security/rate-limiter';
+} from '../../src/lib/utils/rate-limiter';
 import { initializeRedis, closeRedisConnection, isRedisAvailable } from '../../src/lib/utils/redis';
 
 describe('Rate Limiter - Redis Integration Tests', () => {
