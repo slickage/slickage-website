@@ -3,7 +3,7 @@
 import { posthog } from 'posthog-js';
 import { PostHogProvider as PHProvider } from 'posthog-js/react';
 import { ReactNode, useEffect } from 'react';
-import { logger } from '@/lib/utils/logger';
+import { logger } from '@/lib/logger';
 import dynamic from 'next/dynamic';
 import { env } from '@/env';
 

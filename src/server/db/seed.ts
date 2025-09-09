@@ -1,7 +1,7 @@
 import { db } from './index';
 import { case_studies, insights } from './schema';
-import { caseStudies } from '../data/case-studies';
-import { featuredInsights } from '../data/insights';
+import { caseStudies } from './seed-data/case-studies';
+import { featuredInsights } from './seed-data/insights';
 
 async function seed() {
   console.log('Seeding database...');

@@ -2,12 +2,12 @@ import './globals.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Inter } from 'next/font/google';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
+import { Header } from '@/features/layout/components/header';
+import { Footer } from '@/features/layout/components/footer';
 import { PostHogProvider } from '@/app/_providers/posthog-provider';
-import { AnalyticsConsentBanner } from '@/components/ui/analytics-consent-banner';
+import { AnalyticsConsentBanner } from '@/features/layout/components/analytics-consent-banner';
 import { MotionWrapper } from '@/components/motion-wrapper';
-import { getClientConfig } from '@/lib/utils/client-config';
+import { getClientConfig } from '@/lib/client-config';
 
 const inter = Inter({ subsets: ['latin'] });
 

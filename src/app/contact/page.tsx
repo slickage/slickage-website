@@ -1,10 +1,10 @@
-import { ContactHero } from '@/components/contact/contact-hero';
-import { ContactForm } from '@/components/contact/contact-form';
-import { ContactInfo } from '@/components/contact/contact-info';
-import { FaqSection } from '@/components/contact/faq-section';
-import { FaqPreview } from '@/components/contact/faq-preview';
-import { AnimatedSection } from '@/components/ui/animated-section';
-import { getClientConfig } from '@/lib/utils/client-config';
+import { ContactHero } from '@/features/contact/components/contact-hero';
+import { ContactForm } from '@/features/contact/components/contact-form';
+import { ContactInfo } from '@/features/contact/components/contact-info';
+import { FaqSection } from '@/features/faq/components/faq-section';
+import { FaqPreview } from '@/features/faq/components/faq-preview';
+import { AnimatedSection } from '@/components/animated-section';
+import { getClientConfig } from '@/lib/client-config';
 import { connection } from 'next/server';
 
 export const metadata = {

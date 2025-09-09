@@ -1,12 +1,12 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { getCaseStudyBySlug } from '@/server/db/queries';
-import { CaseStudyHero } from '@/components/case-study/case-study-hero';
-import { CaseStudyOverview } from '@/components/case-study/case-study-overview';
-import { CaseStudySection } from '@/components/case-study/case-study-section';
-import { CaseStudyImage } from '@/components/case-study/case-study-image';
-import { CaseStudyQuote } from '@/components/case-study/case-study-quote';
-import { AnimatedSection } from '@/components/ui/animated-section';
+import { getCaseStudyBySlug } from '@/features/case-studies/server/db/case-studies-queries';
+import { CaseStudyHero } from '@/features/case-studies/components/case-study-hero';
+import { CaseStudyOverview } from '@/features/case-studies/components/case-study-overview';
+import { CaseStudySection } from '@/features/case-studies/components/case-study-section';
+import { CaseStudyImage } from '@/features/case-studies/components/case-study-image';
+import { CaseStudyQuote } from '@/features/case-studies/components/case-study-quote';
+import { AnimatedSection } from '@/components/animated-section';
 
 export const revalidate = 3600;
 
