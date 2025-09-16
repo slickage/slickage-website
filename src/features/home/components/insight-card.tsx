@@ -26,7 +26,6 @@ export async function InsightCard({ insight }: InsightCardProps) {
             alt={insight.title}
             fill
             priority={false}
-            loading="eager"
             className="object-cover"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             unoptimized={imageSrc?.toLowerCase().includes('.gif')}
