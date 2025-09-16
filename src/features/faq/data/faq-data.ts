@@ -20,19 +20,19 @@ export const FAQ_DATA: FaqItem[] = [
       'Yes, we offer various support and maintenance packages to keep your application running smoothly after launch. We can also implement updates and new features as needed.',
   },
   {
-    question: 'What technologies do you specialize in?',
-    answer:
-      'We work with modern web frameworks including Elixir/Phoenix, Ruby on Rails, React/Next.js, Vue.js, and Node.js. Our expertise covers multiple languages (Elixir, Ruby, JavaScript/TypeScript, Python), cloud infrastructure (AWS, Docker, Kubernetes), and CI/CD automation (GitHub Actions). We select the optimal technology stack for each project based on requirements and long-term maintainability.',
-  },
-  {
     question: 'How do you handle project pricing?',
     answer:
       "We typically work on a fixed-price basis for well-defined projects or time and materials for more complex or evolving projects. We'll discuss the best approach for your specific needs.",
   },
   {
-    question: 'Can you work with clients outside of Hawaii?',
+    question: 'What makes your development process different?',
     answer:
-      "While we're based in Honolulu, we work with clients worldwide. We use various collaboration tools to ensure smooth communication regardless of location.",
+      'We follow a structured approach that starts with discovery to understand your vision and pain points, then we identify critical issues, create a detailed plan of action, implement features using agile practices with continuous feedback, and finally launch with extensive testing. This ensures your application is built right the first time and evolves with your needs.',
+  },
+  {
+    question: 'How long has Slickage been in business and what is your experience?',
+    answer:
+      'Slickage was founded in early 2012 by James Wang and has been growing ever since. We started as a one-man operation focused on iOS development (iOS 4 era!) and expanded to web applications in 2013. Today we\'re a small but experienced team based in Honolulu, Hawaii, working with clients around the globe. We believe technology has no boundaries and refuse to let our location limit our opportunities.',
   },
 ];
 
