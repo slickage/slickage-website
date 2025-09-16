@@ -75,7 +75,6 @@ export function ImageLightbox({
   const backdropAnimationProps = {
     initial: 'hidden',
     animate: 'visible',
-    exit: 'exit',
     variants: fadeVariants,
     transition: fadeTransition,
   };
@@ -83,7 +82,6 @@ export function ImageLightbox({
   const modalAnimationProps = {
     initial: 'hidden',
     animate: 'visible',
-    exit: 'exit',
     variants: modalVariants,
     transition: modalTransition,
   };
