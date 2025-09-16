@@ -10,12 +10,14 @@ interface AnimatedSectionProps {
   children: ReactNode;
   variant?: AnimationVariant;
   className?: string;
+  trigger?: 'immediate' | 'scroll';
 }
 
 export function AnimatedSection({
   children,
   variant = 'fadeIn',
   className = '',
+  trigger = 'scroll',
 }: AnimatedSectionProps) {
   const getVariantMapping = () => {
     switch (variant) {
@@ -39,12 +41,14 @@ export function AnimatedSection({
 
   return (
     <m.div
+      className={className}
       variants={animationVariants}
       initial="hidden"
-      whileInView="visible"
-      exit="exit"
+      {...(trigger === 'immediate' 
+        ? { animate: 'visible' }
+        : { whileInView: 'visible' }
+      )}
       transition={transition}
-      className={className}
       style={{ willChange: 'transform, opacity' }}
     >
       {children}

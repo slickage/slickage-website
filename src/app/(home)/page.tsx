@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function Home() {
   return (
     <main className="flex-1">
-      <AnimatedSection variant="slideUp">
+      <AnimatedSection variant="slideUp" trigger="immediate">
         <HeroSection />
       </AnimatedSection>
 
@@ -25,11 +25,11 @@ export default async function Home() {
         <FeaturesSection />
       </AnimatedSection>
 
-      <AnimatedSection variant="slideUp">
+      <AnimatedSection variant="slideLeft">
         <InsightsSection />
       </AnimatedSection>
 
-      <AnimatedSection variant="slideUp">
+      <AnimatedSection variant="slideRight">
         <ContactSection />
       </AnimatedSection>
     </main>
