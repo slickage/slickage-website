@@ -45,7 +45,7 @@ export function AnalyticsConsentBanner() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-sm border-t border-gray-700"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-sm border-t border-gray-700 safe-area-pb"
       style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 }}
     >
       <m.div
@@ -60,20 +60,25 @@ export function AnalyticsConsentBanner() {
             <h3 className="text-white font-semibold mb-2">Analytics & Privacy</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
               We use analytics and cookies to improve our website and understand how you interact with our
-              content and help us improve your experience. Your data is anonymized and we respect your privacy.
+              content and help us improve your experience. <br />Your data is anonymized and we respect your privacy.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 lg:ml-6">
+          <div className="flex flex-col w-full sm:w-auto gap-3 lg:ml-6">
             <Button
               variant="outline"
               size="sm"
               onClick={handleEssentialOnly}
-              className="text-gray-300 border-gray-600 hover:bg-gray-800"
+              className="text-gray-300 border-gray-600 hover:bg-gray-800 w-full sm:w-auto h-11 sm:h-8 text-sm"
             >
               Essential Only
             </Button>
-            <Button variant="blue" size="sm" onClick={handleAcceptAll} className="shadow-lg">
+            <Button 
+              variant="blue" 
+              size="sm" 
+              onClick={handleAcceptAll} 
+              className="shadow-lg w-full sm:w-auto h-11 sm:h-8 text-sm"
+            >
               Accept Analytics
             </Button>
           </div>
