@@ -1,9 +1,25 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    optimizePackageImports: ['motion', 'lucide-react'],
-  },
+import type { NextConfig } from 'next';
 
+const nextConfig: NextConfig = {
+  experimental: {
+    optimizePackageImports: [
+      'motion',
+      'lucide-react',
+      'react-icons',
+      '@radix-ui/react-slot',
+      'class-variance-authority',
+      'clsx',
+      'tailwind-merge',
+      'tailwindcss-animate',
+      'zod',
+      '@aws-sdk/client-s3',
+      '@aws-sdk/s3-request-presigner',
+      'drizzle-orm',
+      'ioredis',
+      'posthog-js',
+      'posthog-node',
+    ],
+  },
   images: {
     remotePatterns: [
       {
@@ -11,15 +27,8 @@ const nextConfig = {
         hostname: 'slickage-website.s3.us-west-2.amazonaws.com',
         pathname: '/images/**',
       },
-      {
-        protocol: 'https',
-        hostname: 'images.pexels.com',
-        pathname: '/photos/**',
-      },
     ],
     formats: ['image/webp', 'image/avif'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     qualities: [85],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
     dangerouslyAllowSVG: true,

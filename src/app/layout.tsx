@@ -2,12 +2,12 @@ import './globals.css';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Inter } from 'next/font/google';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
-import { LazyMotionWrapper } from '@/components/ui/lazy-motion-wrapper';
-import { PostHogProvider } from '@/app/providers';
-import { PageTracker } from '@/components/page-tracker';
-import { AnalyticsConsentBanner } from '@/components/ui/analytics-consent-banner';
+import { Header } from '@/features/layout/components/header';
+import { Footer } from '@/features/layout/components/footer';
+import { PostHogProvider } from '@/app/_providers/posthog-provider';
+import { AnalyticsConsentBanner } from '@/features/layout/components/analytics-consent-banner';
+import { MotionWrapper } from '@/components/motion-wrapper';
+import { getClientConfig } from '@/lib/client-config';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -68,20 +68,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
-      <body className={`${inter.className}`}>
-        <PostHogProvider>
-          <PageTracker />
-          <LazyMotionWrapper>
+    <html lang="en" data-scroll-behavior="smooth" className={`${inter.className}`}>
+      <body>
+        <PostHogProvider config={getClientConfig().posthog}>
+          <MotionWrapper>
             <Header />
             {children}
             <Footer />
             <AnalyticsConsentBanner />
-          </LazyMotionWrapper>
+          </MotionWrapper>
         </PostHogProvider>
       </body>
     </html>

@@ -1,9 +1,11 @@
-import { ContactHero } from '@/components/contact/contact-hero';
-import { ContactForm } from '@/components/contact/contact-form';
-import { ContactInfo } from '@/components/contact/contact-info';
-import { FaqSection } from '@/components/contact/faq-section';
-import { FaqPreview } from '@/components/contact/faq-preview';
-import { AnimatedSection } from '@/components/ui/animated-section';
+import { ContactHero } from '@/features/contact/components/contact-hero';
+import { ContactForm } from '@/features/contact/components/contact-form';
+import { ContactInfo } from '@/features/contact/components/contact-info';
+import { FaqSection } from '@/features/faq/components/faq-section';
+import { FaqPreview } from '@/features/faq/components/faq-preview';
+import { AnimatedSection } from '@/components/animated-section';
+import { getClientConfig } from '@/lib/client-config';
+import { connection } from 'next/server';
 
 export const metadata = {
   title: 'Contact Slickage | Get in Touch',
@@ -33,10 +35,13 @@ export const metadata = {
   },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  await connection();
+  const config = getClientConfig().recaptcha;
+
   return (
     <main className="flex-1">
-      <AnimatedSection variant="slideUp">
+      <AnimatedSection variant="slideUp" trigger="immediate">
         <ContactHero />
       </AnimatedSection>
 
@@ -44,18 +49,20 @@ export default function ContactPage() {
         <FaqPreview />
       </AnimatedSection>
 
-      <AnimatedSection variant="slideUp">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <ContactForm standalone={true} />
-            </div>
-            <div>
+      <div className="container mx-auto px-4">
+        <div className="grid lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <AnimatedSection variant="slideRight">
+              <ContactForm standalone={true} recaptchaConfig={config} />
+            </AnimatedSection>
+          </div>
+          <div>
+            <AnimatedSection variant="slideLeft">
               <ContactInfo />
-            </div>
+            </AnimatedSection>
           </div>
         </div>
-      </AnimatedSection>
+      </div>
 
       <div className="text-center py-12 text-gray-500">
         <div className="animate-bounce">
