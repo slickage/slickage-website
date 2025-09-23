@@ -17,8 +17,6 @@ type ServerEnv = {
   POSTHOG_KEY: string;
   POSTHOG_HOST: string;
   isDevelopment: boolean;
-  isProduction: boolean;
-  isTest: boolean;
   isRecaptchaConfigured: boolean;
   isPostHogConfigured: boolean;
 };
@@ -40,15 +38,13 @@ function getServerEnv(): ServerEnv {
       POSTHOG_KEY: '',
       POSTHOG_HOST: '',
       isDevelopment: process.env.NODE_ENV === 'development',
-      isProduction: process.env.NODE_ENV === 'production',
-      isTest: process.env.NODE_ENV === 'test',
       isRecaptchaConfigured: false,
       isPostHogConfigured: false,
     };
   }
 
   // Only validate at runtime, not during build
-  if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PHASE) {
+  if (process.env.NODE_ENV === 'production') {
     const requiredVars = [
       'S3_BUCKET_NAME',
       'AWS_ACCESS_KEY_ID',
@@ -93,8 +89,6 @@ function getServerEnv(): ServerEnv {
     POSTHOG_KEY: posthogKey,
     POSTHOG_HOST: posthogHost,
     isDevelopment: process.env.NODE_ENV === 'development',
-    isProduction: process.env.NODE_ENV === 'production',
-    isTest: process.env.NODE_ENV === 'test',
     isRecaptchaConfigured: !!(recaptchaSiteKey && recaptchaSecretKey),
     isPostHogConfigured: !!posthogKey,
   };
