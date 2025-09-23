@@ -43,8 +43,11 @@ function getServerEnv(): ServerEnv {
     };
   }
 
-  // Only validate at runtime, not during build
-  if (process.env.NODE_ENV === 'production') {
+  // Skip validation during build phase, only validate at runtime
+  const isProductionRuntime =
+    process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE !== 'phase-production-build';
+
+  if (isProductionRuntime) {
     const requiredVars = [
       'S3_BUCKET_NAME',
       'AWS_ACCESS_KEY_ID',
@@ -55,11 +58,10 @@ function getServerEnv(): ServerEnv {
       'DATABASE_URL',
       'POSTHOG_KEY',
       'POSTHOG_HOST',
+      'REDIS_URL',
     ];
 
-    const missingVars = requiredVars.filter(
-      (key) => !process.env[key] && !process.env[`NETLIFY_${key}`],
-    );
+    const missingVars = requiredVars.filter((key) => !process.env[key]);
 
     if (missingVars.length > 0) {
       throw new Error(
@@ -76,10 +78,9 @@ function getServerEnv(): ServerEnv {
 
   return {
     S3_BUCKET_NAME: process.env.S3_BUCKET_NAME || '',
-    AWS_ACCESS_KEY_ID: process.env.NETLIFY_AWS_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID || '',
-    AWS_SECRET_ACCESS_KEY:
-      process.env.NETLIFY_AWS_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY || '',
-    AWS_REGION: process.env.NETLIFY_AWS_REGION || process.env.AWS_REGION || 'us-west-2',
+    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || '',
+    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || '',
+    AWS_REGION: process.env.AWS_REGION || 'us-west-2',
     RECAPTCHA_SITE_KEY: recaptchaSiteKey,
     RECAPTCHA_SECRET_KEY: recaptchaSecretKey,
     DATABASE_URL: process.env.DATABASE_URL || '',
