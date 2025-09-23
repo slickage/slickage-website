@@ -8,7 +8,7 @@ import { CaseStudyImage } from '@/features/case-studies/components/case-study-im
 import { CaseStudyQuote } from '@/features/case-studies/components/case-study-quote';
 import { AnimatedSection } from '@/components/animated-section';
 
-export const revalidate = 3600;
+export const revalidate = 86400; // 24 hours
 
 export async function generateMetadata({
   params,
