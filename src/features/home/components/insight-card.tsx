@@ -15,27 +15,20 @@ export async function InsightCard({ insight }: InsightCardProps) {
   return (
     <Link
       href={`/case-studies/${insight.slug}`}
-      className="block focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-500/50 rounded-xl"
+      className="block relative focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xl overflow-hidden backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-xl transition duration-200 ease-in-out hover:border-blue-500/50 hover:scale-105 hover:shadow-lg"
     >
-      <div
-        className="group rounded-xl overflow-hidden bg-gray-900/50 backdrop-blur-sm cursor-pointer h-128 border border-gray-800/30 shadow-xl transition duration-200 ease-in-out hover:border-blue-500/50 hover:scale-105 hover:shadow-lg"
-      >
-        <div className="relative w-full h-full">
-          <Image
-            src={imageSrc}
-            alt={insight.title}
-            fill
-            priority={false}
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            unoptimized={imageSrc?.toLowerCase().includes('.gif')}
-            quality={85}
-          />
-        </div>
+        <Image
+          src={imageSrc}
+          alt={insight.title}
+          fill 
+          priority={false}
+          className="object-cover rounded-xl overflow-hidden"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          unoptimized={imageSrc?.toLowerCase().includes('.gif')}
+          quality={85}
+        />
 
-        <div className="absolute left-0 right-0 bottom-0 h-4/5 bg-gradient-to-t from-gray-900/95 via-gray-800/80 to-transparent opacity-95 group-hover:opacity-100 transition-opacity duration-150"></div>
-
-        <div className="absolute left-0 right-0 bottom-0 h-2/3 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+        <div className="absolute left-0 right-0 bottom-0 h-4/5 bg-gradient-to-t from-gray-900/90 via-gray-800/90 to-transparent"></div>
 
         <div className="absolute bottom-0 left-0 right-0 p-6">
           <h3 className="text-xl md:text-2xl lg:text-2xl font-bold mb-3 text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] tracking-tight leading-tight">
@@ -55,7 +48,6 @@ export async function InsightCard({ insight }: InsightCardProps) {
             ))}
           </div>
         </div>
-      </div>
     </Link>
   );
 }
