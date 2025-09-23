@@ -1,6 +1,6 @@
-  import type { NewInsight } from '@/server/db/schema';
+import type { NewInsight } from '@/server/db/schema';
 
-  export const featuredInsights: NewInsight[] = [
+export const featuredInsights: NewInsight[] = [
   {
     slug: 'pharmgkb',
     title: 'DDrX: Pharmacogenomic knowledgebase',

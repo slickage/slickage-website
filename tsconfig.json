@@ -31,11 +31,11 @@
   },
   "include": [
     ".eslint.config.mjs",
-    "next-env.d.ts", 
-    "**/*.ts", 
-    "**/*.tsx", 
-    "**/*.mjs", 
-    "**/*.js", 
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mjs",
+    "**/*.js",
     ".next/types/**/*.ts"
   ],
   "exclude": [

@@ -7,10 +7,12 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Slickage - Software Development Company',
-  description: 'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
+  description:
+    'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
   openGraph: {
     title: 'Slickage - Software Development Company',
-    description: 'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
+    description:
+      'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
   },
 };
 

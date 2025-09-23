@@ -59,8 +59,9 @@ export function AnalyticsConsentBanner() {
           <div className="flex-1">
             <h3 className="text-white font-semibold mb-2">Analytics & Privacy</h3>
             <p className="text-gray-300 text-sm leading-relaxed">
-              We use analytics and cookies to improve our website and understand how you interact with our
-              content and help us improve your experience. <br />Your data is anonymized and we respect your privacy.
+              We use analytics and cookies to improve our website and understand how you interact
+              with our content and help us improve your experience. <br />
+              Your data is anonymized and we respect your privacy.
             </p>
           </div>
 
@@ -73,10 +74,10 @@ export function AnalyticsConsentBanner() {
             >
               Essential Only
             </Button>
-            <Button 
-              variant="blue" 
-              size="sm" 
-              onClick={handleAcceptAll} 
+            <Button
+              variant="blue"
+              size="sm"
+              onClick={handleAcceptAll}
               className="shadow-lg w-full sm:w-auto h-11 sm:h-8 text-sm"
             >
               Accept Analytics

@@ -2,10 +2,12 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy | Slickage',
-  description: 'Learn about how Slickage collects, uses, and protects your personal information. Read our comprehensive privacy policy and understand your rights.',
+  description:
+    'Learn about how Slickage collects, uses, and protects your personal information. Read our comprehensive privacy policy and understand your rights.',
   openGraph: {
     title: 'Privacy Policy | Slickage',
-    description: 'Learn about how Slickage collects, uses, and protects your personal information. Read our comprehensive privacy policy and understand your rights.',
+    description:
+      'Learn about how Slickage collects, uses, and protects your personal information. Read our comprehensive privacy policy and understand your rights.',
   },
 };
 

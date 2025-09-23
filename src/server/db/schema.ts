@@ -40,9 +40,7 @@ export const case_studies = pgTable(
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
-  (table) => [
-    index('case_studies_slug_idx').on(table.slug),
-  ],
+  (table) => [index('case_studies_slug_idx').on(table.slug)],
 );
 
 export const insights = pgTable(
@@ -57,9 +55,7 @@ export const insights = pgTable(
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
-  (table) => [
-    index('insights_slug_idx').on(table.slug),
-  ],
+  (table) => [index('insights_slug_idx').on(table.slug)],
 );
 
 export type NewFormSubmission = typeof form_submissions.$inferInsert;

@@ -50,7 +50,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function CaseStudyDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CaseStudyDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const slug = (await params).slug;
   const caseStudy = await getCaseStudyBySlug(slug);
 
@@ -84,10 +88,7 @@ export default async function CaseStudyDetailPage({ params }: { params: Promise<
         </AnimatedSection>
 
         {caseStudy.content.map((item: any, idx: number) => (
-          <AnimatedSection 
-            key={idx} 
-            variant={idx % 2 === 0 ? "slideLeft" : "slideRight"} 
-          >
+          <AnimatedSection key={idx} variant={idx % 2 === 0 ? 'slideLeft' : 'slideRight'}>
             {item.type === 'section' && (
               <CaseStudySection title={item.title} content={item.content} />
             )}

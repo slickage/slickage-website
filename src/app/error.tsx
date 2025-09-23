@@ -16,7 +16,7 @@ export default function Error({
   const [isRetrying, setIsRetrying] = useState(false);
 
   const handleRetry = async () => {
-    setIsRetrying(true);  
+    setIsRetrying(true);
     setTimeout(() => {
       reset();
       setIsRetrying(false);
@@ -45,15 +45,15 @@ export default function Error({
             <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
             <h1 className="text-3xl font-bold text-gray-200 mb-4">Something went wrong</h1>
             <p className="text-gray-400 mb-8">
-              We encountered an error while loading this page. Please try again or contact us
-              if the problem persists.
+              We encountered an error while loading this page. Please try again or contact us if the
+              problem persists.
             </p>
           </div>
 
           <div className="flex gap-4 justify-center">
-            <Button 
-              onClick={handleRetry} 
-              variant="default" 
+            <Button
+              onClick={handleRetry}
+              variant="default"
               loading={isRetrying}
               loadingText="Retrying..."
               className="min-w-[120px]"

@@ -46,39 +46,44 @@ interface ButtonProps extends ComponentProps<'button'>, VariantProps<typeof butt
   loadingText?: string;
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
-  className,
-  variant,
-  size,
-  asChild = false,
-  loading = false,
-  loadingText,
-  children,
-  disabled,
-  ...props
-}, ref) => {
-  const Comp = asChild ? Slot : 'button';
-  const isFullWidth = className?.includes('w-full');
-  const isDisabled = disabled || loading;
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      className,
+      variant,
+      size,
+      asChild = false,
+      loading = false,
+      loadingText,
+      children,
+      disabled,
+      ...props
+    },
+    ref,
+  ) => {
+    const Comp = asChild ? Slot : 'button';
+    const isFullWidth = className?.includes('w-full');
+    const isDisabled = disabled || loading;
 
-  return (
-    <Comp
-      ref={ref}
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }), isFullWidth ? 'w-full' : '')}
-      disabled={isDisabled}
-      {...props}
-    >
-      {loading ? (
-        <>
-          <LoadingSpinner size="sm" />
-          {loadingText || 'Loading...'}
-        </>
-      ) : (
-        children
-      )}
-    </Comp>
-  );
-});
+    return (
+      <Comp
+        ref={ref}
+        data-slot="button"
+        className={cn(buttonVariants({ variant, size, className }), isFullWidth ? 'w-full' : '')}
+        disabled={isDisabled}
+        {...props}
+      >
+        {loading ? (
+          <>
+            <LoadingSpinner size="sm" />
+            {loadingText || 'Loading...'}
+          </>
+        ) : (
+          children
+        )}
+      </Comp>
+    );
+  },
+);
 
 export { Button, buttonVariants };

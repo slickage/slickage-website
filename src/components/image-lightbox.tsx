@@ -29,7 +29,7 @@ export function ImageLightbox({
   className = '',
   modalClassName = '',
   unoptimized = false,
-  sizes = "100vw",
+  sizes = '100vw',
   quality = 85,
   fill = false,
 }: ImageLightboxProps) {

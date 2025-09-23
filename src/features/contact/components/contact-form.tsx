@@ -12,7 +12,10 @@ import { RecaptchaWrapper } from '@/features/recaptcha/components/recaptcha-wrap
 import { ContactSuccess } from '@/features/contact/components/contact-success';
 
 import { submitContactFormAction } from '@/features/contact/server/actions/contact';
-import { initialContactFormState, type ContactFormState } from '@/features/contact/server/contact-types';
+import {
+  initialContactFormState,
+  type ContactFormState,
+} from '@/features/contact/server/contact-types';
 
 interface RecaptchaConfig {
   siteKey: string;
@@ -32,7 +35,7 @@ interface ContactFormProps {
 export function ContactForm({ standalone = false, recaptchaConfig }: ContactFormProps) {
   const [state, formAction, isPending] = useActionState<ContactFormState, FormData>(
     submitContactFormAction,
-    initialContactFormState
+    initialContactFormState,
   );
   const isLoading = useFormStatus().pending || isPending;
 
@@ -94,10 +97,7 @@ export function ContactForm({ standalone = false, recaptchaConfig }: ContactForm
           />
         </div>
 
-        <FormFields 
-          errors={state.errors} 
-          values={state.values}
-        />
+        <FormFields errors={state.errors} values={state.values} />
 
         <RecaptchaWrapper config={recaptchaConfig}>
           {({ recaptchaLoaded }) => (
@@ -113,8 +113,7 @@ export function ContactForm({ standalone = false, recaptchaConfig }: ContactForm
                   Sending...
                   <div className="ml-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                 </>
-              )
-              : (
+              ) : (
                 <>
                   Send Message
                   <Send className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -127,4 +126,3 @@ export function ContactForm({ standalone = false, recaptchaConfig }: ContactForm
     </div>
   );
 }
-

@@ -6,10 +6,7 @@ interface FaqPreviewProps {
   title?: string;
 }
 
-export function FaqPreview({ 
-  maxItems = 2, 
-  title = "Quick FAQ" 
-}: FaqPreviewProps) {
+export function FaqPreview({ maxItems = 2, title = 'Quick FAQ' }: FaqPreviewProps) {
   const previewFaqs = FAQ_PREVIEW_DATA.slice(0, maxItems);
 
   return (
@@ -17,11 +14,12 @@ export function FaqPreview({
       <h2 className="text-2xl font-bold text-center mb-6 text-white">{title}</h2>
       <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
         {previewFaqs.map((faq, index) => (
-          <div key={index} className="bg-white/5 backdrop-blur-sm p-6 rounded-xl shadow-xl border border-gray-800/30 hover:border-blue-500/30 transition-colors">
+          <div
+            key={index}
+            className="bg-white/5 backdrop-blur-sm p-6 rounded-xl shadow-xl border border-gray-800/30 hover:border-blue-500/30 transition-colors"
+          >
             <h3 className="font-semibold mb-3 text-white">{faq.question}</h3>
-            <p className="text-gray-300 text-sm leading-relaxed">
-              {faq.answer}
-            </p>
+            <p className="text-gray-300 text-sm leading-relaxed">{faq.answer}</p>
           </div>
         ))}
       </div>

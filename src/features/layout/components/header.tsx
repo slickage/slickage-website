@@ -41,10 +41,7 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link
-              href="/"
-              className="font-bold tracking-tight gradient-text"
-            >
+            <Link href="/" className="font-bold tracking-tight gradient-text">
               <Image
                 src="/logo-slickage-lines-blue-light.svg"
                 alt="Company Logo"

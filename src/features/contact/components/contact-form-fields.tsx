@@ -130,7 +130,8 @@ function FormField({ field, error, value }: FormFieldProps) {
 
       {isMessageField && (
         <p className="mt-1 text-xs text-gray-500">
-          <span id={`${field.name}-char-count`}>0</span>/{FORM_CONSTANTS.MESSAGE.MAX_LENGTH} characters
+          <span id={`${field.name}-char-count`}>0</span>/{FORM_CONSTANTS.MESSAGE.MAX_LENGTH}{' '}
+          characters
         </p>
       )}
     </div>

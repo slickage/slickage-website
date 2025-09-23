@@ -19,7 +19,7 @@ interface PostHogProviderProps {
 }
 
 const SuspensePostHogPageTracker = dynamic(
-  () => import('./page-tracker').then(mod => ({ default: mod.PostHogPageTracker })),
+  () => import('./page-tracker').then((mod) => ({ default: mod.PostHogPageTracker })),
   {
     ssr: false,
   },

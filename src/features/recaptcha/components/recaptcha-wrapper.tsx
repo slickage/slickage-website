@@ -29,7 +29,11 @@ declare global {
  */
 export function RecaptchaWrapper({ config, children }: RecaptchaWrapperProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const { siteKey, isEnabled: isRecaptchaEnabled, isLoaded: recaptchaLoaded } = useRecaptcha(config, {
+  const {
+    siteKey,
+    isEnabled: isRecaptchaEnabled,
+    isLoaded: recaptchaLoaded,
+  } = useRecaptcha(config, {
     strategy: 'immediate',
   });
 
@@ -38,7 +42,7 @@ export function RecaptchaWrapper({ config, children }: RecaptchaWrapperProps) {
 
     const form = wrapperRef.current.querySelector('form');
     if (!form) return;
-    
+
     const handleSubmit = async (e: SubmitEvent) => {
       if (!isRecaptchaEnabled || !recaptchaLoaded || !window.grecaptcha || !siteKey) {
         e.preventDefault();
@@ -46,7 +50,7 @@ export function RecaptchaWrapper({ config, children }: RecaptchaWrapperProps) {
       }
 
       e.preventDefault();
-      
+
       try {
         const token = await window.grecaptcha.execute(siteKey, {
           action: FORM_CONSTANTS.RECAPTCHA.ACTION,
@@ -63,7 +67,7 @@ export function RecaptchaWrapper({ config, children }: RecaptchaWrapperProps) {
           form.appendChild(tokenInput);
         }
         tokenInput.value = token;
-        
+
         form.requestSubmit();
       } catch (error) {
         console.warn('reCAPTCHA execution failed:', error);
@@ -72,7 +76,7 @@ export function RecaptchaWrapper({ config, children }: RecaptchaWrapperProps) {
     };
 
     form.addEventListener('submit', handleSubmit);
-    
+
     return () => {
       form.removeEventListener('submit', handleSubmit);
     };

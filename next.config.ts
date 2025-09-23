@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
       'drizzle-orm',
       'ioredis',
       'posthog-js',
-      'posthog-node'
+      'posthog-node',
     ],
   },
   images: {

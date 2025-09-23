@@ -11,18 +11,12 @@ export async function CaseStudyImage({
   alt,
   caption,
 }: Extract<CaseStudyContentItem, { type: 'image' }>) {
-  const imageSrc = src === '/placeholder.svg' 
-    ? '/placeholder.svg' 
-    : await getS3ImageUrl(src);
+  const imageSrc = src === '/placeholder.svg' ? '/placeholder.svg' : await getS3ImageUrl(src);
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div
-        className="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-blue-500/10 bg-white/5 cursor-pointer relative transition-all duration-200 ease-in-out hover:scale-105 hover:shadow-xl"
-      >
-        <div
-          className="relative group cursor-pointer overflow-hidden rounded-lg"
-        >
+      <div className="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-2xl border-2 border-blue-500/10 bg-white/5 cursor-pointer relative transition-all duration-200 ease-in-out hover:scale-105 hover:shadow-xl">
+        <div className="relative group cursor-pointer overflow-hidden rounded-lg">
           <ImageLightbox
             src={imageSrc}
             alt={alt}

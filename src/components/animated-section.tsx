@@ -44,10 +44,7 @@ export function AnimatedSection({
       className={className}
       variants={animationVariants}
       initial="hidden"
-      {...(trigger === 'immediate' 
-        ? { animate: 'visible' }
-        : { whileInView: 'visible' }
-      )}
+      {...(trigger === 'immediate' ? { animate: 'visible' } : { whileInView: 'visible' })}
       transition={transition}
       style={{ willChange: 'transform, opacity' }}
     >

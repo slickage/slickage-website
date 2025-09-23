@@ -9,9 +9,17 @@ import { checkRateLimit } from '@/features/contact/lib/rate-limiter';
 import { sanitizeInput } from '@/features/contact/lib/sanitizers';
 import { logger } from '@/lib/logger';
 import { captureServerEvent } from '@/services/posthog-service';
-import { createSafeDistinctId, extractEmailDomain, anonymizeIp } from '@/features/contact/lib/privacy';
+import {
+  createSafeDistinctId,
+  extractEmailDomain,
+  anonymizeIp,
+} from '@/features/contact/lib/privacy';
 import { createSlackService, type SlackMessage } from '@/services/slack-service';
-import { type ContactAnalyticsEvent, type ContactFormState, initialContactFormState } from '../contact-types';
+import {
+  type ContactAnalyticsEvent,
+  type ContactFormState,
+  initialContactFormState,
+} from '../contact-types';
 
 /**
  * Extract client IP address from headers (for server actions)
@@ -54,9 +62,10 @@ export async function submitContactFormAction(
   formData: FormData,
 ): Promise<ContactFormState> {
   // Check if this is a reset request (empty form data with reset flag)
-  const isResetRequest = formData.get('reset') === 'true' || 
+  const isResetRequest =
+    formData.get('reset') === 'true' ||
     (formData.get('name') === '' && formData.get('email') === '' && formData.get('message') === '');
-  
+
   if (isResetRequest) {
     return initialContactFormState;
   }
@@ -66,7 +75,7 @@ export async function submitContactFormAction(
   try {
     // 1. Parse FormData to ContactFormData structure
     const parsedData = parseFormData(formData);
-    
+
     // 2. Validate form data using existing schema
     const validationResult = await validateFormData(parsedData);
     if (!validationResult.success) {
@@ -80,11 +89,11 @@ export async function submitContactFormAction(
 
     // 3. Process submission using existing contact service
     const submissionResult = await processContactSubmission(validationResult.data!, startTime);
-    
+
     if (submissionResult.success) {
       return {
         success: true,
-        message: 'Form submitted successfully! We\'ll get back to you soon.',
+        message: "Form submitted successfully! We'll get back to you soon.",
         submissionId: submissionResult.submissionId,
         values: parsedData, // Include values for potential form reset
       };
@@ -111,23 +120,21 @@ export async function submitContactFormAction(
  */
 function parseFormData(formData: FormData): Partial<ContactFormData> {
   return {
-    name: formData.get('name') as string || '',
-    email: formData.get('email') as string || '',
-    phone: formData.get('phone') as string || '',
-    subject: formData.get('subject') as string || '',
-    message: formData.get('message') as string || '',
-    website: formData.get('website') as string || '', // honeypot field
+    name: (formData.get('name') as string) || '',
+    email: (formData.get('email') as string) || '',
+    phone: (formData.get('phone') as string) || '',
+    subject: (formData.get('subject') as string) || '',
+    message: (formData.get('message') as string) || '',
+    website: (formData.get('website') as string) || '', // honeypot field
     elapsed: 0, // Will be calculated client-side if needed
-    recaptchaToken: formData.get('recaptchaToken') as string || '',
+    recaptchaToken: (formData.get('recaptchaToken') as string) || '',
   };
 }
 
 /**
  * Validate form data using existing validation logic
  */
-async function validateFormData(
-  data: Partial<ContactFormData>,
-): Promise<{
+async function validateFormData(data: Partial<ContactFormData>): Promise<{
   success: boolean;
   message?: string;
   errors?: Record<string, string>;
@@ -228,7 +235,9 @@ async function processContactSubmission(
     const rateLimitResult = await checkRateLimit(clientIp);
     if (rateLimitResult.limited) {
       const minutesUntilReset = Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000 / 60);
-      logger.security(`Rate limit exceeded for IP ${clientIp}, remaining: ${rateLimitResult.remaining}, reset: ${new Date(rateLimitResult.resetTime).toISOString()}`);
+      logger.security(
+        `Rate limit exceeded for IP ${clientIp}, remaining: ${rateLimitResult.remaining}, reset: ${new Date(rateLimitResult.resetTime).toISOString()}`,
+      );
       return {
         success: false,
         message: `Too many submissions. Please try again in ${minutesUntilReset} minutes.`,
@@ -438,7 +447,11 @@ function createContactFormSlackMessage(
 /**
  * Track analytics events (fire-and-forget)
  */
-function trackContactAnalytics(formData: ContactFormData, clientIp: string, startTime: number): void {
+function trackContactAnalytics(
+  formData: ContactFormData,
+  clientIp: string,
+  startTime: number,
+): void {
   try {
     const processingTime = Date.now() - startTime;
     const emailDomain = extractEmailDomain(formData.email);

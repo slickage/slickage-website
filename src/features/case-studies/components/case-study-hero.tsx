@@ -7,9 +7,8 @@ export async function CaseStudyHero({
   subtitle,
   heroImage,
 }: Extract<CaseStudyContentItem, { type: 'hero' }>) {
-  const imageSrc = heroImage === '/placeholder.svg' 
-  ? '/placeholder.svg' 
-  : await getS3ImageUrl(heroImage);
+  const imageSrc =
+    heroImage === '/placeholder.svg' ? '/placeholder.svg' : await getS3ImageUrl(heroImage);
 
   const isGif = heroImage?.toLowerCase().includes('.gif');
 

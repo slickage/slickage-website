@@ -38,7 +38,7 @@ export const metadata = {
 export default async function ContactPage() {
   await connection();
   const config = getClientConfig().recaptcha;
-  
+
   return (
     <main className="flex-1">
       <AnimatedSection variant="slideUp" trigger="immediate">
@@ -49,20 +49,20 @@ export default async function ContactPage() {
         <FaqPreview />
       </AnimatedSection>
 
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
+      <div className="container mx-auto px-4">
+        <div className="grid lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
             <AnimatedSection variant="slideRight">
               <ContactForm standalone={true} recaptchaConfig={config} />
             </AnimatedSection>
-            </div>
-            <div>
-              <AnimatedSection variant="slideLeft">
-                <ContactInfo />
-              </AnimatedSection>
-            </div>
+          </div>
+          <div>
+            <AnimatedSection variant="slideLeft">
+              <ContactInfo />
+            </AnimatedSection>
           </div>
         </div>
+      </div>
 
       <div className="text-center py-12 text-gray-500">
         <div className="animate-bounce">
