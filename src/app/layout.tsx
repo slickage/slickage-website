@@ -1,9 +1,13 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 import { Inter } from 'next/font/google';
-import Header from '@/components/header';
-import Footer from '@/components/footer';
-import { LazyMotionWrapper } from '@/components/ui/LazyMotionWrapper';
+import { Header } from '@/features/layout/components/header';
+import { Footer } from '@/features/layout/components/footer';
+import { PostHogProvider } from '@/app/_providers/posthog-provider';
+import { AnalyticsConsentBanner } from '@/features/layout/components/analytics-consent-banner';
+import { MotionWrapper } from '@/components/motion-wrapper';
+import { getClientConfig } from '@/lib/client-config';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -62,26 +66,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
-      <head>
-        {/* Preload critical resources for better LCP performance */}
-        <link
-          rel="preload"
-          href="/logo-slickage-lines-blue-light.svg"
-          as="image"
-          type="image/svg+xml"
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
-      <body className={`${inter.className} bg-gradient-to-r from-blue-500/10 to-violet-500/10`}>
-        <LazyMotionWrapper>
-          <Header />
-          {children}
-          <Footer />
-        </LazyMotionWrapper>
+    <html lang="en" data-scroll-behavior="smooth" className={`${inter.className}`}>
+      <body>
+        <PostHogProvider config={getClientConfig().posthog}>
+          <MotionWrapper>
+            <Header />
+            {children}
+            <Footer />
+            <AnalyticsConsentBanner />
+          </MotionWrapper>
+        </PostHogProvider>
       </body>
     </html>
   );

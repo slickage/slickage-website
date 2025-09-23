@@ -1,0 +1,107 @@
+/**
+ * Server-side environment variables
+ * Based on Next.js best practices: https://nextjs.org/docs/app/guides/environment-variables
+ */
+
+type ServerEnv = {
+  S3_BUCKET_NAME: string;
+  AWS_ACCESS_KEY_ID: string;
+  AWS_SECRET_ACCESS_KEY: string;
+  AWS_REGION: string;
+  RECAPTCHA_SITE_KEY: string;
+  RECAPTCHA_SECRET_KEY: string;
+  DATABASE_URL: string;
+  SLACK_WEBHOOK_URL?: string;
+  NODE_ENV: string;
+  REDIS_URL?: string;
+  POSTHOG_KEY: string;
+  POSTHOG_HOST: string;
+  isDevelopment: boolean;
+  isRecaptchaConfigured: boolean;
+  isPostHogConfigured: boolean;
+};
+
+function getServerEnv(): ServerEnv {
+  // Return empty values on client-side
+  if (typeof window !== 'undefined') {
+    return {
+      S3_BUCKET_NAME: '',
+      AWS_ACCESS_KEY_ID: '',
+      AWS_SECRET_ACCESS_KEY: '',
+      AWS_REGION: '',
+      RECAPTCHA_SITE_KEY: '',
+      RECAPTCHA_SECRET_KEY: '',
+      DATABASE_URL: '',
+      SLACK_WEBHOOK_URL: '',
+      NODE_ENV: process.env.NODE_ENV || 'production',
+      REDIS_URL: '',
+      POSTHOG_KEY: '',
+      POSTHOG_HOST: '',
+      isDevelopment: process.env.NODE_ENV === 'development',
+      isRecaptchaConfigured: false,
+      isPostHogConfigured: false,
+    };
+  }
+
+  // Skip validation during build phase, only validate at runtime
+  const isProductionRuntime =
+    process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE !== 'phase-production-build';
+
+  if (isProductionRuntime) {
+    const requiredVars = [
+      'S3_BUCKET_NAME',
+      'AWS_ACCESS_KEY_ID',
+      'AWS_SECRET_ACCESS_KEY',
+      'AWS_REGION',
+      'RECAPTCHA_SITE_KEY',
+      'RECAPTCHA_SECRET_KEY',
+      'DATABASE_URL',
+      'POSTHOG_KEY',
+      'POSTHOG_HOST',
+      'REDIS_URL',
+    ];
+
+    const missingVars = requiredVars.filter((key) => !process.env[key]);
+
+    if (missingVars.length > 0) {
+      throw new Error(
+        `Missing required server environment variables: ${missingVars.join(', ')}\n` +
+          'Please check your .env file and ensure all required variables are set.',
+      );
+    }
+  }
+
+  const recaptchaSiteKey = process.env.RECAPTCHA_SITE_KEY || '';
+  const recaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY || '';
+  const posthogKey = process.env.POSTHOG_KEY || '';
+  const posthogHost = process.env.POSTHOG_HOST || 'https://us.i.posthog.com';
+
+  return {
+    S3_BUCKET_NAME: process.env.S3_BUCKET_NAME || '',
+    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || '',
+    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || '',
+    AWS_REGION: process.env.AWS_REGION || 'us-west-2',
+    RECAPTCHA_SITE_KEY: recaptchaSiteKey,
+    RECAPTCHA_SECRET_KEY: recaptchaSecretKey,
+    DATABASE_URL: process.env.DATABASE_URL || '',
+    SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL || '',
+    NODE_ENV: process.env.NODE_ENV || 'production',
+    REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
+    POSTHOG_KEY: posthogKey,
+    POSTHOG_HOST: posthogHost,
+    isDevelopment: process.env.NODE_ENV === 'development',
+    isRecaptchaConfigured: !!(recaptchaSiteKey && recaptchaSecretKey),
+    isPostHogConfigured: !!posthogKey,
+  };
+}
+
+let envInstance: ServerEnv | null = null;
+
+export const env: ServerEnv = new Proxy({} as ServerEnv, {
+  get(_target, prop) {
+    if (!envInstance) {
+      envInstance = getServerEnv();
+    }
+    return envInstance[prop as keyof ServerEnv];
+  },
+});

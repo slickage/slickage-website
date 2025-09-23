@@ -1,13 +1,25 @@
-import HeroSection from '@/components/hero-section';
-import InsightsSection from '@/components/insights-section';
-import FeaturesSection from '@/components/features-section';
-import ContactSection from '@/components/contact-section';
-import AnimatedSection from '@/components/ui/AnimatedSection';
+import { HeroSection } from '@/features/home/components/hero-section';
+import { InsightsSection } from '@/features/home/components/insights-section';
+import { FeaturesSection } from '@/features/home/components/features-section';
+import { ContactSection } from '@/features/home/components/contact-section';
+import { AnimatedSection } from '@/components/animated-section';
+import type { Metadata } from 'next';
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: 'Slickage - Software Development Company',
+  description:
+    'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
+  openGraph: {
+    title: 'Slickage - Software Development Company',
+    description:
+      'Slickage is a boutique software development company based in Honolulu, Hawaii. We specialize in web applications, iOS development, product design, and building innovative digital solutions for businesses worldwide.',
+  },
+};
+
+export default async function Home() {
   return (
-    <main className="flex-1 bg-gradient-to-r from-blue-500/10 to-violet-500/10">
-      <AnimatedSection variant="slideUp">
+    <main className="flex-1">
+      <AnimatedSection variant="slideUp" trigger="immediate">
         <HeroSection />
       </AnimatedSection>
 
@@ -15,11 +27,11 @@ export default function Home() {
         <FeaturesSection />
       </AnimatedSection>
 
-      <AnimatedSection variant="slideUp">
+      <AnimatedSection variant="slideLeft">
         <InsightsSection />
       </AnimatedSection>
 
-      <AnimatedSection variant="slideUp">
+      <AnimatedSection variant="slideRight">
         <ContactSection />
       </AnimatedSection>
     </main>

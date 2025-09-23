@@ -1,4 +1,15 @@
-import type React from 'react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Cookie Policy | Slickage',
+  description:
+    'Learn about how Slickage uses cookies and similar technologies on our website. Understand your choices and how to manage cookie preferences.',
+  openGraph: {
+    title: 'Cookie Policy | Slickage',
+    description:
+      'Learn about how Slickage uses cookies and similar technologies on our website. Understand your choices and how to manage cookie preferences.',
+  },
+};
 
 export default function CookiePolicyPage() {
   return (
